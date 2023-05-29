@@ -2,25 +2,128 @@
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
-<ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
+@if (!SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
-    </li>
-    <li class="nav-item">
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
-    </li>
+    <header class="topbar">
+        <nav class="navbar top-navbar navbar-expand-md navbar-light">
+            <!-- ============================================================== -->
+            <!-- Logo -->
+            <!-- ============================================================== -->
+            <div class="navbar-header">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <!-- Logo icon -->
+                    <b>
+                        <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+                        <!-- Dark Logo icon -->
+                        <img src="~/images/logo_n.png" alt="Logo" class="p-2" style="width: 60px; height: 60px;">
+                    </b>
+                    <!--End Logo icon -->
+                    <!-- Logo text -->
+                    <span>
+                        <!-- Logo text -->
+                        <img src="~/images/logo.png" alt="Inicio" class="p-2" style="width: 150px; height: 70px;"/>
+                    </span>
+                </a>
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Logo -->
+            <!-- ============================================================== -->
+            <div class="navbar-collapse">
+                <!-- ============================================================== -->
+                <!-- toggle and nav items -->
+                <!-- ============================================================== -->
+                <ul class="navbar-nav mr-auto mt-md-0">
+                    <!-- This is  -->
+                    <li class="nav-item"> <a class="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark"><i class="mdi mdi-menu ti-close"></i></a> </li>
+                    <li class="nav-item"> <a class="nav-link sidebartoggler hidden-sm-down text-muted waves-effect waves-dark"><i class="ti-menu"></i></a> </li>
+                </ul>
+                <!-- ============================================================== -->
+                <!-- User profile and search -->
+                <!-- ============================================================== -->
+                <ul class="navbar-nav my-lg-0">
+                    <!-- ============================================================== -->
+                    <!-- Profile -->
+                    <!-- ============================================================== -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img src="~/images/profile.png" alt="Usuario" class="profile-pic">
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right scale-up">
+                            <ul class="dropdown-user">
+                                <li>
+                                    <div class="dw-user-box">
+                                        <div class="u-img"><img src="~/images/profile.png" alt="Usuario"></div>
+                                        <div class="u-text">
+                                            <h4>@User.Identity.Name</h4>
+                                            <p class="text-muted">@User.Identity.Name</p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                        <button type="submit" class="nav-link btn btn-link text-dark"><i class="fa fa-power-off"></i>Cerrar sesión</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <aside class="left-sidebar">
+        <!-- Sidebar scroll-->
+        <div class="slimScrollDiv" style="position: relative; overflow: visible; width: auto; height: 100%;">
+            <div class="scroll-sidebar" style="overflow: visible hidden; width: auto; height: 100%;">
+                <!-- User profile -->
+                <div class="user-profile" no-repeat;">
+                </div>
+                <!-- End User profile text-->
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav">
+                    <ul id="sidebarnav">
+
+                        @* ADMIN *@
+                        <li class="nav-small-cap">NEGOCIO</li>
+                        <li>
+                            <a class="waves-effect waves-dark" asp-area="" asp-controller="Home" asp-action="Index" aria-expanded="false"><i class="bi bi-house"></i><span class="hide-menu">Inicio</span></a>
+                        </li>
+                        <li>
+                            <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-box-seam"></i><span class="hide-menu">Productos</span></a>
+                        </li>
+                        <li>
+                            <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-person-square"></i><span class="hide-menu">Clientes</span></a>
+                        </li>
+                        <li class="nav-devider"></li>
+                        <li class="nav-small-cap">REPARTOS</li>
+                        <li> <a class="has-arrow waves-effect waves-dark" aria-expanded="false"><i class="bi bi-calendar-event"></i><span class="hide-menu">Repartos</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="#">Inicio</a></li>
+                                <li><a href="#">Nuevo</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-truck"></i><span class="hide-menu">Repartidores</span></a>
+                        </li>
+                        <li>
+                            <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-cash"></i><span class="hide-menu">Gastos</span></a>
+                        </li>
+                        
+                        <li class="nav-devider"></li>
+                        <li class="nav-small-cap">ADMINISTRACIÓN</li>
+                        <li>
+                            <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-file-earmark-text"></i><span class="hide-menu">Facturación</span></a>
+                        </li>
+                        <li>
+                            <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-graph-up"></i><span class="hide-menu">Estadísticas</span></a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End Sidebar navigation -->
+            </div>
+        </div>
+        <!-- End Sidebar scroll-->
+    </aside> 
 }
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-}
-</ul>
