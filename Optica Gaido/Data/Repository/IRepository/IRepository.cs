@@ -9,6 +9,7 @@ namespace Optica_Gaido.Data.Repository.IRepository
     public interface IRepository<T> where T : class
     {
         T GetOne(int id);
+        T GetOne(short id);
 
         IEnumerable<T> GetAll(
             Expression<Func<T, bool>> filter = null,

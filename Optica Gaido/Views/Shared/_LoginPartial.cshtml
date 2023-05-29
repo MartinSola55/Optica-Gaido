@@ -91,33 +91,39 @@
                             <a class="waves-effect waves-dark" asp-area="" asp-controller="Home" asp-action="Index" aria-expanded="false"><i class="bi bi-house"></i><span class="hide-menu">Inicio</span></a>
                         </li>
                         <li>
-                            <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-box-seam"></i><span class="hide-menu">Productos</span></a>
+                            <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-sunglasses"></i><span class="hide-menu">Marcos</span></a>
                         </li>
                         <li>
                             <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-person-square"></i><span class="hide-menu">Clientes</span></a>
                         </li>
+                        <li>
+                            <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="fas fa-solid fa-user-doctor"></i><span class="hide-menu">Doctores</span></a>
+                        </li>
                         <li class="nav-devider"></li>
-                        <li class="nav-small-cap">REPARTOS</li>
-                        <li> <a class="has-arrow waves-effect waves-dark" aria-expanded="false"><i class="bi bi-calendar-event"></i><span class="hide-menu">Repartos</span></a>
+                        <li class="nav-small-cap">VENTAS</li>
+                        @* <li> <a class="has-arrow waves-effect waves-dark" aria-expanded="false"><i class="bi bi-card-list"></i><span class="hide-menu">Ventas</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="#">Inicio</a></li>
                                 <li><a href="#">Nuevo</a></li>
                             </ul>
-                        </li>
+                        </li> *@
                         <li>
-                            <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-truck"></i><span class="hide-menu">Repartidores</span></a>
+                            <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-truck"></i><span class="hide-menu">Proveedores</span></a>
                         </li>
                         <li>
                             <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-cash"></i><span class="hide-menu">Gastos</span></a>
                         </li>
-                        
-                        <li class="nav-devider"></li>
-                        <li class="nav-small-cap">ADMINISTRACIÓN</li>
-                        <li>
-                            <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-file-earmark-text"></i><span class="hide-menu">Facturación</span></a>
-                        </li>
                         <li>
                             <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-graph-up"></i><span class="hide-menu">Estadísticas</span></a>
+                        </li>                        
+                        <li class="nav-devider"></li>
+                        <li class="nav-small-cap">CONFIGURACIÓN</li>
+                        <li> <a class="has-arrow waves-effect waves-dark" aria-expanded="false"><i class="bi bi-gear"></i><span class="hide-menu">Configuración</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="#">Marcas</a></li>
+                                <li><a asp-area="" asp-controller="HealthInsurances" asp-action="Index">Obras Sociales</a></li>
+                                <li><a href="#">Materiales</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </nav>

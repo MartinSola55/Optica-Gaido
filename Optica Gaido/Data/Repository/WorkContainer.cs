@@ -14,9 +14,11 @@ namespace Optica_Gaido.Data.Repository
         {
             _db = db;
             Brand = new BrandRepository(_db);
+            HealthInsurance = new HealthInsuranceRepository(_db);
         }
 
         public IBrandRepository Brand { get; private set; }
+        public IHealthInsuranceRepository HealthInsurance { get; private set; }
 
         public void Dispose()
         {
