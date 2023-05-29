@@ -26,9 +26,29 @@ namespace Optica_Gaido.Data.Repository
 
         public void Update(HealthInsurance healthInsurance)
         {
-            var dbObject = _db.Brands.FirstOrDefault(x => x.ID == healthInsurance.ID);
-            dbObject.Name = healthInsurance.Name;
-            _db.SaveChanges();
+            var dbObject = _db.HealthInsurances.FirstOrDefault(x => x.ID == healthInsurance.ID);
+            if (dbObject != null)
+            {
+                dbObject.Name = healthInsurance.Name;
+                _db.SaveChanges();
+            }
+        }
+        
+        public bool IsDuplicated(HealthInsurance healthInsurance)
+        {
+            var dbObject = _db.HealthInsurances.FirstOrDefault(x => x.Name.ToLower() == healthInsurance.Name.ToLower());
+            if (dbObject == null) return false;
+            return true;
+        }
+
+        public void ChangeState(short id)
+        {
+            var dbObject = _db.HealthInsurances.FirstOrDefault(x => x.ID == id);
+            if (dbObject != null)
+            {
+                dbObject.IsActive = !dbObject.IsActive;
+                _db.SaveChanges();
+            }
         }
     }
 }

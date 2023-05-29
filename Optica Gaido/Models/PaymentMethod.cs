@@ -14,5 +14,9 @@ public partial class PaymentMethod
     [StringLength(30, MinimumLength = 1, ErrorMessage = "Debes ingresar un nombre de menos de 30 caracteres")]
     public string Name { get; set; } = null!;
 
+    [Required(ErrorMessage = "Debes seleccionar si está o no habilitado")]
+    [Display(Name = "Habilitado")]
+    public bool IsActive { get; set; } = true;
+
     public virtual ICollection<SalePaymentMethod> SalePaymentMethods { get; set; } = new List<SalePaymentMethod>();
 }

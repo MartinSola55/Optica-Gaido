@@ -40,5 +40,8 @@ public partial class GlassFormat
     [Precision(18, 2)]
     public decimal Axis { get; set; }
 
+    [Display(Name = "Eliminado")]
+    public DateTime? DeletedAt { get; set; }
+
     public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
 }

@@ -15,5 +15,9 @@ public partial class Brand
     [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s']+$", ErrorMessage = "Ingrese una nombre válido")]
     public string Name { get; set; } = null!;
 
+    [Required(ErrorMessage = "Debes seleccionar si está o no habilitada")]
+    [Display(Name = "Habilitada")]
+    public bool IsActive { get; set; } = true;
+
     public virtual ICollection<Frame> Frames { get; set; } = new List<Frame>();
 }

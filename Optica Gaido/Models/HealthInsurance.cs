@@ -12,7 +12,12 @@ public partial class HealthInsurance
     [Required(ErrorMessage = "Debes ingresar un nombre")]
     [Display(Name = "Obra social")]
     [StringLength(30, MinimumLength = 1, ErrorMessage = "Debes ingresar un nombre de menos de 30 caracteres")]
+    [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Ingrese un nombre válido")]
     public string Name { get; set; } = null!;
+
+    [Required(ErrorMessage = "Debes seleccionar si está o no habilitada")]
+    [Display(Name = "Habilitada")]
+    public bool IsActive { get; set; } = true;
 
     public virtual ICollection<Client> Clients { get; set; } = new List<Client>();
 }

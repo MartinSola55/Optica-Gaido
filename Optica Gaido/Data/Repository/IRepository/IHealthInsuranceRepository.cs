@@ -12,5 +12,7 @@ namespace Optica_Gaido.Data.Repository.IRepository
         IEnumerable<SelectListItem> GetDropDownHealthInsurances();
 
         void Update(HealthInsurance healthInsurance);
+        bool IsDuplicated(HealthInsurance healthInsurance);
+        void ChangeState(short id);
     }
 }

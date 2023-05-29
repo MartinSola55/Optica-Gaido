@@ -12,5 +12,6 @@ namespace Optica_Gaido.Data.Repository.IRepository
         IEnumerable<SelectListItem> GetDropDownBrands();
 
         void Update(Brand brand);
+        void ChangeState(long id);
     }
 }

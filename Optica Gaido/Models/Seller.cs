@@ -21,5 +21,9 @@ public partial class Seller
     [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s']+$", ErrorMessage = "Ingrese un apellido válido")]
     public string Surname { get; set; } = null!;
 
+    [Required(ErrorMessage = "Debes seleccionar si está o no habilitado")]
+    [Display(Name = "Habilitado")]
+    public bool IsActive { get; set; } = true;
+
     public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
 }

@@ -69,6 +69,10 @@ namespace Optica_Gaido.Data.Repository
         {
             return dbSet.Find(id);
         }
+        public T GetOne(long id)
+        {
+            return dbSet.Find(id);
+        }
         public T GetOne(short id)
         {
             return dbSet.Find(id);

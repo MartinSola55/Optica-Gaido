@@ -20,4 +20,7 @@ public partial class Provider
     [StringLength(50, MinimumLength = 1, ErrorMessage = "Debes ingresar un apellido de menos de 50 caracteres")]
     [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s']+$", ErrorMessage = "Ingrese un apellido válido")]
     public string Surname { get; set; } = null!;
+
+    [Display(Name = "Eliminado")]
+    public DateTime? DeletedAt { get; set; }
 }

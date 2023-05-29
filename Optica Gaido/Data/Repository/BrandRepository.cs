@@ -27,8 +27,21 @@ namespace Optica_Gaido.Data.Repository
         public void Update(Brand brand)
         {
             var dbObject = _db.Brands.FirstOrDefault(x => x.ID == brand.ID);
-            dbObject.Name = brand.Name;
-            _db.SaveChanges();
+            if (dbObject != null)
+            {
+                dbObject.Name = brand.Name;
+                _db.SaveChanges();
+            }
+        }
+
+        public void ChangeState(long id)
+        {
+            var dbObject = _db.Brands.FirstOrDefault(x => x.ID == id);
+            if (dbObject != null)
+            {
+                dbObject.IsActive = !dbObject.IsActive;
+                _db.SaveChanges();
+            }
         }
     }
 }

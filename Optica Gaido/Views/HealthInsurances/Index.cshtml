@@ -1,4 +1,4 @@
-@model IEnumerable<Optica_Gaido.Models.HealthInsurance>
+@model Optica_Gaido.Models.ViewModels.HealthInsurances.IndexViewModel
 
 @{
     ViewData["Title"] = "Obras sociales";
@@ -33,7 +33,7 @@
     <!-- Modal -->
     <div id="modalCreate" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
-            <form role="form" class="needs-validation" method="POST" asp-area="" asp-controller="HealthInsurances" asp-action="Create" id="form-create" autocomplete="off" novalidate>
+            <form role="form" class="" method="POST" asp-area="" asp-controller="HealthInsurances" asp-action="Create" id="form-create" autocomplete="off">
                 @Html.AntiForgeryToken()
                 <div class="modal-content">
                     <div class="modal-header">
@@ -44,12 +44,11 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-column">                                    
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <div class="col-12 mb-3">
-                                        <label asp-for="First().Name" class="mb-0"></label>
-                                        <input type="text" class="form-control" id="" name="HealthInsurance.Name" required>
-                                        <div class="invalid-feedback">
-                                            Por favor, ingrese un nombre
-                                        </div>
+                                        <label asp-for="CreateViewModel.Name" class="mb-0"></label>
+                                        <input asp-for="CreateViewModel.Name" class="form-control" placeholder="Ingrese un nombre" required />
+                                        <span asp-validation-for="CreateViewModel.Name" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
@@ -70,33 +69,46 @@
             <div class="card shadow">
                 <div class="card-body">
                     <div class="d-flex flex-row justify-content-between">
-                        <h2 class="card-title">Listado de obras sociales</h4>
+                        <h2 class="card-title">Listado de obras sociales</h2>
                         <button id="btnAddHI" type="button" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal" data-target="#modalCreate">Agregar obra social</button>
                     </div>
                     <div class="table-responsive m-t-10">
                         <table id="HealthInsurancesTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Acción</th>
+                                    <th class="col-8">Nombre</th>
+                                    <th class="col-2">Habilitada</th>
+                                    <th class="col-2">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="table_body">
-                                @foreach (var hi in Model) {
+                                @foreach (var hi in Model.HealthInsurances)
+                                {
                                     <tr data-id="@hi.ID">
                                         <td>
                                             @Html.DisplayFor(c => hi.Name)
                                         </td>
-                                        <td class='text-center'>
+                                        <td class="text-center">
+                                            @{
+                                                if (hi.IsActive)
+                                                {
+                                                    <i class="bi bi-check2" style="font-size: 1.5rem"></i>
+                                                } else
+                                                {
+                                                    <i class="bi bi-x-lg" style="font-size: 1.3rem"></i>
+                                                }
+                                            }
+                                        </td>
+                                        <td class='d-flex flex-row justify-content-center'>
                                             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='editHI(@hi.ID, "edit")'><i class="bi bi-pencil"></i></button>
-                                            <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteHI(@hi.ID, "delete")'><i class='fas fa-trash-alt'></i></button>
+                                            <button type='button' class='btn @(hi.IsActive ? "btn-danger" : "btn-info") btn-rounded btn-sm ml-2' onclick='changeState(@hi.ID, "state", "@hi.IsActive")'><i class='bi @(hi.IsActive ? "bi-toggle-on" : "bi-toggle-off")'></i></button>
                                         </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
-                    <form id="form-delete" method="POST" asp-area="" asp-controller="HealthInsurances" asp-action="Delete">
+                    <form id="form-state" method="POST" asp-area="" asp-controller="HealthInsurances" asp-action="ChangeState">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="">
                     </form>
@@ -108,46 +120,68 @@
 
 <script>
     function fillTable(hi) {
+        let active = "";
+        let btn = "";
+        if (hi.isActive) {
+            active = `<i class="bi bi-check2" style="font-size: 1.5rem"></i>`;
+            btn = `<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='changeState(${hi.id}, "state", "${hi.isActive}")'><i class='bi bi-toggle-on'></i></button>`;
+        } else {
+            active = `<i class="bi bi-x-lg" style="font-size: 1.3rem"></i>`;
+            btn = `<button type='button' class='btn btn-info btn-rounded btn-sm ml-2' onclick='changeState(${hi.id}, "state", "${hi.isActive}")'><i class='bi bi-toggle-off'></i></button>`;
+        }
         let content = `
-        <tr data-id='` + hi.ID + `'>
-            <td>` + hi.name + `</td>
-            <td class='text-center'>
-                <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='editHI(` + hi.ID + `, 'edit')'><i class="bi bi-pencil"></i></button>
-                <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteHI(` + hi.ID + `, 'delete')'><i class='fas fa-trash-alt'></i></button>
+        <tr data-id='${hi.id}'>
+            <td>${hi.name}</td>
+            <td class='text-center'>${active}</td>
+            <td class='d-flex flex-row justify-content-center'>
+                <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='editHI(${hi.id}, 'edit')'><i class="bi bi-pencil"></i></button>
+                ${btn}
             </td>
         </tr>`;
         $('#HealthInsurancesTable').DataTable().row.add($(content)).draw();
     }
 
     function removeFromTable(id) {
-        $('#HealthInsurancesTable').DataTable().row('[data-id="' + id + '"]').remove().draw();
+        $('#HealthInsurancesTable').DataTable().row(`[data-id="${id}"]`).remove().draw();
     }
 
-    function deleteHI(id, action) {
+    function changeState(id, action, isActive) {
+        let title = "";
+        if (isActive === "True") {
+            title = "¿Seguro deseas dar de baja esta obra social?";
+        } else {
+            title = "¿Seguro deseas dar de alta esta obra social?";
+        }
         Swal.fire({
-            title: '¿Seguro deseas eliminar esta obra social?',
+            title: title,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Eliminar',
+            confirmButtonText: 'Confirmar',
             buttonsStyling: false,
             customClass: {
-                confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
+                confirmButton: 'btn btn-warning waves-effect waves-light px-3 py-2',
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
         .then((result) => {
             if (result.isConfirmed) {
-                $("#form-" + action + " input[name='id']").val(id);
+                $(`#form-${action} input[name='id']`).val(id);
                 sendForm(action);
             }
         });
     }
 
-    function sendForm(action) {
-        let form = document.getElementById("form-" + action);
-        $(form).addClass('was-validated');
+    $("#form-create").on("submit", function(e) {
+        e.preventDefault();
+        sendForm("create");
+    })
 
-        if (form.checkValidity() !== false) {
+    function sendForm(action) {
+        let form = document.getElementById(`form-${action}`);
+
+        let errors = $(".input-validation-error");
+
+        if (errors.length === 0) {
             // Enviar solicitud AJAX
             $.ajax({
                 url: $(form).attr('action'), // Utiliza la ruta del formulario
@@ -163,7 +197,9 @@
                     if (action === 'create') {
                         fillTable(response.data);
                     } else {
-                        removeFromTable(response.data);
+                        console.log(response.data);
+                        removeFromTable(response.data.id);
+                        fillTable(response.data);
                     }
                 },
                 error: function(errorThrown) {
@@ -204,30 +240,4 @@
     });
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>    
-
-@* 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table> *@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

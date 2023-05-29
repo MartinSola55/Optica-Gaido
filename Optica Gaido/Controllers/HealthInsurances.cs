@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Optica_Gaido.Data;
 using Optica_Gaido.Data.Repository.IRepository;
 using Optica_Gaido.Models;
+using Optica_Gaido.Models.ViewModels.HealthInsurances;
 
 namespace Optica_Gaido.Controllers
 {
@@ -25,24 +26,38 @@ namespace Optica_Gaido.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-              return View(_workContainer.HealthInsurance.GetAll());
+            IndexViewModel viewModel = new IndexViewModel
+            {
+                HealthInsurances = _workContainer.HealthInsurance.GetAll(),
+                CreateViewModel = new HealthInsurance()
+            };
+            return View(viewModel);
         }
 
         [HttpPost]
         [ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Name")] HealthInsurance healthInsurance)
+        public IActionResult Create(IndexViewModel healthInsurance)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _workContainer.HealthInsurance.Add(healthInsurance);
+                    if (_workContainer.HealthInsurance.IsDuplicated(healthInsurance.CreateViewModel))
+                    {
+                        return BadRequest(new
+                        {
+                            success = false,
+                            title = "Error al agregar la obra social",
+                            message = "Ya existe otra con el mismo nombre",
+                        });
+                    }
+                    _workContainer.HealthInsurance.Add(healthInsurance.CreateViewModel);
                     _workContainer.Save();
                     return Json(new
                     {
                         success = true,
-                        data = healthInsurance,
+                        data = healthInsurance.CreateViewModel,
                         message = "La obra social se agregó correctamente",
                     });
                 }
@@ -102,23 +117,30 @@ namespace Optica_Gaido.Controllers
             });
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(short id)
+        public IActionResult ChangeState(short id)
         {
             try
             {
                 var healthInsurance = _workContainer.HealthInsurance.GetOne(id);
                 if (healthInsurance != null)
                 {
-                    _workContainer.HealthInsurance.Remove(healthInsurance);
+                    _workContainer.HealthInsurance.ChangeState(id);
                     _workContainer.Save();
+                    string state = healthInsurance.IsActive ? "alta" : "baja";
+                    return Json(new
+                    {
+                        success = true,
+                        data = healthInsurance,
+                        message = "La obra social se dió de " + state + " correctamente",
+                    });
                 }
-                return Json(new
+                return BadRequest(new
                 {
-                    success = true,
-                    data = id,
-                    message = "La obra social se eliminó correctamente",
+                    success = false,
+                    title = "Error al eliminar la obra social",
+                    message = "No se encontró la obra social solicitada",
                 });
             }
             catch (Exception e)
@@ -133,9 +155,12 @@ namespace Optica_Gaido.Controllers
             }
         }
 
-        private bool HealthInsuranceExists(short id)
+        #region Llamadas a la API
+        [HttpGet]
+        public IActionResult GetAll()
         {
-          return (_context.HealthInsurances?.Any(e => e.ID == id)).GetValueOrDefault();
+            return Json(new { data = _workContainer.HealthInsurance.GetAll() });
         }
+        #endregion
     }
 }

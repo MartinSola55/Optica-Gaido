@@ -43,6 +43,10 @@ public partial class Client
     [Display(Name = "Obra social")]
     public short? HealthInsuranceID { get; set; }
 
+    [Required(ErrorMessage = "Debes seleccionar si está o no habilitado")]
+    [Display(Name = "Habilitado")]
+    public bool IsActive { get; set; } = true;
+
     public DateTime CreatedAt { get; set; }
 
     public virtual HealthInsurance? HealthInsurance { get; set; }

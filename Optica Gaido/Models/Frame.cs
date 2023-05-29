@@ -27,5 +27,8 @@ public partial class Frame
 
     public virtual Material Material { get; set; } = null!;
 
+    [Display(Name = "Eliminado")]
+    public DateTime? DeletedAt { get; set; }
+
     public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
 }

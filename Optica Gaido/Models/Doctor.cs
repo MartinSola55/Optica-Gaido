@@ -27,5 +27,9 @@ public partial class Doctor
     [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s0-9]+$", ErrorMessage = "Ingrese una matrícula válida")]
     public string License { get; set; } = null!;
 
+    [Required(ErrorMessage = "Debes seleccionar si está o no habilitado")]
+    [Display(Name = "Habilitado")]
+    public bool IsActive { get; set; } = true;
+
     public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
 }

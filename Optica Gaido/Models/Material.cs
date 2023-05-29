@@ -15,5 +15,9 @@ public partial class Material
     [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s']+$", ErrorMessage = "Ingrese una descripción válida")]
     public string Description { get; set; } = null!;
 
+    [Required(ErrorMessage = "Debes seleccionar si está o no habilitado")]
+    [Display(Name = "Habilitado")]
+    public bool IsActive { get; set; } = true;
+
     public virtual ICollection<Frame> Frames { get; set; } = new List<Frame>();
 }
