@@ -16,9 +16,9 @@ namespace Optica_Gaido.Data.Repository
         {
             _db = db;
         }
-        public IEnumerable<SelectListItem> GetDropDownHealthInsurances()
+        public IEnumerable<SelectListItem> GetDropDownList()
         {
-            return _db.HealthInsurances.Select(i => new SelectListItem() {
+            return _db.HealthInsurances.Where(x => x.IsActive == true).Select(i => new SelectListItem() {
                 Text = i.Name,
                 Value = i.ID.ToString(),
             });

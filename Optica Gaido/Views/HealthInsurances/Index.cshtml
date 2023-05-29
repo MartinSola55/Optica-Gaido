@@ -32,12 +32,13 @@
 
     <!-- Modal -->
     <div id="modalCreate" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog">
+        <div id="formContainer" class="modal-dialog">
             <form role="form" class="" method="POST" asp-area="" asp-controller="HealthInsurances" asp-action="Create" id="form-create" autocomplete="off">
+                <input type="hidden" name="CreateViewModel.ID" value="" />
                 @Html.AntiForgeryToken()
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Agregar obra social</h4>
+                        <h4 id="modalTitle" class="modal-title"></h4>
                         <button type="button" class="close" id="btnCloseModalCreate" data-dismiss="modal" aria-hidden="true">×</button>
                     </div>
                     <div class="modal-body">
@@ -56,7 +57,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
-                        <button type="button" onclick="sendForm('create')" class="btn btn-success waves-effect waves-light">Agregar</button>
+                        <button type="submit" class="btn btn-success waves-effect waves-light">Agregar</button>
                     </div>
                 </div>
             </form>
@@ -100,8 +101,8 @@
                                             }
                                         </td>
                                         <td class='d-flex flex-row justify-content-center'>
-                                            <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='editHI(@hi.ID, "edit")'><i class="bi bi-pencil"></i></button>
-                                            <button type='button' class='btn @(hi.IsActive ? "btn-danger" : "btn-info") btn-rounded btn-sm ml-2' onclick='changeState(@hi.ID, "state", "@hi.IsActive")'><i class='bi @(hi.IsActive ? "bi-toggle-on" : "bi-toggle-off")'></i></button>
+                                            <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='editHI(@Json.Serialize(hi))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                                            <button type='button' class='btn @(hi.IsActive ? "btn-danger" : "btn-info") btn-rounded btn-sm ml-2' onclick='changeState(@hi.ID, "@hi.IsActive")'><i class='bi @(hi.IsActive ? "bi-toggle-on" : "bi-toggle-off")'></i></button>
                                         </td>
                                     </tr>
                                 }
@@ -124,17 +125,17 @@
         let btn = "";
         if (hi.isActive) {
             active = `<i class="bi bi-check2" style="font-size: 1.5rem"></i>`;
-            btn = `<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='changeState(${hi.id}, "state", "${hi.isActive}")'><i class='bi bi-toggle-on'></i></button>`;
+            btn = `<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='changeState(${hi.id}, "${hi.isActive}")'><i class='bi bi-toggle-on'></i></button>`;
         } else {
             active = `<i class="bi bi-x-lg" style="font-size: 1.3rem"></i>`;
-            btn = `<button type='button' class='btn btn-info btn-rounded btn-sm ml-2' onclick='changeState(${hi.id}, "state", "${hi.isActive}")'><i class='bi bi-toggle-off'></i></button>`;
+            btn = `<button type='button' class='btn btn-info btn-rounded btn-sm ml-2' onclick='changeState(${hi.id}, "${hi.isActive}")'><i class='bi bi-toggle-off'></i></button>`;
         }
         let content = `
         <tr data-id='${hi.id}'>
             <td>${hi.name}</td>
             <td class='text-center'>${active}</td>
             <td class='d-flex flex-row justify-content-center'>
-                <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='editHI(${hi.id}, 'edit')'><i class="bi bi-pencil"></i></button>
+                <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='editHI(${hi})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                 ${btn}
             </td>
         </tr>`;
@@ -145,9 +146,9 @@
         $('#HealthInsurancesTable').DataTable().row(`[data-id="${id}"]`).remove().draw();
     }
 
-    function changeState(id, action, isActive) {
+    function changeState(id, isActive) {
         let title = "";
-        if (isActive === "True") {
+        if (isActive === "True" || isActive === "true") {
             title = "¿Seguro deseas dar de baja esta obra social?";
         } else {
             title = "¿Seguro deseas dar de alta esta obra social?";
@@ -165,16 +166,11 @@
         })
         .then((result) => {
             if (result.isConfirmed) {
-                $(`#form-${action} input[name='id']`).val(id);
-                sendForm(action);
+                $("#form-state input[name='id']").val(id);
+                sendForm("state");
             }
         });
     }
-
-    $("#form-create").on("submit", function(e) {
-        e.preventDefault();
-        sendForm("create");
-    })
 
     function sendForm(action) {
         let form = document.getElementById(`form-${action}`);
@@ -197,7 +193,6 @@
                     if (action === 'create') {
                         fillTable(response.data);
                     } else {
-                        console.log(response.data);
                         removeFromTable(response.data.id);
                         fillTable(response.data);
                     }
@@ -217,13 +212,37 @@
 
 <script>
     $("#btnAddHI").on("click", function () {
-        $("#form-create").removeClass('was-validated');
-        $("#form-create input:not([type='hidden']").val("");
+        $("#modalTitle").text("Agregar obra social");
+        $("#formContainer form").attr("action", "/HealthInsurances/Create");
+        $("#formContainer form").attr("id", "form-create");
+        $("#formContainer form input:not([type='hidden']").val("");
+        $("input[name='CreateViewModel.ID']").prop("disabled", true);
+
+        $("#form-create").on("submit", function (e) {
+            e.preventDefault();
+            sendForm("create");
+        })
     });
+    
+    function editHI(entity) {
+        $("#formContainer form input:not([type='hidden']").val("");
+        $("input[name='CreateViewModel.ID']").val(entity.id);
+        $("input[name='CreateViewModel.ID']").prop("disabled", false);
+
+        $("#modalTitle").text("Editar obra social");
+        $("#formContainer form").attr("action", "/HealthInsurances/Edit");
+        $("#formContainer form").attr("id", "form-edit");
+
+        $("input[name='CreateViewModel.Name']").val(entity.name);
+
+        $("#form-edit").on("submit", function (e) {
+            e.preventDefault();
+            sendForm("edit");
+        })
+    }
 
     $('#HealthInsurancesTable').DataTable({
         "language": {
-            // "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json" // La url reemplaza todo al español
             "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ obras sociales",
             "sInfoEmpty": "Mostrando 0 a 0 de 0 obras sociales",
             "sInfoFiltered": "(filtrado de _MAX_ obras sociales en total)",

@@ -9,7 +9,7 @@ namespace Optica_Gaido.Data.Repository.IRepository
 {
     public interface IHealthInsuranceRepository : IRepository<HealthInsurance>
     {
-        IEnumerable<SelectListItem> GetDropDownHealthInsurances();
+        IEnumerable<SelectListItem> GetDropDownList();
 
         void Update(HealthInsurance healthInsurance);
         bool IsDuplicated(HealthInsurance healthInsurance);

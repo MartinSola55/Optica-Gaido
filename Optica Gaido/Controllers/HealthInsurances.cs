@@ -83,19 +83,28 @@ namespace Optica_Gaido.Controllers
         [HttpPost]
         [ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([Bind("ID,Name")] HealthInsurance healthInsurance)
+        public IActionResult Edit(IndexViewModel healthInsurance)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _workContainer.HealthInsurance.Update(healthInsurance);
+                    if (_workContainer.HealthInsurance.IsDuplicated(healthInsurance.CreateViewModel))
+                    {
+                        return BadRequest(new
+                        {
+                            success = false,
+                            title = "Error al editar la obra social",
+                            message = "Ya existe otra con el mismo nombre",
+                        });
+                    }
+                    _workContainer.HealthInsurance.Update(healthInsurance.CreateViewModel);
                     _workContainer.Save();
                     return Json(new
                     {
                         success = true,
-                        data = healthInsurance,
-                        message = "La obra social se agregó correctamente",
+                        data = healthInsurance.CreateViewModel,
+                        message = "La obra social se editó correctamente",
                     });
                 }
                 catch (Exception e)
@@ -112,7 +121,7 @@ namespace Optica_Gaido.Controllers
             return BadRequest(new
             {
                 success = false,
-                title = "Error al agregar la obra social",
+                title = "Error al editar la obra social",
                 message = "Alguno de los campos ingresados no es válido",
             });
         }
@@ -139,7 +148,7 @@ namespace Optica_Gaido.Controllers
                 return BadRequest(new
                 {
                     success = false,
-                    title = "Error al eliminar la obra social",
+                    title = "Error al cambiar el estado",
                     message = "No se encontró la obra social solicitada",
                 });
             }
@@ -148,7 +157,7 @@ namespace Optica_Gaido.Controllers
                 return BadRequest(new
                 {
                     success = false,
-                    title = "Error al eliminar la obra social",
+                    title = "Error al cambiar el estado",
                     message = "Intente nuevamente o comuníquese para soporte",
                     error = e.Message,
                 });
@@ -157,9 +166,9 @@ namespace Optica_Gaido.Controllers
 
         #region Llamadas a la API
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetDropDownList()
         {
-            return Json(new { data = _workContainer.HealthInsurance.GetAll() });
+            return Json(new { data = _workContainer.HealthInsurance.GetDropDownList() });
         }
         #endregion
     }
