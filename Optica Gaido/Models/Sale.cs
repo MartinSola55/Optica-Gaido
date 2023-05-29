@@ -64,6 +64,10 @@ public partial class Sale
     [Display(Name = "Cliente")]
     public long ClientID { get; set; }
 
+    [Required(ErrorMessage = "Debes seleccionar un marco")]
+    [Display(Name = "Marco")]
+    public long FrameID { get; set; }
+
     [Required(ErrorMessage = "Debes ingresar una fecha de entrega")]
     [DataType(DataType.Date)]
     [Display(Name = "Fecha de entrega")]
@@ -74,6 +78,8 @@ public partial class Sale
     public virtual Client Client { get; set; } = null!;
 
     public virtual Doctor Doctor { get; set; } = null!;
+
+    public virtual Frame Frame { get; set; } = null!;
 
     public virtual GlassColor GlassColor { get; set; } = null!;
 

@@ -26,4 +26,6 @@ public partial class Frame
     public virtual Brand Brand { get; set; } = null!;
 
     public virtual Material Material { get; set; } = null!;
+
+    public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
 }

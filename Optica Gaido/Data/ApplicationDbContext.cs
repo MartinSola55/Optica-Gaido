@@ -18,6 +18,9 @@ namespace Optica_Gaido.Data
 
             modelBuilder.Entity<SalePaymentMethod>()
                 .HasKey(sp => new { sp.SaleID, sp.PaymentMethodID });
+
+            modelBuilder.Entity<SaleGlassFormat>()
+                .HasKey(sg => new { sg.SaleID, sg.GlassFormatID });
         }
 
         public DbSet<Brand> Brands { get; set; }
@@ -35,5 +38,6 @@ namespace Optica_Gaido.Data
         public DbSet<Sale> Sales { get; set; }
         public DbSet<SalePaymentMethod> SalePaymentMethods { get; set; }
         public DbSet<Seller> Sellers { get; set; }
+        public DbSet<SaleGlassFormat> SaleGlassFormats { get; set; }
     }
 }
