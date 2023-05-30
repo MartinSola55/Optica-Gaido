@@ -19,10 +19,14 @@ namespace Optica_Gaido.Data.Repository
         }
         public IEnumerable<SelectListItem> GetDropDownList()
         {
-            return _db.Materials.Where(x => x.IsActive == true).OrderBy(x => x.Description).Select(i => new SelectListItem() {
+            IEnumerable<SelectListItem> materials = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "", Text = "Seleccione un material", Disabled = true }
+            };
+            return materials.Concat(_db.Materials.Where(x => x.IsActive == true).OrderBy(x => x.Description).Select(i => new SelectListItem() {
                 Text = i.Description,
                 Value = i.ID.ToString(),
-            });
+            }));
         }
 
         public void Update(Material material)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -12,7 +13,6 @@ public partial class Frame
     [Required(ErrorMessage = "Debes ingresar un modelo")]
     [Display(Name = "Modelo")]
     [StringLength(30, MinimumLength = 1, ErrorMessage = "Debes ingresar un modelo de menos de 30 caracteres")]
-    [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s']+$", ErrorMessage = "Ingrese un modelo válido")]
     public string Model { get; set; } = null!;
 
     [Required(ErrorMessage = "Debes ingresar una marca")]

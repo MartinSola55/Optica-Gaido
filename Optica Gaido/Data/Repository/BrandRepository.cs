@@ -18,10 +18,14 @@ namespace Optica_Gaido.Data.Repository
         }
         public IEnumerable<SelectListItem> GetDropDownList()
         {
-            return _db.Brands.Where(x => x.IsActive == true).OrderBy(x => x.Name).Select(i => new SelectListItem() {
+            IEnumerable<SelectListItem> brands = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "", Text = "Seleccione una marca", Disabled = true }
+            };
+            return brands.Concat(_db.Brands.Where(x => x.IsActive == true).OrderBy(x => x.Name).Select(i => new SelectListItem() {
                 Text = i.Name,
                 Value = i.ID.ToString(),
-            });
+            }));
         }
 
         public void Update(Brand brand)

@@ -7,10 +7,10 @@ using Optica_Gaido.Models;
 
 namespace Optica_Gaido.Data.Repository.IRepository
 {
-    public interface IProviderRepository : IRepository<Provider>
+    public interface IFrameRepository : IRepository<Frame>
     {
-        void Update(Provider provider);
+        void Update(Frame provider);
         void SoftDelete(long id);
-        bool IsDuplicated(Provider provider);
+        bool IsDuplicated(Frame provider);
     }
 }

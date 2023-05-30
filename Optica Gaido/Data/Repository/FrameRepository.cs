@@ -10,29 +10,29 @@ using Optica_Gaido.Models;
 
 namespace Optica_Gaido.Data.Repository
 {
-    public class ProviderRepository : Repository<Provider>, IProviderRepository
+    public class FrameRepository : Repository<Frame>, IFrameRepository
     {
         private readonly ApplicationDbContext _db;
 
-        public ProviderRepository (ApplicationDbContext db) : base (db)
+        public FrameRepository (ApplicationDbContext db) : base (db)
         {
             _db = db;
         }
-
-        public void Update(Provider provider)
+        public void Update(Frame frame)
         {
-            var dbObject = _db.Providers.FirstOrDefault(x => x.ID == provider.ID);
+            var dbObject = _db.Frames.FirstOrDefault(x => x.ID == frame.ID);
             if (dbObject != null)
             {
-                dbObject.Name = provider.Name;
-                dbObject.Surname = provider.Surname;
+                dbObject.Model = frame.Model;
+                dbObject.BrandID = frame.BrandID;
+                dbObject.MaterialID = frame.MaterialID;
                 _db.SaveChanges();
             }
         }
 
         public void SoftDelete(long id)
         {
-            var dbObject = _db.Providers.FirstOrDefault(x => x.ID == id);
+            var dbObject = _db.Frames.FirstOrDefault(x => x.ID == id);
             if (dbObject != null)
             {
                 dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
@@ -40,9 +40,9 @@ namespace Optica_Gaido.Data.Repository
             }
         }
 
-        public bool IsDuplicated(Provider provider)
+        public bool IsDuplicated(Frame frame)
         {
-            var dbObject = _db.Providers.FirstOrDefault(x => x.Name.ToLower() == provider.Name.ToLower() && x.Surname.ToLower() == provider.Surname.ToLower() && x.ID != provider.ID);
+            var dbObject = _db.Frames.FirstOrDefault(x => x.Model.ToLower() == frame.Model.ToLower() && x.ID != frame.ID);
             if (dbObject == null) return false;
             return true;
         }
