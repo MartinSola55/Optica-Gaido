@@ -26,6 +26,8 @@ namespace Optica_Gaido.Data.Repository.IRepository
         void Add(T entity);
 
         void Remove(int id);
+        void Remove(short id);
+        void Remove(long id);
 
         void Remove (T entity);
     }

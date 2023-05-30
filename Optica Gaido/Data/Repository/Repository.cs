@@ -65,20 +65,21 @@ namespace Optica_Gaido.Data.Repository
             return query.FirstOrDefault();
         }
 
-        public T GetOne(int id)
-        {
-            return dbSet.Find(id);
-        }
-        public T GetOne(long id)
-        {
-            return dbSet.Find(id);
-        }
-        public T GetOne(short id)
-        {
-            return dbSet.Find(id);
-        }
+        public T GetOne(int id) => dbSet.Find(id);
+        public T GetOne(short id) => dbSet.Find(id);
+        public T GetOne(long id) => dbSet.Find(id);
 
         public void Remove(int id)
+        {
+            T entityToRemove = dbSet.Find(id);
+            this.Remove(entityToRemove);
+        }
+        public void Remove(short id)
+        {
+            T entityToRemove = dbSet.Find(id);
+            this.Remove(entityToRemove);
+        }
+        public void Remove(long id)
         {
             T entityToRemove = dbSet.Find(id);
             this.Remove(entityToRemove);

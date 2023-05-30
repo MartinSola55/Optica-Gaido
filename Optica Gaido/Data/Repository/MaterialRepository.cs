@@ -9,42 +9,42 @@ using Optica_Gaido.Models;
 
 namespace Optica_Gaido.Data.Repository
 {
-    public class HealthInsuranceRepository : Repository<HealthInsurance>, IHealthInsuranceRepository
+    public class MaterialRepository : Repository<Material>, IMaterialRepository
     {
         private readonly ApplicationDbContext _db;
 
-        public HealthInsuranceRepository (ApplicationDbContext db) : base (db)
+        public MaterialRepository (ApplicationDbContext db) : base (db)
         {
             _db = db;
         }
         public IEnumerable<SelectListItem> GetDropDownList()
         {
-            return _db.HealthInsurances.Where(x => x.IsActive == true).OrderBy(x => x.Name).Select(i => new SelectListItem() {
-                Text = i.Name,
+            return _db.Materials.Where(x => x.IsActive == true).OrderBy(x => x.Description).Select(i => new SelectListItem() {
+                Text = i.Description,
                 Value = i.ID.ToString(),
             });
         }
 
-        public void Update(HealthInsurance healthInsurance)
+        public void Update(Material material)
         {
-            var dbObject = _db.HealthInsurances.FirstOrDefault(x => x.ID == healthInsurance.ID);
+            var dbObject = _db.Materials.FirstOrDefault(x => x.ID == material.ID);
             if (dbObject != null)
             {
-                dbObject.Name = healthInsurance.Name;
+                dbObject.Description = material.Description;
                 _db.SaveChanges();
             }
         }
-        
-        public bool IsDuplicated(HealthInsurance healthInsurance)
+
+        public bool IsDuplicated(Material material)
         {
-            var dbObject = _db.HealthInsurances.FirstOrDefault(x => x.Name.ToLower() == healthInsurance.Name.ToLower() && x.ID != healthInsurance.ID);
+            var dbObject = _db.Materials.FirstOrDefault(x => x.Description.ToLower() == material.Description.ToLower() && x.ID != material.ID);
             if (dbObject == null) return false;
             return true;
         }
 
-        public void ChangeState(short id)
+        public void ChangeState(long id)
         {
-            var dbObject = _db.HealthInsurances.FirstOrDefault(x => x.ID == id);
+            var dbObject = _db.Materials.FirstOrDefault(x => x.ID == id);
             if (dbObject != null)
             {
                 dbObject.IsActive = !dbObject.IsActive;

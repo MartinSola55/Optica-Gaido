@@ -10,6 +10,8 @@ namespace Optica_Gaido.Data.Repository.IRepository
         // Agregar los repositorios
         IBrandRepository Brand { get; }
         IHealthInsuranceRepository HealthInsurance { get; }
+        IMaterialRepository Material{ get; }
+        IProviderRepository Provider { get; }
 
         void Save();
     }

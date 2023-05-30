@@ -18,7 +18,7 @@ namespace Optica_Gaido.Data.Repository
         }
         public IEnumerable<SelectListItem> GetDropDownList()
         {
-            return _db.Brands.Where(x => x.IsActive == true).Select(i => new SelectListItem() {
+            return _db.Brands.Where(x => x.IsActive == true).OrderBy(x => x.Name).Select(i => new SelectListItem() {
                 Text = i.Name,
                 Value = i.ID.ToString(),
             });
@@ -36,7 +36,7 @@ namespace Optica_Gaido.Data.Repository
 
         public bool IsDuplicated(Brand brand)
         {
-            var dbObject = _db.HealthInsurances.FirstOrDefault(x => x.Name.ToLower() == brand.Name.ToLower());
+            var dbObject = _db.HealthInsurances.FirstOrDefault(x => x.Name.ToLower() == brand.Name.ToLower() && x.ID != brand.ID);
             if (dbObject == null) return false;
             return true;
         }

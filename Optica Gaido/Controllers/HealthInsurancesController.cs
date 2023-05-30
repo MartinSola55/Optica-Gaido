@@ -135,12 +135,11 @@ namespace Optica_Gaido.Controllers
                 {
                     _workContainer.HealthInsurance.ChangeState(id);
                     _workContainer.Save();
-                    string state = healthInsurance.IsActive ? "alta" : "baja";
                     return Json(new
                     {
                         success = true,
                         data = healthInsurance,
-                        message = "La obra social se dió de " + state + " correctamente",
+                        message = "La obra social se dió de " + (healthInsurance.IsActive ? "alta" : "baja") + " correctamente",
                     });
                 }
                 return BadRequest(new

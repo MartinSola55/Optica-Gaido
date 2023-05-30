@@ -1,20 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Optica_Gaido.Data;
+Ôªøusing Microsoft.AspNetCore.Mvc;
 using Optica_Gaido.Data.Repository.IRepository;
 using Optica_Gaido.Models;
-using Optica_Gaido.Models.ViewModels.Brands;
+using Optica_Gaido.Models.ViewModels.Providers;
 
 namespace Optica_Gaido.Controllers
 {
-    public class BrandsController : Controller
+    public class ProvidersController : Controller
     {
         private readonly IWorkContainer _workContainer;
 
-        public BrandsController(IWorkContainer workContainer)
+        public ProvidersController(IWorkContainer workContainer)
         {
             _workContainer = workContainer;
         }
@@ -24,8 +19,8 @@ namespace Optica_Gaido.Controllers
         {
             IndexViewModel viewModel = new()
             {
-                Brands = _workContainer.Brand.GetAll(),
-                CreateViewModel = new Brand()
+                Providers = _workContainer.Provider.GetAll(),
+                CreateViewModel = new Provider()
             };
             return View(viewModel);
         }
@@ -33,28 +28,28 @@ namespace Optica_Gaido.Controllers
         [HttpPost]
         [ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(IndexViewModel brand)
+        public IActionResult Create(IndexViewModel provider)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (_workContainer.Brand.IsDuplicated(brand.CreateViewModel))
+                    if (_workContainer.Provider.IsDuplicated(provider.CreateViewModel))
                     {
                         return BadRequest(new
                         {
                             success = false,
-                            title = "Error al agregar la marca",
-                            message = "Ya existe otra con el mismo nombre",
+                            title = "Error al agregar el proveedor",
+                            message = "Ya existe otro con el mismo nombre y apellido",
                         });
                     }
-                    _workContainer.Brand.Add(brand.CreateViewModel);
+                    _workContainer.Provider.Add(provider.CreateViewModel);
                     _workContainer.Save();
                     return Json(new
                     {
                         success = true,
-                        data = brand.CreateViewModel,
-                        message = "La marca se agregÛ correctamente",
+                        data = provider.CreateViewModel,
+                        message = "El provider se agreg√≥ correctamente",
                     });
                 }
                 catch (Exception e)
@@ -62,8 +57,8 @@ namespace Optica_Gaido.Controllers
                     return BadRequest(new
                     {
                         success = false,
-                        title = "Error al agregar la marca",
-                        message = "Intente nuevamente o comunÌquese para soporte",
+                        title = "Error al agregar el proveedor",
+                        message = "Intente nuevamente o comun√≠quese para soporte",
                         error = e.Message,
                     });
                 }
@@ -71,36 +66,36 @@ namespace Optica_Gaido.Controllers
             return BadRequest(new
             {
                 success = false,
-                title = "Error al agregar la marca",
-                message = "Alguno de los campos ingresados no es v·lido",
+                title = "Error al agregar el proveedor",
+                message = "Alguno de los campos ingresados no es v√°lido",
             });
         }
 
         [HttpPost]
         [ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(IndexViewModel brand)
+        public IActionResult Edit(IndexViewModel provider)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (_workContainer.Brand.IsDuplicated(brand.CreateViewModel))
+                    if (_workContainer.Provider.IsDuplicated(provider.CreateViewModel))
                     {
                         return BadRequest(new
                         {
                             success = false,
-                            title = "Error al editar la marca",
-                            message = "Ya existe otra con el mismo nombre",
+                            title = "Error al editar el proveedor",
+                            message = "Ya existe otro con el mismo nombre y apellido",
                         });
                     }
-                    _workContainer.Brand.Update(brand.CreateViewModel);
+                    _workContainer.Provider.Update(provider.CreateViewModel);
                     _workContainer.Save();
                     return Json(new
                     {
                         success = true,
-                        data = brand.CreateViewModel,
-                        message = "La marca se editÛ correctamente",
+                        data = provider.CreateViewModel,
+                        message = "El proveedor se edit√≥ correctamente",
                     });
                 }
                 catch (Exception e)
@@ -108,8 +103,8 @@ namespace Optica_Gaido.Controllers
                     return BadRequest(new
                     {
                         success = false,
-                        title = "Error al editar la marca",
-                        message = "Intente nuevamente o comunÌquese para soporte",
+                        title = "Error al editar el proveedor",
+                        message = "Intente nuevamente o comun√≠quese para soporte",
                         error = e.Message,
                     });
                 }
@@ -117,34 +112,34 @@ namespace Optica_Gaido.Controllers
             return BadRequest(new
             {
                 success = false,
-                title = "Error al editar la marca",
-                message = "Alguno de los campos ingresados no es v·lido",
+                title = "Error al editar el proveedor",
+                message = "Alguno de los campos ingresados no es v√°lido",
             });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ChangeState(long id)
+        public IActionResult SoftDelete(long id)
         {
             try
             {
-                var brand = _workContainer.Brand.GetOne(id);
-                if (brand != null)
+                var provider = _workContainer.Provider.GetOne(id);
+                if (provider != null)
                 {
-                    _workContainer.Brand.ChangeState(id);
+                    _workContainer.Provider.SoftDelete(id);
                     _workContainer.Save();
                     return Json(new
                     {
                         success = true,
-                        data = brand,
-                        message = "La marca se diÛ de " + (brand.IsActive ? "alta" : "baja") + " correctamente",
+                        data = id,
+                        message = "El proveedor se elimin√≥ correctamente",
                     });
                 }
                 return BadRequest(new
                 {
                     success = false,
-                    title = "Error al cambiar el estado",
-                    message = "No se encontrÛ la marca solicitada",
+                    title = "Error al eliminar",
+                    message = "No se encontr√≥ el proveedor solicitado",
                 });
             }
             catch (Exception e)
@@ -152,8 +147,8 @@ namespace Optica_Gaido.Controllers
                 return BadRequest(new
                 {
                     success = false,
-                    title = "Error al cambiar el estado",
-                    message = "Intente nuevamente o comunÌquese para soporte",
+                    title = "Error al eliminarr",
+                    message = "Intente nuevamente o comun√≠quese para soporte",
                     error = e.Message,
                 });
             }
@@ -163,7 +158,7 @@ namespace Optica_Gaido.Controllers
         [HttpGet]
         public IActionResult GetDropDownList()
         {
-            return Json(new { data = _workContainer.Brand.GetDropDownList() });
+            return Json(new { data = _workContainer.Provider.GetDropDownList() });
         }
         #endregion
     }
