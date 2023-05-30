@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Optica_Gaido.Data.Repository.IRepository;
 using Optica_Gaido.Models;
@@ -21,7 +23,7 @@ namespace Optica_Gaido.Controllers
         {
             IndexViewModel viewModel = new()
             {
-                Frames = _workContainer.Frame.GetAll(),
+                Frames = _workContainer.Frame.GetAll(includeProperties: "Brand, Material"),
                 Brands = _workContainer.Brand.GetDropDownList(),
                 Materials = _workContainer.Material.GetDropDownList(),
                 CreateViewModel = new Frame()

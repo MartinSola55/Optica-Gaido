@@ -19,5 +19,5 @@ public partial class Material
     [Display(Name = "Habilitado")]
     public bool IsActive { get; set; } = true;
 
-    public virtual ICollection<Frame> Frames { get; set; } = new List<Frame>();
+    // public virtual ICollection<Frame> Frames { get; set; } = new List<Frame>();
 }
