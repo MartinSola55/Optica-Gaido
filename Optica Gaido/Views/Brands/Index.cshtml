@@ -1,7 +1,7 @@
-@model Optica_Gaido.Models.ViewModels.HealthInsurances.IndexViewModel
+@model Optica_Gaido.Models.ViewModels.Brands.IndexViewModel
 
 @{
-    ViewData["Title"] = "Obras sociales";
+    ViewData["Title"] = "Marcas";
 }
 
 <!-- Data table -->
@@ -16,10 +16,10 @@
     <!-- ============================================================== -->
     <div class="row page-titles">
         <div class="col-md-5 col-8 align-self-center">
-            <h3 class="text-themecolor m-b-0 m-t-0">Obras sociales</h3>
+            <h3 class="text-themecolor m-b-0 m-t-0">Marcas</h3>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" >Inicio</a></li>
-                <li class="breadcrumb-item active">Obras Sociales</li>
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
+                <li class="breadcrumb-item active">Marcas</li>
             </ol>
         </div>
     </div>
@@ -29,22 +29,21 @@
     <!-- ============================================================== -->
     <!-- Start Page Content -->
     <!-- ============================================================== -->
-
     <!-- Modal -->
     <div id="modalCreate" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
         <div id="formContainer" class="modal-dialog">
-            <form role="form" class="" method="POST" asp-area="" asp-controller="HealthInsurances" asp-action="Create" id="form-create" autocomplete="off">
+            <form role="form" class="" method="POST" asp-area="" asp-controller="Brands" asp-action="Create" id="form-create" autocomplete="off">
                 <input type="hidden" name="CreateViewModel.ID" value="" />
                 @Html.AntiForgeryToken()
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 id="modalTitle" class="modal-title"></h4>
-                        <button type="button" class="close" id="btnCloseModalCreate" data-dismiss="modal" aria-hidden="true">Ã—</button>
+                        <button type="button" class="close" id="btnCloseModalCreate" data-dismiss="modal" aria-hidden="true">×</button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-lg-12">
-                                <div class="form-column">                                    
+                                <div class="form-column">
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <div class="col-12 mb-3">
                                         <label asp-for="CreateViewModel.Name" class="mb-0"></label>
@@ -64,52 +63,53 @@
         </div>
     </div>
     <!-- End Modal -->
-    
+
     <div class="row">
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-body">
                     <div class="d-flex flex-row justify-content-between">
-                        <h2 class="card-title">Listado de obras sociales</h2>
-                        <button id="btnAddHI" type="button" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal" data-target="#modalCreate">Agregar obra social</button>
+                        <h2 class="card-title">Listado de marcas</h2>
+                        <button id="btnAdd" type="button" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal" data-target="#modalCreate">Agregar marca</button>
                     </div>
                     <div class="table-responsive m-t-10">
-                        <table id="HealthInsurancesTable" class="table table-bordered table-striped">
+                        <table id="DataTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th class="col-8">Nombre</th>
                                     <th class="col-2">Habilitada</th>
-                                    <th class="col-2">AcciÃ³n</th>
+                                    <th class="col-2">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="table_body">
-                                @foreach (var hi in Model.HealthInsurances)
+                                @foreach (var item in Model.Brands)
                                 {
-                                    <tr data-id="@hi.ID">
+                                    <tr data-id="@item.ID">
                                         <td>
-                                            @Html.DisplayFor(c => hi.Name)
+                                            @Html.DisplayFor(c => item.Name)
                                         </td>
                                         <td class="text-center">
                                             @{
-                                                if (hi.IsActive)
+                                                if (item.IsActive)
                                                 {
                                                     <i class="bi bi-check2" style="font-size: 1.5rem"></i>
-                                                } else
+                                                }
+                                                else
                                                 {
                                                     <i class="bi bi-x-lg" style="font-size: 1.3rem"></i>
                                                 }
                                             }
                                         </td>
                                         <td class='d-flex flex-row justify-content-center'>
-                                            <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='editHI(@Json.Serialize(hi))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
-                                            <button type='button' class='btn @(hi.IsActive ? "btn-danger" : "btn-info") btn-rounded btn-sm ml-2' onclick='changeState(@hi.ID, "@hi.IsActive")'><i class='bi @(hi.IsActive ? "bi-toggle-on" : "bi-toggle-off")'></i></button>
+                                            <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                                            <button type='button' class='btn @(item.IsActive ? "btn-danger" : "btn-info") btn-rounded btn-sm ml-2' onclick='changeState(@item.ID, "@item.IsActive")'><i class='bi @(item.IsActive ? "bi-toggle-on" : "bi-toggle-off")'></i></button>
                                         </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
-                    <form id="form-state" method="POST" asp-area="" asp-controller="HealthInsurances" asp-action="ChangeState">
+                    <form id="form-state" method="POST" asp-area="" asp-controller="Brands" asp-action="ChangeState">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="">
                     </form>
@@ -120,38 +120,38 @@
 </div>
 
 <script>
-    function fillTable(hi) {
+    function fillTable(item) {
         let active = "";
         let btn = "";
-        if (hi.isActive) {
+        if (item.isActive) {
             active = `<i class="bi bi-check2" style="font-size: 1.5rem"></i>`;
-            btn = `<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='changeState(${hi.id}, "${hi.isActive}")'><i class='bi bi-toggle-on'></i></button>`;
+            btn = `<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-on'></i></button>`;
         } else {
             active = `<i class="bi bi-x-lg" style="font-size: 1.3rem"></i>`;
-            btn = `<button type='button' class='btn btn-info btn-rounded btn-sm ml-2' onclick='changeState(${hi.id}, "${hi.isActive}")'><i class='bi bi-toggle-off'></i></button>`;
+            btn = `<button type='button' class='btn btn-info btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-off'></i></button>`;
         }
         let content = `
-        <tr data-id='${hi.id}'>
-            <td>${hi.name}</td>
-            <td class='text-center'>${active}</td>
-            <td class='d-flex flex-row justify-content-center'>
-                <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='editHI(${hi})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
-                ${btn}
-            </td>
-        </tr>`;
-        $('#HealthInsurancesTable').DataTable().row.add($(content)).draw();
+            <tr data-id='${item.id}'>
+                <td>${item.name}</td>
+                <td class='text-center'>${active}</td>
+                <td class='d-flex flex-row justify-content-center'>
+                    <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${item})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                    ${btn}
+                </td>
+            </tr>`;
+        $('#DataTable').DataTable().row.add($(content)).draw();
     }
 
     function removeFromTable(id) {
-        $('#HealthInsurancesTable').DataTable().row(`[data-id="${id}"]`).remove().draw();
+        $('#DataTable').DataTable().row(`[data-id="${id}"]`).remove().draw();
     }
 
     function changeState(id, isActive) {
         let title = "";
         if (isActive === "True" || isActive === "true") {
-            title = "Â¿Seguro deseas dar de baja esta obra social?";
+            title = "¿Seguro deseas dar de baja esta marca?";
         } else {
-            title = "Â¿Seguro deseas dar de alta esta obra social?";
+            title = "¿Seguro deseas dar de alta esta marca?";
         }
         Swal.fire({
             title: title,
@@ -164,12 +164,12 @@
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
-        .then((result) => {
-            if (result.isConfirmed) {
-                $("#form-state input[name='id']").val(id);
-                sendForm("state");
-            }
-        });
+            .then((result) => {
+                if (result.isConfirmed) {
+                    $("#form-state input[name='id']").val(id);
+                    sendForm("state");
+                }
+            });
     }
 
     function sendForm(action) {
@@ -181,9 +181,9 @@
             // Enviar solicitud AJAX
             $.ajax({
                 url: $(form).attr('action'), // Utiliza la ruta del formulario
-                method: $(form).attr('method'), // Utiliza el mÃ©todo del formulario
+                method: $(form).attr('method'), // Utiliza el método del formulario
                 data: $(form).serialize(), // Utiliza los datos del formulario
-                success: function(response) {
+                success: function (response) {
                     $("#btnCloseModalCreate").click();
                     Swal.fire({
                         icon: 'success',
@@ -197,7 +197,7 @@
                         fillTable(response.data);
                     }
                 },
-                error: function(errorThrown) {
+                error: function (errorThrown) {
                     Swal.fire({
                         icon: 'error',
                         title: errorThrown.responseJSON.title,
@@ -205,15 +205,15 @@
                         confirmButtonColor: '#1e88e5',
                     });
                 }
-            });   
+            });
         }
     }
 </script>
 
 <script>
-    $("#btnAddHI").on("click", function () {
-        $("#modalTitle").text("Agregar obra social");
-        $("#formContainer form").attr("action", "/HealthInsurances/Create");
+    $("#btnAdd").on("click", function () {
+        $("#modalTitle").text("Agregar marca");
+        $("#formContainer form").attr("action", "/Brands/Create");
         $("#formContainer form").attr("id", "form-create");
         $("#formContainer form input:not([type='hidden']").val("");
         $("input[name='CreateViewModel.ID']").prop("disabled", true);
@@ -224,14 +224,14 @@
             sendForm("create");
         })
     });
-    
-    function editHI(entity) {
+
+    function edit(entity) {
         $("#formContainer form input:not([type='hidden']").val("");
         $("input[name='CreateViewModel.ID']").val(entity.id);
         $("input[name='CreateViewModel.ID']").prop("disabled", false);
 
-        $("#modalTitle").text("Editar obra social");
-        $("#formContainer form").attr("action", "/HealthInsurances/Edit");
+        $("#modalTitle").text("Editar marca");
+        $("#formContainer form").attr("action", "/Brands/Edit");
         $("#formContainer form").attr("id", "form-edit");
         $("#btnSendModal").text("Confirmar");
 
@@ -243,17 +243,17 @@
         })
     }
 
-    $('#HealthInsurancesTable').DataTable({
+    $('#DataTable').DataTable({
         "language": {
-            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ obras sociales",
-            "sInfoEmpty": "Mostrando 0 a 0 de 0 obras sociales",
-            "sInfoFiltered": "(filtrado de _MAX_ obras sociales en total)",
-            "emptyTable": 'No hay obras sociales que coincidan con la bÃºsqueda',
-            "sLengthMenu": "Mostrar _MENU_ obras sociales",
+            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ marcas",
+            "sInfoEmpty": "Mostrando 0 a 0 de 0 marcas",
+            "sInfoFiltered": "(filtrado de _MAX_ marcas en total)",
+            "emptyTable": 'No hay marcas que coincidan con la búsqueda',
+            "sLengthMenu": "Mostrar _MENU_ marcas",
             "sSearch": "Buscar:",
             "oPaginate": {
                 "sFirst": "Primero",
-                "sLast": "Ãšltimo",
+                "sLast": "Último",
                 "sNext": "Siguiente",
                 "sPrevious": "Anterior",
             },

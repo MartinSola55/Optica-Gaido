@@ -12,21 +12,19 @@ using Optica_Gaido.Models.ViewModels.HealthInsurances;
 
 namespace Optica_Gaido.Controllers
 {
-    public class HealthInsurances : Controller
+    public class HealthInsurancesController : Controller
     {
         private readonly IWorkContainer _workContainer;
-        private readonly ApplicationDbContext _context;
 
-        public HealthInsurances(IWorkContainer workContainer, ApplicationDbContext context)
+        public HealthInsurancesController(IWorkContainer workContainer)
         {
-            _context = context;
             _workContainer = workContainer;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            IndexViewModel viewModel = new IndexViewModel
+            IndexViewModel viewModel = new()
             {
                 HealthInsurances = _workContainer.HealthInsurance.GetAll(),
                 CreateViewModel = new HealthInsurance()

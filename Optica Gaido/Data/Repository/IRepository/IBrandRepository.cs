@@ -9,9 +9,10 @@ namespace Optica_Gaido.Data.Repository.IRepository
 {
     public interface IBrandRepository : IRepository<Brand>
     {
-        IEnumerable<SelectListItem> GetDropDownBrands();
+        IEnumerable<SelectListItem> GetDropDownList();
 
         void Update(Brand brand);
+        bool IsDuplicated(Brand brand);
         void ChangeState(long id);
     }
 }
