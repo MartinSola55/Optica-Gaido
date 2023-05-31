@@ -85,9 +85,7 @@
                                 @foreach (var item in Model.Materials)
                                 {
                                     <tr data-id="@item.ID">
-                                        <td>
-                                            @Html.DisplayFor(c => item.Description)
-                                        </td>
+                                        <td>@Html.DisplayFor(c => item.Description)</td>
                                         <td class="text-center">
                                             @{
                                                 if (item.IsActive)
@@ -131,14 +129,14 @@
             btn = `<button type='button' class='btn btn-info btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-off'></i></button>`;
         }
         let content = `
-                <tr data-id='${item.id}'>
-                    <td>${item.description}</td>
-                    <td class='text-center'>${active}</td>
-                    <td class='d-flex flex-row justify-content-center'>
-                        <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
-                        ${btn}
-                    </td>
-                </tr>`;
+            <tr data-id='${item.id}'>
+                <td>${item.description}</td>
+                <td class='text-center'>${active}</td>
+                <td class='d-flex flex-row justify-content-center'>
+                    <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                    ${btn}
+                </td>
+            </tr>`;
         $('#DataTable').DataTable().row.add($(content)).draw();
     }
 

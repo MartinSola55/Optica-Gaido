@@ -19,5 +19,5 @@ public partial class HealthInsurance
     [Display(Name = "Habilitada")]
     public bool IsActive { get; set; } = true;
 
-    public virtual ICollection<Client> Clients { get; set; } = new List<Client>();
+    //public virtual ICollection<Client> Clients { get; set; } = new List<Client>();
 }

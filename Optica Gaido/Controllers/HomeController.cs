@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Optica_Gaido.Data.Repository.IRepository;
 using Optica_Gaido.Models;
+using Optica_Gaido.Models.ViewModels.Home;
 using System.Diagnostics;
 
 namespace Optica_Gaido.Controllers
@@ -8,16 +10,21 @@ namespace Optica_Gaido.Controllers
     // [Authorize]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IWorkContainer _workContainer;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IWorkContainer workContainer)
         {
-            _logger = logger;
+            _workContainer = workContainer;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            IndexViewModel viewModel = new()
+            {
+                Clients = _workContainer.Client.GetAll(includeProperties: "HealthInsurance"),
+            };
+            return View(viewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

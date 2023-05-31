@@ -1,168 +1,180 @@
-﻿@{
+﻿@model Optica_Gaido.Models.ViewModels.Home.IndexViewModel
+
+@{
     ViewData["Title"] = "Inicio";
 }
 
 <link href="~/lib/css-chart/css-chart.css" rel="stylesheet">
-    <!--This page css - Morris CSS -->
-    <link href="~/lib/c3-master/c3.min.css" rel="stylesheet">
-    <!-- Vector CSS -->
-    <link href="~/lib/vectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet">
+<!--This page css - Morris CSS -->
+<link href="~/lib/c3-master/c3.min.css" rel="stylesheet">
+<!-- Vector CSS -->
+<link href="~/lib/vectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet">
 
-    <!--c3 JavaScript -->
-    <script src="~/lib/d3/d3.min.js"></script>
-    <script src="~/lib/c3-master/c3.min.js"></script>
-    <!-- Vector map JavaScript -->
-    <script src="~/lib/vectormap/jquery-jvectormap-2.0.2.min.js"></script>
-    <script src="~/lib/vectormap/jquery-jvectormap-us-aea-en.js"></script>
+<!-- Data table -->
+<link href="~/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
+
+<!-- This is data table -->
+<script src="~/lib/datatables/datatables.min.js"></script>
+
+<!--c3 JavaScript -->
+<script src="~/lib/d3/d3.min.js"></script>
+<script src="~/lib/c3-master/c3.min.js"></script>
+<!-- Vector map JavaScript -->
+<script src="~/lib/vectormap/jquery-jvectormap-2.0.2.min.js"></script>
+<script src="~/lib/vectormap/jquery-jvectormap-us-aea-en.js"></script>
 
 
-    <div class="container-fluid">
-        <!-- ============================================================== -->
-        <!-- Bread crumb and right sidebar toggle -->
-        <!-- ============================================================== -->
-        <div class="row page-titles">
-            <div class="col-md-5 col-8 align-self-center">
-                <h3 class="text-themecolor m-b-0 m-t-0">Inicio</h3>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item active">Inicio</li>
-                </ol>
+<div class="container-fluid">
+    <!-- ============================================================== -->
+    <!-- Bread crumb and right sidebar toggle -->
+    <!-- ============================================================== -->
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Inicio</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active">Inicio</li>
+            </ol>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Bread crumb and right sidebar toggle -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Start Page Content -->
+    <!-- ============================================================== -->
+    <div class="row">
+        <!-- Column -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="round round-lg align-self-center round-primary"><i class="mdi mdi-currency-usd"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h3 class="m-b-0 font-light">$0</h3>
+                            <h5 class="text-muted m-b-0">Recaudado en el mes</h5>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <!-- ============================================================== -->
-        <!-- End Bread crumb and right sidebar toggle -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
-        <!-- Start Page Content -->
-        <!-- ============================================================== -->
-        <div class="row">
-            <!-- Column -->
-            <div class="col-lg-3 col-md-6">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <div class="d-flex flex-row">
-                            <div class="round round-lg align-self-center round-primary"><i class="mdi mdi-currency-usd"></i></div>
-                            <div class="m-l-10 align-self-center">
-                                <h3 class="m-b-0 font-light">$0</h3>
-                                <h5 class="text-muted m-b-0">Recaudado en el día</h5>
-                            </div>
+        <!-- Column -->
+        <!-- Column -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                    <div class="round round-lg align-self-center round-danger"><i class="mdi mdi-cash-multiple"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h3 class="m-b-0 font-lgiht">$0</h3>
+                            <h5 class="text-muted m-b-0">Gastos del mes</h5>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Column -->
-            <!-- Column -->
-            <div class="col-lg-3 col-md-6">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <div class="d-flex flex-row">
-                            <div class="round round-lg align-self-center round-danger"><i class="mdi mdi-shopping"></i></div>
-                            <div class="m-l-10 align-self-center">
-                                <h3 class="m-b-0 font-lgiht">$0</h3>
-                                <h5 class="text-muted m-b-0">Gastos del día</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Column -->
-            <!-- Column -->
-            <div class="col-lg-3 col-md-6">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <div class="d-flex flex-row">
-                            <div class="round round-lg align-self-center round-success"><i class="mdi mdi-checkbox-marked-circle-outline"></i></div>
-                            <div class="m-l-10 align-self-center">
-                                <h3 class="m-b-0 font-lgiht">0</h3>
-                                <h5 class="text-muted m-b-0">Repartos completados</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Column -->
-            <!-- Column -->
-            <div class="col-lg-3 col-md-6">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <div class="d-flex flex-row">
-                            <div class="round round-lg align-self-center round-warning"><i class="mdi mdi-clock-fast"></i></div>
-                            <div class="m-l-10 align-self-center">
-                                <h3 class="m-b-0 font-lgiht">0</h3>
-                                <h5 class="text-muted m-b-0">Repartos en curso</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Column -->
         </div>
-
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <h4 class="card-title">Repartos de hoy</h4>
-                        <div class="table-responsive m-t-20">
-                            <table class="table stylish-table">
-                                <thead>
-                                    <tr>
-                                        <th colspan="2">Nombre</th>
-                                        <th>Envíos completados</th>
-                                        <th>Estado</th>
-                                        <th>Recaudado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @* @foreach ($routes as $route)
-                                        <tr class="clickable" data-url="/route/details" data-id="{{ $route->id }}">
-                                            @php
-                                            $i++;
-                                            $names = explode(" ", $route->User->name);
-                                            $initials = '';
-                                            foreach ($names as $name) {
-                                                $initials .= strtoupper(substr($name, 0, 1));
-                                            }
-                                            @endphp
-                                            <td style="width:50px;"><span class="round">{{ $initials }}</span></td>
-                                            <td>
-                                            @if ($route->User->truck_number !== null)
-                                                <h6>{{ $route->User->name }}</h6><small class="text-muted">Camión {{ $route->User->truck_number }}</small>
-                                            @else
-                                                <h6>{{ $route->User->name }}</h6><small class="text-muted">Sin camión asignado</small>
-                                            @endif
-                                            </td>
-                                            <td>{{ $route->Info()['completed_carts'] }}/{{ $route->Info()['total_carts'] }}</td>
-                                            @if ($route->Info()['state'] === "En depósito")
-                                                <td><span class="label label-danger">{{ $route->Info()['state'] }}</span></td>
-                                            @elseif ($route->Info()['state'] === "En reparto")
-                                                <td><span class="label label-warning">{{ $route->Info()['state'] }}</span></td>
-                                            @else
-                                                <td><span class="label label-success">{{ $route->Info()['state'] }}</span></td>
-                                            @endif
-                                            <td>${{ $route->Info()['total_collected'] }}</td>
-                                        </tr>
-                                    @endforeach *@
-                                </tbody>
-                            </table>
+        <!-- Column -->
+        <!-- Column -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="round round-lg align-self-center round-warning"><i class="mdi mdi-clock-fast"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h3 class="m-b-0 font-lgiht">$0</h3>
+                            <h5 class="text-muted m-b-0">Deudas con proveedores</h5>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Column -->
+        <!-- Column -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="round round-lg align-self-center round-success"><i class="mdi mdi-shopping"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h3 class="m-b-0 font-lgiht">0</h3>
+                            <h5 class="text-muted m-b-0">Cantidad de ventas</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Column -->
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h4 class="card-title">Nueva venta</h4>
+                    <h5 class="card-subtitle">@DateTime.UtcNow.AddHours(-3).ToString("dd/MM/yyyy")</h5>
+                    <div class="table-responsive m-t-20">
+                        <table class="table stylish-table" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th class="col-1">Nombre</th>
+                                    <th class="col-4"></th>
+                                    <th class="col-3">Obra Social</th>
+                                    <th class="col-2">Deuda</th>
+                                    <th class="col-2 text-center">Seleccionar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var item in Model.Clients)
+                            {
+                                <tr class="clickable" data-url="/Sale/New" data-id="@item.ID">
+                                    <td><span class="round">@Html.DisplayFor(c => item.Name[0])@Html.DisplayFor(c => item.Surname[0])</span></td>
+                                    <td>
+                                        <h6>@Html.DisplayFor(c => item.Surname), @Html.DisplayFor(c => item.Name)</h6><small class="text-muted">Teléfono @Html.DisplayFor(c => item.Phone)</small>
+                                    </td>
+                                    <td>@(item.HealthInsuranceID != null ? Html.DisplayFor(c => item.HealthInsurance.Name) : "-")</td>
+                                    @switch (Math.Sign(item.Debt))
+                                    {
+                                        case 1:
+                                            <td>$@Html.DisplayFor(c => item.Debt)</td>
+                                            break;
+                                        case -1:
+                                            <td>A favor $@((-item.Debt).ToString("0.00"))</td>
+                                            break;
+                                        case 0:
+                                            <td>$@Html.DisplayFor(c => item.Debt)</td>
+                                            break;
+                                        default:
+                                            <td>-</td>
+                                            break;
+                                    }
+                                    <td class='d-flex flex-row justify-content-center'>
+                                        <a type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' asp-area="" asp-controller="Sale" asp-action="New" asp-route-id="@item.ID"><i class="bi bi-check"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <style>
-        .clickable {
-            cursor: pointer;
-        }
-    </style>
-
-    <script>
-        $(document).ready(function() {
-            $('.clickable').click(function() {
-                let url = $(this).data('url');
-                let id = $(this).data('id');
-                window.location.href = url + "/" + id;
-            });
-        });
-    </script>
+<script>
+$('#dataTable').DataTable({
+    "language": {
+        "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ clientes",
+        "sInfoEmpty": "Mostrando 0 a 0 de 0 clientes",
+        "sInfoFiltered": "(filtrado de _MAX_ clientes en total)",
+        "emptyTable": 'No hay clientes que coincidan con la búsqueda',
+        "sLengthMenu": "Mostrar _MENU_ clientes",
+        "sSearch": "Buscar:",
+        "oPaginate": {
+            "sFirst": "Primero",
+            "sLast": "Último",
+            "sNext": "Siguiente",
+            "sPrevious": "Anterior",
+        },
+    },
+});
+</script>

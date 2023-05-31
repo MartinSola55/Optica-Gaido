@@ -224,8 +224,9 @@
         $("#formContainer form").attr("id", "form-edit");
         $("#btnSendModal").text("Confirmar");
 
-        $("input[name='CreateViewModel.Name']").val(entity.name);
-        $("input[name='CreateViewModel.Surname']").val(entity.surname);
+        $("input[name='CreateViewModel.Model']").val(entity.model);
+        $("select[name='CreateViewModel.BrandID']").val(entity.brand.id);
+        $("select[name='CreateViewModel.MaterialID']").val(entity.material.id);
 
         $("#form-edit").on("submit", function (e) {
             e.preventDefault();

@@ -1,7 +1,7 @@
-﻿@model Optica_Gaido.Models.ViewModels.Providers.IndexViewModel
+﻿@model Optica_Gaido.Models.ViewModels.Clients.IndexViewModel
 
 @{
-    ViewData["Title"] = "Proveedores";
+    ViewData["Title"] = "Clientes";
 }
 
 <!-- Data table -->
@@ -16,10 +16,10 @@
     <!-- ============================================================== -->
     <div class="row page-titles">
         <div class="col-md-5 col-8 align-self-center">
-            <h3 class="text-themecolor m-b-0 m-t-0">Proveedores</h3>
+            <h3 class="text-themecolor m-b-0 m-t-0">Clientes</h3>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
-                <li class="breadcrumb-item active">Proveedores</li>
+                <li class="breadcrumb-item active">Clientes</li>
             </ol>
         </div>
     </div>
@@ -32,7 +32,7 @@
     <!-- Modal -->
     <div id="modalCreate" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
         <div id="formContainer" class="modal-dialog">
-            <form role="form" class="" method="POST" asp-area="" asp-controller="Providers" asp-action="Create" id="form-create" autocomplete="off">
+            <form role="form" class="" method="POST" asp-area="" asp-controller="Clients" asp-action="Create" id="form-create" autocomplete="off">
                 <input type="hidden" name="CreateViewModel.ID" value="" />
                 @Html.AntiForgeryToken()
                 <div class="modal-content">
@@ -55,6 +55,25 @@
                                         <input asp-for="CreateViewModel.Surname" class="form-control" required />
                                         <span asp-validation-for="CreateViewModel.Surname" class="text-danger"></span>
                                     </div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="CreateViewModel.Adress" class="mb-0"></label>
+                                        <input asp-for="CreateViewModel.Adress" class="form-control" required />
+                                        <span asp-validation-for="CreateViewModel.Adress" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="CreateViewModel.Phone" class="mb-0"></label>
+                                        <input asp-for="CreateViewModel.Phone" class="form-control" type="tel" required />
+                                        <span asp-validation-for="CreateViewModel.Phone" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="CreateViewModel.Debt" class="mb-0"></label>
+                                        <input asp-for="CreateViewModel.Debt" class="form-control" type="number" required />
+                                        <span asp-validation-for="CreateViewModel.Debt" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="CreateViewModel.HealthInsuranceID" class="mb-0"></label>
+                                        @Html.DropDownListFor(x => x.CreateViewModel.HealthInsuranceID, Model.HealthInsurances, null, new { @class = "form-control" })
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -74,32 +93,53 @@
             <div class="card shadow">
                 <div class="card-body">
                     <div class="d-flex flex-row justify-content-between">
-                        <h2 class="card-title">Listado de proveedores</h2>
-                        <button id="btnAdd" type="button" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal" data-target="#modalCreate">Agregar proveedor</button>
+                        <h2 class="card-title">Listado de clientes</h2>
+                        <button id="btnAdd" type="button" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal" data-target="#modalCreate">Agregar client</button>
                     </div>
                     <div class="table-responsive m-t-10">
                         <table id="DataTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th class="col-10">Nombre</th>
-                                    <th class="col-2">Acción</th>
+                                    <th class="col-2">Nombre</th>
+                                    <th class="col-2">Teléfono</th>
+                                    <th class="col-3">Dirección</th>
+                                    <th class="col-1">Deuda</th>
+                                    <th class="col-2">Obra Social</th>
+                                    <th class="col-1">Habilitada</th>
+                                    <th class="col-1">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="table_body">
-                                @foreach (var item in Model.Providers)
+                                @foreach (var item in Model.Clients)
                                 {
                                     <tr data-id="@item.ID">
                                         <td>@Html.DisplayFor(c => item.Surname), @Html.DisplayFor(c => item.Name)</td>
+                                        <td>@Html.DisplayFor(c => item.Phone)</td>
+                                        <td>@Html.DisplayFor(c => item.Adress)</td>
+                                        <td>$@Html.DisplayFor(c => item.Debt)</td>
+                                        <td>@(item.HealthInsuranceID != null ? Html.DisplayFor(c => item.HealthInsurance.Name) : "-")</td>
+                                        <td class="text-center">
+                                            @{
+                                                if (item.IsActive)
+                                                {
+                                                    <i class="bi bi-check2" style="font-size: 1.5rem"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-x-lg" style="font-size: 1.3rem"></i>
+                                                }
+                                            }
+                                        </td>
                                         <td class='d-flex flex-row justify-content-center'>
                                             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
-                                            <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(@item.ID)'><i class='bi bi-trash3'></i></button>
+                                            <button type='button' class='btn @(item.IsActive ? "btn-danger" : "btn-info") btn-rounded btn-sm ml-2' onclick='changeState(@item.ID, "@item.IsActive")'><i class='bi @(item.IsActive ? "bi-toggle-on" : "bi-toggle-off")'></i></button>
                                         </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
-                    <form id="form-delete" method="POST" asp-area="" asp-controller="Providers" asp-action="SoftDelete">
+                    <form id="form-state" method="POST" asp-area="" asp-controller="Clients" asp-action="ChangeState">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="">
                     </form>
@@ -111,14 +151,31 @@
 
 <script>
     function fillTable(item) {
+        let active = "";
+        let btn = "";
+        let HI = "-";
+        if (item.isActive) {
+            active = `<i class="bi bi-check2" style="font-size: 1.5rem"></i>`;
+            btn = `<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-on'></i></button>`;
+        } else {
+            active = `<i class="bi bi-x-lg" style="font-size: 1.3rem"></i>`;
+            btn = `<button type='button' class='btn btn-info btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-off'></i></button>`;
+        }
+        if (item.healthInsuranceID != null)
+            HI = item.healthInsurance.name;
         let content = `
-            <tr data-id='${item.id}'>
-                <td>${item.surname}, ${item.name}</td>
-                <td class='d-flex flex-row justify-content-center'>
-                    <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
-                    <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(${item.id})'><i class='bi bi-trash3'></i></button>
-                </td>
-            </tr>`;
+                <tr data-id='${item.id}'>
+                    <td>${item.surname}, ${item.name}</td>
+                    <td>${item.phone}</td>
+                    <td>${item.adress}</td>
+                    <td>$${item.debt}</td>
+                    <td>${HI}</td>
+                    <td class='text-center'>${active}</td>
+                    <td class='d-flex flex-row justify-content-center'>
+                        <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                        ${btn}
+                    </td>
+                </tr>`;
         $('#DataTable').DataTable().row.add($(content)).draw();
     }
 
@@ -126,23 +183,28 @@
         $('#DataTable').DataTable().row(`[data-id="${id}"]`).remove().draw();
     }
 
-    function deleteObj(id) {
+    function changeState(id, isActive) {
+        let title = "";
+        if (isActive === "True" || isActive === "true") {
+            title = "¿Seguro deseas dar de baja este cliente?";
+        } else {
+            title = "¿Seguro deseas dar de alta este cliente?";
+        }
         Swal.fire({
-            title: "¿Seguro deseas eliminar este proveedor?",
-            text: "Esta acción no se puede deshacer",
+            title: title,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Eliminar',
+            confirmButtonText: 'Confirmar',
             buttonsStyling: false,
             customClass: {
-                confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
+                confirmButton: 'btn btn-warning waves-effect waves-light px-3 py-2',
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
             .then((result) => {
                 if (result.isConfirmed) {
-                    $("#form-delete input[name='id']").val(id);
-                    sendForm("delete");
+                    $("#form-state input[name='id']").val(id);
+                    sendForm("state");
                 }
             });
     }
@@ -159,19 +221,17 @@
                 method: $(form).attr('method'), // Utiliza el método del formulario
                 data: $(form).serialize(), // Utiliza los datos del formulario
                 success: function (response) {
+                    $("#btnCloseModalCreate").click();
                     Swal.fire({
                         icon: 'success',
                         title: response.message,
                         confirmButtonColor: '#1e88e5',
                     });
-                    $("#btnCloseModalCreate").click();
                     if (action === 'create') {
                         fillTable(response.data);
-                    } else if (action === 'edit') {
-                        fillTable(response.data);
-                        removeFromTable(response.data.id);
                     } else {
-                        removeFromTable(response.data);
+                        removeFromTable(response.data.id);
+                        fillTable(response.data);
                     }
                 },
                 error: function (errorThrown) {
@@ -189,11 +249,14 @@
 
 <script>
     $("#btnAdd").on("click", function () {
-        $("#modalTitle").text("Agregar proveedor");
-        $("#formContainer form").attr("action", "/Providers/Create");
+        $("#modalTitle").text("Agregar client");
+        $("#formContainer form").attr("action", "/Clients/Create");
         $("#formContainer form").attr("id", "form-create");
         $("#formContainer form input:not([type='hidden']").val("");
         $("input[name='CreateViewModel.ID']").prop("disabled", true);
+        $('#formContainer form select').each(function () {
+            $(this).val($(this).find('option:first').val());
+        });
         $("#btnSendModal").text("Agregar");
 
         $("#form-create").on("submit", function (e) {
@@ -207,13 +270,17 @@
         $("input[name='CreateViewModel.ID']").val(entity.id);
         $("input[name='CreateViewModel.ID']").prop("disabled", false);
 
-        $("#modalTitle").text("Editar proveedor");
-        $("#formContainer form").attr("action", "/Providers/Edit");
+        $("#modalTitle").text("Editar client");
+        $("#formContainer form").attr("action", "/Clients/Edit");
         $("#formContainer form").attr("id", "form-edit");
         $("#btnSendModal").text("Confirmar");
 
         $("input[name='CreateViewModel.Name']").val(entity.name);
         $("input[name='CreateViewModel.Surname']").val(entity.surname);
+        $("input[name='CreateViewModel.Phone']").val(entity.phone);
+        $("input[name='CreateViewModel.Adress']").val(entity.adress);
+        $("input[name='CreateViewModel.Debt']").val(entity.debt);
+        $("select[name='CreateViewModel.HealthInsuranceID']").val(entity.healthInsurance !== null ? entity.healthInsurance.id : "");
 
         $("#form-edit").on("submit", function (e) {
             e.preventDefault();
@@ -223,11 +290,11 @@
 
     $('#DataTable').DataTable({
         "language": {
-            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ proveedores",
-            "sInfoEmpty": "Mostrando 0 a 0 de 0 proveedores",
-            "sInfoFiltered": "(filtrado de _MAX_ proveedores en total)",
-            "emptyTable": 'No hay proveedores que coincidan con la búsqueda',
-            "sLengthMenu": "Mostrar _MENU_ proveedores",
+            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ clientes",
+            "sInfoEmpty": "Mostrando 0 a 0 de 0 clientes",
+            "sInfoFiltered": "(filtrado de _MAX_ clientes en total)",
+            "emptyTable": 'No hay clientes que coincidan con la búsqueda',
+            "sLengthMenu": "Mostrar _MENU_ clientes",
             "sSearch": "Buscar:",
             "oPaginate": {
                 "sFirst": "Primero",

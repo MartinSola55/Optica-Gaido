@@ -14,6 +14,8 @@ namespace Optica_Gaido.Data.Repository.IRepository
         IProviderRepository Provider { get; }
         IFrameRepository Frame { get; }
         IExpenseRepository Expense { get; }
+        IDoctorRepository Doctor { get; }
+        IClientRepository Client { get; }
 
         void Save();
     }

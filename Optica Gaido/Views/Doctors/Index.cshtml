@@ -1,7 +1,7 @@
-﻿@model Optica_Gaido.Models.ViewModels.Expenses.IndexViewModel
+﻿@model Optica_Gaido.Models.ViewModels.Doctors.IndexViewModel
 
 @{
-    ViewData["Title"] = "Gastos";
+    ViewData["Title"] = "Doctores";
 }
 
 <!-- Data table -->
@@ -16,10 +16,10 @@
     <!-- ============================================================== -->
     <div class="row page-titles">
         <div class="col-md-5 col-8 align-self-center">
-            <h3 class="text-themecolor m-b-0 m-t-0">Gastos</h3>
+            <h3 class="text-themecolor m-b-0 m-t-0">Doctores</h3>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
-                <li class="breadcrumb-item active">Gastos</li>
+                <li class="breadcrumb-item active">Doctores</li>
             </ol>
         </div>
     </div>
@@ -32,7 +32,7 @@
     <!-- Modal -->
     <div id="modalCreate" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
         <div id="formContainer" class="modal-dialog">
-            <form role="form" class="" method="POST" asp-area="" asp-controller="Expenses" asp-action="Create" id="form-create" autocomplete="off">
+            <form role="form" class="" method="POST" asp-area="" asp-controller="Doctors" asp-action="Create" id="form-create" autocomplete="off">
                 <input type="hidden" name="CreateViewModel.ID" value="" />
                 @Html.AntiForgeryToken()
                 <div class="modal-content">
@@ -46,19 +46,19 @@
                                 <div class="form-column">
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <div class="col-12 mb-3">
-                                        <label asp-for="CreateViewModel.Description" class="mb-0"></label>
-                                        <input asp-for="CreateViewModel.Description" class="form-control" required />
-                                        <span asp-validation-for="CreateViewModel.Description" class="text-danger"></span>
+                                        <label asp-for="CreateViewModel.Name" class="mb-0"></label>
+                                        <input asp-for="CreateViewModel.Name" class="form-control" required />
+                                        <span asp-validation-for="CreateViewModel.Name" class="text-danger"></span>
                                     </div>
                                     <div class="col-12 mb-3">
-                                        <label asp-for="CreateViewModel.Amount" class="mb-0"></label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">$</span>
-                                            </div>
-                                            <input asp-for="CreateViewModel.Amount" class="form-control" required type="number" />
-                                        </div>
-                                        <span asp-validation-for="CreateViewModel.Amount" class="text-danger"></span>
+                                        <label asp-for="CreateViewModel.Surname" class="mb-0"></label>
+                                        <input asp-for="CreateViewModel.Surname" class="form-control" required />
+                                        <span asp-validation-for="CreateViewModel.Surname" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="CreateViewModel.License" class="mb-0"></label>
+                                        <input asp-for="CreateViewModel.License" class="form-control" required />
+                                        <span asp-validation-for="CreateViewModel.License" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
@@ -79,34 +79,47 @@
             <div class="card shadow">
                 <div class="card-body">
                     <div class="d-flex flex-row justify-content-between">
-                        <h2 class="card-title">Listado de gastos</h2>
-                        <button id="btnAdd" type="button" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal" data-target="#modalCreate">Agregar gasto</button>
+                        <h2 class="card-title">Listado de doctores</h2>
+                        <button id="btnAdd" type="button" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal" data-target="#modalCreate">Agregar doctor</button>
                     </div>
                     <div class="table-responsive m-t-10">
                         <table id="DataTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th class="col-6">Descripción</th>
-                                    <th class="col-4">Monto</th>
+                                    <th class="col-6">Nombre</th>
+                                    <th class="col-2">Matrícula</th>
+                                    <th class="col-2">Habilitado</th>
                                     <th class="col-2">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="table_body">
-                                @foreach (var item in Model.Expenses)
+                                @foreach (var item in Model.Doctors)
                                 {
                                     <tr data-id="@item.ID">
-                                        <td>@Html.DisplayFor(c => item.Description)</td>
-                                        <td>$@Html.DisplayFor(c => item.Amount)</td>
+                                        <td>@Html.DisplayFor(c => item.Surname), @Html.DisplayFor(c => item.Name)</td>
+                                        <td>@Html.DisplayFor(c => item.License)</td>
+                                        <td class="text-center">
+                                            @{
+                                                if (item.IsActive)
+                                                {
+                                                    <i class="bi bi-check2" style="font-size: 1.5rem"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-x-lg" style="font-size: 1.3rem"></i>
+                                                }
+                                            }
+                                        </td>
                                         <td class='d-flex flex-row justify-content-center'>
                                             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
-                                            <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(@item.ID)'><i class='bi bi-trash3'></i></button>
+                                            <button type='button' class='btn @(item.IsActive ? "btn-danger" : "btn-info") btn-rounded btn-sm ml-2' onclick='changeState(@item.ID, "@item.IsActive")'><i class='bi @(item.IsActive ? "bi-toggle-on" : "bi-toggle-off")'></i></button>
                                         </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
-                    <form id="form-state" method="POST" asp-area="" asp-controller="Expenses" asp-action="ChangeState">
+                    <form id="form-state" method="POST" asp-area="" asp-controller="Doctors" asp-action="ChangeState">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="">
                     </form>
@@ -118,15 +131,25 @@
 
 <script>
     function fillTable(item) {
+        let active = "";
+        let btn = "";
+        if (item.isActive) {
+            active = `<i class="bi bi-check2" style="font-size: 1.5rem"></i>`;
+            btn = `<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-on'></i></button>`;
+        } else {
+            active = `<i class="bi bi-x-lg" style="font-size: 1.3rem"></i>`;
+            btn = `<button type='button' class='btn btn-info btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-off'></i></button>`;
+        }
         let content = `
-            <tr data-id='${item.id}'>
-                <td>${item.description}</td>
-                <td>${item.amount}</td>
-                <td class='d-flex flex-row justify-content-center'>
-                    <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
-                    <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(${item.id})'><i class='bi bi-trash3'></i></button>
-                </td>
-            </tr>`;
+                <tr data-id='${item.id}'>
+                    <td>${item.surname}, ${item.name}</td>
+                    <td>${item.license}</td>
+                    <td class='text-center'>${active}</td>
+                    <td class='d-flex flex-row justify-content-center'>
+                        <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                        ${btn}
+                    </td>
+                </tr>`;
         $('#DataTable').DataTable().row.add($(content)).draw();
     }
 
@@ -134,23 +157,28 @@
         $('#DataTable').DataTable().row(`[data-id="${id}"]`).remove().draw();
     }
 
-    function deleteObj(id) {
+    function changeState(id, isActive) {
+        let title = "";
+        if (isActive === "True" || isActive === "true") {
+            title = "¿Seguro deseas dar de baja este doctor?";
+        } else {
+            title = "¿Seguro deseas dar de alta este doctor?";
+        }
         Swal.fire({
-            title: "¿Seguro deseas eliminar este marco?",
-            text: "Esta acción no se puede deshacer",
+            title: title,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Eliminar',
+            confirmButtonText: 'Confirmar',
             buttonsStyling: false,
             customClass: {
-                confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
+                confirmButton: 'btn btn-warning waves-effect waves-light px-3 py-2',
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
             .then((result) => {
                 if (result.isConfirmed) {
-                    $("#form-delete input[name='id']").val(id);
-                    sendForm("delete");
+                    $("#form-state input[name='id']").val(id);
+                    sendForm("state");
                 }
             });
     }
@@ -195,8 +223,8 @@
 
 <script>
     $("#btnAdd").on("click", function () {
-        $("#modalTitle").text("Agregar gasto");
-        $("#formContainer form").attr("action", "/Expenses/Create");
+        $("#modalTitle").text("Agregar doctor");
+        $("#formContainer form").attr("action", "/Doctors/Create");
         $("#formContainer form").attr("id", "form-create");
         $("#formContainer form input:not([type='hidden']").val("");
         $("input[name='CreateViewModel.ID']").prop("disabled", true);
@@ -213,13 +241,14 @@
         $("input[name='CreateViewModel.ID']").val(entity.id);
         $("input[name='CreateViewModel.ID']").prop("disabled", false);
 
-        $("#modalTitle").text("Editar gasto");
-        $("#formContainer form").attr("action", "/Expenses/Edit");
+        $("#modalTitle").text("Editar doctor");
+        $("#formContainer form").attr("action", "/Doctors/Edit");
         $("#formContainer form").attr("id", "form-edit");
         $("#btnSendModal").text("Confirmar");
 
-        $("input[name='CreateViewModel.Description']").val(entity.description);
-        $("input[name='CreateViewModel.Amount']").val(entity.amount);
+        $("input[name='CreateViewModel.Name']").val(entity.name);
+        $("input[name='CreateViewModel.Surname']").val(entity.surname);
+        $("input[name='CreateViewModel.License']").val(entity.license);
 
         $("#form-edit").on("submit", function (e) {
             e.preventDefault();
@@ -229,11 +258,11 @@
 
     $('#DataTable').DataTable({
         "language": {
-            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ gastos",
-            "sInfoEmpty": "Mostrando 0 a 0 de 0 gastos",
-            "sInfoFiltered": "(filtrado de _MAX_ gastos en total)",
-            "emptyTable": 'No hay gastos que coincidan con la búsqueda',
-            "sLengthMenu": "Mostrar _MENU_ gastos",
+            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ doctores",
+            "sInfoEmpty": "Mostrando 0 a 0 de 0 doctores",
+            "sInfoFiltered": "(filtrado de _MAX_ doctores en total)",
+            "emptyTable": 'No hay doctores que coincidan con la búsqueda',
+            "sLengthMenu": "Mostrar _MENU_ doctores",
             "sSearch": "Buscar:",
             "oPaginate": {
                 "sFirst": "Primero",

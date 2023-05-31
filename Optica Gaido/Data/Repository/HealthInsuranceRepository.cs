@@ -21,7 +21,7 @@ namespace Optica_Gaido.Data.Repository
         {
             IEnumerable<SelectListItem> healthInsurances = new List<SelectListItem>
             {
-                new SelectListItem { Value = "", Text = "Seleccione una obrra social", Disabled = true }
+                new SelectListItem { Value = "", Text = "Ninguna" }
             };
             return healthInsurances.Concat(_db.HealthInsurances.Where(x => x.IsActive == true).OrderBy(x => x.Name).Select(i => new SelectListItem() {
                 Text = i.Name,

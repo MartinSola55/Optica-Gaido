@@ -30,7 +30,7 @@ public partial class Client
 
     [Required(ErrorMessage = "Debes ingresar un teléfono")]
     [Display(Name = "Teléfono")]
-    [StringLength(12, MinimumLength = 5, ErrorMessage = "Debes ingresar un teléfono de menos de 12 caracteres")]
+    [StringLength(12, MinimumLength = 5, ErrorMessage = "Debes ingresar un teléfono de entre 5 y 12 caracteres")]
     [RegularExpression("^[0-9]+$", ErrorMessage = "Debes ingresar un teléfono válido")]
     public string Phone { get; set; } = null!;
 
@@ -49,7 +49,7 @@ public partial class Client
 
     public DateTime CreatedAt { get; set; }
 
-    public virtual HealthInsurance? HealthInsurance { get; set; }
+    public virtual HealthInsurance HealthInsurance { get; set; }
 
     public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
 }
