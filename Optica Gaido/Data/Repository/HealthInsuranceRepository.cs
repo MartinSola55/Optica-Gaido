@@ -23,7 +23,7 @@ namespace Optica_Gaido.Data.Repository
             {
                 new SelectListItem { Value = "", Text = "Ninguna" }
             };
-            return healthInsurances.Concat(_db.HealthInsurances.Where(x => x.IsActive == true).OrderBy(x => x.Name).Select(i => new SelectListItem() {
+            return healthInsurances.Concat(_db.HealthInsurances.Where(x => x.IsActive).OrderBy(x => x.Name).Select(i => new SelectListItem() {
                 Text = i.Name,
                 Value = i.ID.ToString(),
             }));
@@ -38,12 +38,11 @@ namespace Optica_Gaido.Data.Repository
                 _db.SaveChanges();
             }
         }
-        
+
         public bool IsDuplicated(HealthInsurance healthInsurance)
         {
-            var dbObject = _db.HealthInsurances.FirstOrDefault(x => x.Name.ToLower() == healthInsurance.Name.ToLower() && x.ID != healthInsurance.ID);
-            if (dbObject == null) return false;
-            return true;
+            var dbObject = _db.HealthInsurances.FirstOrDefault(x => string.Equals(x.Name, healthInsurance.Name, StringComparison.OrdinalIgnoreCase) && x.ID != healthInsurance.ID);
+            return dbObject != null;
         }
 
         public void ChangeState(short id)

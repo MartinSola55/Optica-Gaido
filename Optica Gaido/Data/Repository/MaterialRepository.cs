@@ -23,7 +23,7 @@ namespace Optica_Gaido.Data.Repository
             {
                 new SelectListItem { Value = "", Text = "Seleccione un material", Disabled = true }
             };
-            return materials.Concat(_db.Materials.Where(x => x.IsActive == true).OrderBy(x => x.Description).Select(i => new SelectListItem() {
+            return materials.Concat(_db.Materials.Where(x => x.IsActive).OrderBy(x => x.Description).Select(i => new SelectListItem() {
                 Text = i.Description,
                 Value = i.ID.ToString(),
             }));
@@ -41,9 +41,8 @@ namespace Optica_Gaido.Data.Repository
 
         public bool IsDuplicated(Material material)
         {
-            var dbObject = _db.Materials.FirstOrDefault(x => x.Description.ToLower() == material.Description.ToLower() && x.ID != material.ID);
-            if (dbObject == null) return false;
-            return true;
+            var dbObject = _db.Materials.FirstOrDefault(x => string.Equals(x.Description, material.Description, StringComparison.OrdinalIgnoreCase) && x.ID != material.ID);
+            return dbObject != null;
         }
 
         public void ChangeState(long id)

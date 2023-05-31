@@ -42,9 +42,8 @@ namespace Optica_Gaido.Data.Repository
 
         public bool IsDuplicated(Frame frame)
         {
-            var dbObject = _db.Frames.FirstOrDefault(x => x.Model.ToLower() == frame.Model.ToLower() && x.ID != frame.ID);
-            if (dbObject == null) return false;
-            return true;
+            var dbObject = _db.Frames.FirstOrDefault(x => string.Equals(x.Model, frame.Model, StringComparison.OrdinalIgnoreCase) && x.ID != frame.ID);
+            return dbObject != null;
         }
     }
 }

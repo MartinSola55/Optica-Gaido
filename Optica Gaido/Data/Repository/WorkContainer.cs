@@ -21,6 +21,7 @@ namespace Optica_Gaido.Data.Repository
             Expense = new ExpenseRepository(_db);
             Doctor = new DoctorRepository(_db);
             Client = new ClientRepository(_db);
+            PaymentMethod = new PaymentMethodRepository(_db);
         }
 
         public IBrandRepository Brand { get; private set; }
@@ -32,6 +33,7 @@ namespace Optica_Gaido.Data.Repository
         public IExpenseRepository Expense { get; private set; }
         public IDoctorRepository Doctor { get; private set; }
         public IClientRepository Client { get; private set; }
+        public IPaymentMethodRepository PaymentMethod { get; private set; }
 
         public void Dispose()
         {

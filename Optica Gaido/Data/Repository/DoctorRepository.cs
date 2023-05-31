@@ -22,7 +22,7 @@ namespace Optica_Gaido.Data.Repository
             {
                 new SelectListItem { Value = "", Text = "Seleccione un doctor", Disabled = true }
             };
-            return doctors.Concat(_db.Doctors.Where(x => x.IsActive == true).OrderBy(x => x.Surname).ThenBy(x => x.Name).Select(i => new SelectListItem() {
+            return doctors.Concat(_db.Doctors.Where(x => x.IsActive).OrderBy(x => x.Surname).ThenBy(x => x.Name).Select(i => new SelectListItem() {
                 Text = i.Surname + ", " + i.Name,
                 Value = i.ID.ToString(),
             }));
@@ -43,10 +43,9 @@ namespace Optica_Gaido.Data.Repository
         public bool IsDuplicated(Doctor doctor)
         {
             var dbObject = _db.Doctors.FirstOrDefault(
-                x => ((x.Name.ToLower() == doctor.Name.ToLower() && x.Surname.ToLower() == doctor.Surname.ToLower()) || 
-                x.License.ToLower() == doctor.License.ToLower()) && x.ID != doctor.ID);
-            if (dbObject == null) return false;
-            return true;
+                x => ((string.Equals(x.Name, doctor.Name, StringComparison.OrdinalIgnoreCase) && string.Equals(x.Surname, doctor.Surname, StringComparison.OrdinalIgnoreCase)) ||
+                string.Equals(x.License, doctor.License, StringComparison.OrdinalIgnoreCase)) && x.ID != doctor.ID);
+            return dbObject != null;
         }
 
         public void ChangeState(long id)
