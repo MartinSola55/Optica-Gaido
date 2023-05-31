@@ -1,7 +1,7 @@
-﻿@model Optica_Gaido.Models.ViewModels.Providers.IndexViewModel
+﻿@model Optica_Gaido.Models.ViewModels.Expenses.IndexViewModel
 
 @{
-    ViewData["Title"] = "Proveedores";
+    ViewData["Title"] = "Gastos";
 }
 
 <!-- Data table -->
@@ -16,10 +16,10 @@
     <!-- ============================================================== -->
     <div class="row page-titles">
         <div class="col-md-5 col-8 align-self-center">
-            <h3 class="text-themecolor m-b-0 m-t-0">Proveedores</h3>
+            <h3 class="text-themecolor m-b-0 m-t-0">Gastos</h3>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
-                <li class="breadcrumb-item active">Proveedores</li>
+                <li class="breadcrumb-item active">Gastos</li>
             </ol>
         </div>
     </div>
@@ -32,7 +32,7 @@
     <!-- Modal -->
     <div id="modalCreate" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
         <div id="formContainer" class="modal-dialog">
-            <form role="form" class="" method="POST" asp-area="" asp-controller="Providers" asp-action="Create" id="form-create" autocomplete="off">
+            <form role="form" class="" method="POST" asp-area="" asp-controller="Expenses" asp-action="Create" id="form-create" autocomplete="off">
                 <input type="hidden" name="CreateViewModel.ID" value="" />
                 @Html.AntiForgeryToken()
                 <div class="modal-content">
@@ -46,14 +46,19 @@
                                 <div class="form-column">
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <div class="col-12 mb-3">
-                                        <label asp-for="CreateViewModel.Name" class="mb-0"></label>
-                                        <input asp-for="CreateViewModel.Name" class="form-control" required />
-                                        <span asp-validation-for="CreateViewModel.Name" class="text-danger"></span>
+                                        <label asp-for="CreateViewModel.Description" class="mb-0"></label>
+                                        <input asp-for="CreateViewModel.Description" class="form-control" required />
+                                        <span asp-validation-for="CreateViewModel.Description" class="text-danger"></span>
                                     </div>
                                     <div class="col-12 mb-3">
-                                        <label asp-for="CreateViewModel.Surname" class="mb-0"></label>
-                                        <input asp-for="CreateViewModel.Surname" class="form-control" required />
-                                        <span asp-validation-for="CreateViewModel.Surname" class="text-danger"></span>
+                                        <label asp-for="CreateViewModel.Amount" class="mb-0"></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">$</span>
+                                            </div>
+                                            <input asp-for="CreateViewModel.Amount" class="form-control" required type="number" />
+                                        </div>
+                                        <span asp-validation-for="CreateViewModel.Amount" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
@@ -74,22 +79,24 @@
             <div class="card shadow">
                 <div class="card-body">
                     <div class="d-flex flex-row justify-content-between">
-                        <h2 class="card-title">Listado de proveedores</h2>
-                        <button id="btnAdd" type="button" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal" data-target="#modalCreate">Agregar proveedor</button>
+                        <h2 class="card-title">Listado de gastos</h2>
+                        <button id="btnAdd" type="button" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal" data-target="#modalCreate">Agregar gasto</button>
                     </div>
                     <div class="table-responsive m-t-10">
                         <table id="DataTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th class="col-8">Nombre</th>
+                                    <th class="col-8">Descripción</th>
+                                    <th class="col-2">Monto</th>
                                     <th class="col-2">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="table_body">
-                                @foreach (var item in Model.Providers)
+                                @foreach (var item in Model.Expenses)
                                 {
                                     <tr data-id="@item.ID">
-                                        <td>@Html.DisplayFor(c => item.Surname), @Html.DisplayFor(c => item.Name)</td>
+                                        <td>@Html.DisplayFor(c => item.Description)</td>
+                                        <td>$@Html.DisplayFor(c => item.Amount)</td>
                                         <td class='d-flex flex-row justify-content-center'>
                                             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                                             <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(@item.ID)'><i class='bi bi-trash3'></i></button>
@@ -99,7 +106,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <form id="form-delete" method="POST" asp-area="" asp-controller="Providers" asp-action="SoftDelete">
+                    <form id="form-state" method="POST" asp-area="" asp-controller="Expenses" asp-action="ChangeState">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="">
                     </form>
@@ -113,7 +120,8 @@
     function fillTable(item) {
         let content = `
             <tr data-id='${item.id}'>
-                <td>${item.surname}, ${item.name}</td>
+                <td>${item.description}</td>
+                <td>${item.amount}</td>
                 <td class='d-flex flex-row justify-content-center'>
                     <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                     <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(${item.id})'><i class='bi bi-trash3'></i></button>
@@ -128,7 +136,7 @@
 
     function deleteObj(id) {
         Swal.fire({
-            title: "¿Seguro deseas eliminar este proveedor?",
+            title: "¿Seguro deseas eliminar este marco?",
             text: "Esta acción no se puede deshacer",
             icon: 'warning',
             showCancelButton: true,
@@ -159,19 +167,17 @@
                 method: $(form).attr('method'), // Utiliza el método del formulario
                 data: $(form).serialize(), // Utiliza los datos del formulario
                 success: function (response) {
+                    $("#btnCloseModalCreate").click();
                     Swal.fire({
                         icon: 'success',
                         title: response.message,
                         confirmButtonColor: '#1e88e5',
                     });
-                    $("#btnCloseModalCreate").click();
                     if (action === 'create') {
                         fillTable(response.data);
-                    } else if (action === 'edit') {
-                        fillTable(response.data);
-                        removeFromTable(response.data.id);
                     } else {
-                        removeFromTable(response.data);
+                        removeFromTable(response.data.id);
+                        fillTable(response.data);
                     }
                 },
                 error: function (errorThrown) {
@@ -189,8 +195,8 @@
 
 <script>
     $("#btnAdd").on("click", function () {
-        $("#modalTitle").text("Agregar proveedor");
-        $("#formContainer form").attr("action", "/Providers/Create");
+        $("#modalTitle").text("Agregar gasto");
+        $("#formContainer form").attr("action", "/Expenses/Create");
         $("#formContainer form").attr("id", "form-create");
         $("#formContainer form input:not([type='hidden']").val("");
         $("input[name='CreateViewModel.ID']").prop("disabled", true);
@@ -207,13 +213,13 @@
         $("input[name='CreateViewModel.ID']").val(entity.id);
         $("input[name='CreateViewModel.ID']").prop("disabled", false);
 
-        $("#modalTitle").text("Editar proveedor");
-        $("#formContainer form").attr("action", "/Providers/Edit");
+        $("#modalTitle").text("Editar gasto");
+        $("#formContainer form").attr("action", "/Expenses/Edit");
         $("#formContainer form").attr("id", "form-edit");
         $("#btnSendModal").text("Confirmar");
 
-        $("input[name='CreateViewModel.Name']").val(entity.name);
-        $("input[name='CreateViewModel.Surname']").val(entity.surname);
+        $("input[name='CreateViewModel.Description']").val(entity.description);
+        $("input[name='CreateViewModel.Amount']").val(entity.amount);
 
         $("#form-edit").on("submit", function (e) {
             e.preventDefault();
@@ -223,11 +229,11 @@
 
     $('#DataTable').DataTable({
         "language": {
-            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ proveedores",
-            "sInfoEmpty": "Mostrando 0 a 0 de 0 proveedores",
-            "sInfoFiltered": "(filtrado de _MAX_ proveedores en total)",
-            "emptyTable": 'No hay proveedores que coincidan con la búsqueda',
-            "sLengthMenu": "Mostrar _MENU_ proveedores",
+            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ gastos",
+            "sInfoEmpty": "Mostrando 0 a 0 de 0 gastos",
+            "sInfoFiltered": "(filtrado de _MAX_ gastos en total)",
+            "emptyTable": 'No hay gastos que coincidan con la búsqueda',
+            "sLengthMenu": "Mostrar _MENU_ gastos",
             "sSearch": "Buscar:",
             "oPaginate": {
                 "sFirst": "Primero",

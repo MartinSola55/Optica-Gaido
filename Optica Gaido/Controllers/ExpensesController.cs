@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Optica_Gaido.Data.Repository.IRepository;
 using Optica_Gaido.Models;
-using Optica_Gaido.Models.ViewModels.Providers;
+using Optica_Gaido.Models.ViewModels.Expenses;
 
 namespace Optica_Gaido.Controllers
 {
-    public class ProvidersController : Controller
+    public class ExpensesController : Controller
     {
         private readonly IWorkContainer _workContainer;
 
-        public ProvidersController(IWorkContainer workContainer)
+        public ExpensesController(IWorkContainer workContainer)
         {
             _workContainer = workContainer;
         }
@@ -19,37 +19,29 @@ namespace Optica_Gaido.Controllers
         {
             IndexViewModel viewModel = new()
             {
-                Providers = _workContainer.Provider.GetAll(),
-                CreateViewModel = new Provider()
+                Expenses = _workContainer.Expense.GetAll(),
+                CreateViewModel = new Expense()
             };
+
             return View(viewModel);
         }
 
         [HttpPost]
         [ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(IndexViewModel provider)
+        public IActionResult Create(IndexViewModel expense)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (_workContainer.Provider.IsDuplicated(provider.CreateViewModel))
-                    {
-                        return BadRequest(new
-                        {
-                            success = false,
-                            title = "Error al agregar el proveedor",
-                            message = "Ya existe otro con el mismo nombre y apellido",
-                        });
-                    }
-                    _workContainer.Provider.Add(provider.CreateViewModel);
+                    _workContainer.Expense.Add(expense.CreateViewModel);
                     _workContainer.Save();
                     return Json(new
                     {
                         success = true,
-                        data = provider.CreateViewModel,
-                        message = "El provider se agregó correctamente",
+                        data = expense.CreateViewModel,
+                        message = "El gasto se creó correctamente",
                     });
                 }
                 catch (Exception e)
@@ -57,7 +49,7 @@ namespace Optica_Gaido.Controllers
                     return BadRequest(new
                     {
                         success = false,
-                        title = "Error al agregar el proveedor",
+                        title = "Error al crear el gasto",
                         message = "Intente nuevamente o comuníquese para soporte",
                         error = e.Message,
                     });
@@ -66,7 +58,7 @@ namespace Optica_Gaido.Controllers
             return BadRequest(new
             {
                 success = false,
-                title = "Error al agregar el proveedor",
+                title = "Error al crear el gasto",
                 message = "Alguno de los campos ingresados no es válido",
             });
         }
@@ -74,28 +66,19 @@ namespace Optica_Gaido.Controllers
         [HttpPost]
         [ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(IndexViewModel provider)
+        public IActionResult Edit(IndexViewModel expense)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (_workContainer.Provider.IsDuplicated(provider.CreateViewModel))
-                    {
-                        return BadRequest(new
-                        {
-                            success = false,
-                            title = "Error al editar el proveedor",
-                            message = "Ya existe otro con el mismo nombre y apellido",
-                        });
-                    }
-                    _workContainer.Provider.Update(provider.CreateViewModel);
+                    _workContainer.Expense.Update(expense.CreateViewModel);
                     _workContainer.Save();
                     return Json(new
                     {
                         success = true,
-                        data = provider.CreateViewModel,
-                        message = "El proveedor se editó correctamente",
+                        data = expense.CreateViewModel,
+                        message = "El gasto se editó correctamente",
                     });
                 }
                 catch (Exception e)
@@ -103,7 +86,7 @@ namespace Optica_Gaido.Controllers
                     return BadRequest(new
                     {
                         success = false,
-                        title = "Error al editar el proveedor",
+                        title = "Error al editar el gasto",
                         message = "Intente nuevamente o comuníquese para soporte",
                         error = e.Message,
                     });
@@ -112,34 +95,34 @@ namespace Optica_Gaido.Controllers
             return BadRequest(new
             {
                 success = false,
-                title = "Error al editar el proveedor",
+                title = "Error al editar el gasto",
                 message = "Alguno de los campos ingresados no es válido",
             });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SoftDelete(long id)
+        public IActionResult Delete(long id)
         {
             try
             {
-                var provider = _workContainer.Provider.GetOne(id);
-                if (provider != null)
+                var expense = _workContainer.Expense.GetOne(id);
+                if (expense != null)
                 {
-                    _workContainer.Provider.SoftDelete(id);
+                    _workContainer.Expense.Remove(id);
                     _workContainer.Save();
                     return Json(new
                     {
                         success = true,
                         data = id,
-                        message = "El proveedor se eliminó correctamente",
+                        message = "El gasto se eliminó correctamente",
                     });
                 }
                 return BadRequest(new
                 {
                     success = false,
                     title = "Error al eliminar",
-                    message = "No se encontró el proveedor solicitado",
+                    message = "No se encontró el gasto solicitado",
                 });
             }
             catch (Exception e)

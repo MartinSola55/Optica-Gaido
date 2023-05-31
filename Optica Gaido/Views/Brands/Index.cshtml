@@ -47,7 +47,7 @@
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <div class="col-12 mb-3">
                                         <label asp-for="CreateViewModel.Name" class="mb-0"></label>
-                                        <input asp-for="CreateViewModel.Name" class="form-control" placeholder="Ingrese un nombre" required />
+                                        <input asp-for="CreateViewModel.Name" class="form-control" required />
                                         <span asp-validation-for="CreateViewModel.Name" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -135,7 +135,7 @@
                 <td>${item.name}</td>
                 <td class='text-center'>${active}</td>
                 <td class='d-flex flex-row justify-content-center'>
-                    <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${item})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                    <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                     ${btn}
                 </td>
             </tr>`;

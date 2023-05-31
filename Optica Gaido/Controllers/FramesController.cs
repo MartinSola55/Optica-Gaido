@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Optica_Gaido.Data.Repository.IRepository;
 using Optica_Gaido.Models;
 using Optica_Gaido.Models.ViewModels.Frames;
-using static Azure.Core.HttpHeader;
 
 namespace Optica_Gaido.Controllers
 {
@@ -154,7 +153,7 @@ namespace Optica_Gaido.Controllers
                 return BadRequest(new
                 {
                     success = false,
-                    title = "Error al eliminarr",
+                    title = "Error al eliminar",
                     message = "Intente nuevamente o comuníquese para soporte",
                     error = e.Message,
                 });
