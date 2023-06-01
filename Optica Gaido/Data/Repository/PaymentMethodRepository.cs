@@ -20,7 +20,7 @@ namespace Optica_Gaido.Data.Repository
         {
             IEnumerable<SelectListItem> methods = new List<SelectListItem>
             {
-                new SelectListItem { Value = "", Text = "Seleccione una método", Disabled = true }
+                new SelectListItem { Value = "", Text = "Seleccione un método", Disabled = true }
             };
             return methods.Concat(_db.PaymentMethods.Where(x => x.IsActive).OrderBy(x => x.Name).Select(i => new SelectListItem() {
                 Text = i.Name,

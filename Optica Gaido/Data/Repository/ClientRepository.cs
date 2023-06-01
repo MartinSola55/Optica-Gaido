@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.DotNet.Scaffolding.Shared;
+using Microsoft.EntityFrameworkCore;
 using Optica_Gaido.Data.Repository.IRepository;
 using Optica_Gaido.Models;
 
@@ -51,6 +52,20 @@ namespace Optica_Gaido.Data.Repository
                 dbObject.IsActive = !dbObject.IsActive;
                 _db.SaveChanges();
             }
+        }
+
+        public Client GetOneWithProperties(long id, string properties)
+        {
+            IQueryable<Client> query = dbSet;
+            // Include properties separados por coma
+            if (properties != null)
+            {
+                foreach (var prop in properties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(prop.Trim());
+                }
+            }
+            return query.Where(x => x.ID == id).FirstOrDefault();
         }
     }
 }

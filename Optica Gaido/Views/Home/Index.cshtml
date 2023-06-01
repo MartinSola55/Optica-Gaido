@@ -115,8 +115,7 @@
                         <table class="table stylish-table" id="dataTable">
                             <thead>
                                 <tr>
-                                    <th class="col-1">Nombre</th>
-                                    <th class="col-4"></th>
+                                    <th class="col-5">Nombre</th>
                                     <th class="col-3">Obra Social</th>
                                     <th class="col-2">Deuda</th>
                                     <th class="col-2 text-center">Seleccionar</th>
@@ -126,9 +125,14 @@
                             @foreach (var item in Model.Clients)
                             {
                                 <tr>
-                                    <td><span class="round">@Html.DisplayFor(c => item.Name[0])@Html.DisplayFor(c => item.Surname[0])</span></td>
                                     <td>
-                                        <h6>@Html.DisplayFor(c => item.Surname), @Html.DisplayFor(c => item.Name)</h6><small class="text-muted">Teléfono @Html.DisplayFor(c => item.Phone)</small>
+                                        <div class="d-flex flex-row justify-content-start align-items-end">
+                                            <span class="round mr-3">@Html.DisplayFor(c => item.Name[0])@Html.DisplayFor(c => item.Surname[0])</span>
+                                            <div>
+                                                <h6>@Html.DisplayFor(c => item.Surname), @Html.DisplayFor(c => item.Name)</h6>
+                                                <small class="text-muted"><i class="bi bi-telephone"></i> @Html.DisplayFor(c => item.Phone)</small>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td>@(item.HealthInsuranceID != null ? Html.DisplayFor(c => item.HealthInsurance.Name) : "-")</td>
                                     @switch (Math.Sign(item.Debt))
@@ -146,8 +150,10 @@
                                             <td>-</td>
                                             break;
                                     }
-                                    <td class='d-flex flex-row justify-content-center'>
-                                        <a type='button' class='btn btn-outline-info mr-2' asp-area="" asp-controller="Sale" asp-action="New" asp-route-id="@item.ID"><i class="bi bi-arrow-return-right"></i></a>
+                                    <td>
+                                        <div class='d-flex flex-row justify-content-center'>
+                                            <a type='button' class='btn btn-outline-info mr-2' asp-area="" asp-controller="Sales" asp-action="New" asp-route-id="@item.ID"><i class="bi bi-arrow-return-right"></i></a>
+                                        </div>
                                     </td>
                                 </tr>
                             }

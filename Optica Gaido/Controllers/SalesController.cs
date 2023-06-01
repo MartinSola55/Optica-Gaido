@@ -20,16 +20,29 @@ namespace Optica_Gaido.Controllers
         }
 
         [HttpGet]
-        public IActionResult New()
+        public IActionResult New(long id)
         {
+            Client client = _workContainer.Client.GetOneWithProperties(id, properties: "HealthInsurance");
+            if (client == null)
+            {
+                return this.CustomError(new ErrorViewModel { Message = "El cliente no existe", ErrorCode = 404 });
+            }
             NewViewModel viewModel = new()
             {
                 Doctors = _workContainer.Doctor.GetDropDownList(),
-                Sellers = _workContainer.Doctor.GetDropDownList(),
+                Sellers = _workContainer.Seller.GetDropDownList(),
                 PaymentMethods = _workContainer.PaymentMethod.GetDropDownList(),
-                CreateViewModel = new Sale()
+                GlassTypes = _workContainer.GlassType.GetAll(),
+                GlassColors = _workContainer.GlassColor.GetDropDownList(),
+                Client = client
             };
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public IActionResult CustomError(ErrorViewModel error)
+        {
+            return View("~/Views/Error/CustomError.cshtml", error);
         }
 
         /*[HttpPost]

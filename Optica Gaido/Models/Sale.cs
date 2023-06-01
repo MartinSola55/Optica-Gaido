@@ -25,8 +25,8 @@ public partial class Sale
     public decimal? Deposit { get; set; }
 
     [Required(ErrorMessage = "Debes ingresar una altura de película en mm.")]
-    [Precision(18,2)]
-    [Display(Name = "Altura de película (mm)")]
+    [Precision(18, 2)]
+    [Display(Name = "Altura de película")]
     [Range(0, 1000000, ErrorMessage = "Debes ingresar una altura entre 0 y 1.000")]
     public decimal MovieHeight { get; set; }
 

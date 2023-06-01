@@ -58,10 +58,9 @@ namespace Optica_Gaido.Data.Repository
             {
                 foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    query = query.Include(includeProperties);
+                    query = query.Include(includeProperty);
                 }
             }
-
             return query.FirstOrDefault();
         }
 

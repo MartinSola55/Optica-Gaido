@@ -20,7 +20,7 @@ namespace Optica_Gaido.Data.Repository
         {
             IEnumerable<SelectListItem> doctors = new List<SelectListItem>
             {
-                new SelectListItem { Value = "", Text = "Seleccione un doctor", Disabled = true }
+                new SelectListItem { Value = "", Text = "Seleccione un médico", Disabled = true }
             };
             return doctors.Concat(_db.Doctors.Where(x => x.IsActive).OrderBy(x => x.Surname).ThenBy(x => x.Name).Select(i => new SelectListItem() {
                 Text = i.Surname + ", " + i.Name,

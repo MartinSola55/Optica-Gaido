@@ -10,6 +10,7 @@ namespace Optica_Gaido.Data.Repository.IRepository
     public interface IClientRepository : IRepository<Client>
     {
         void Update(Client client);
+        Client GetOneWithProperties(long id, string properties);
         bool IsDuplicated(Client client);
         void ChangeState(long id);
     }
