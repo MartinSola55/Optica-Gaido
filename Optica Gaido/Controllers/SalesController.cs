@@ -27,11 +27,43 @@ namespace Optica_Gaido.Controllers
             {
                 return this.CustomError(new ErrorViewModel { Message = "El cliente no existe", ErrorCode = 404 });
             }
+            List<SalePaymentMethod> methods = new();
+
+            foreach (var method in _workContainer.PaymentMethod.GetAll())
+            {
+                methods.Add(new SalePaymentMethod() { PaymentMethod = method });
+            }
+
+            List<GlassFormat> formats = new()
+            {
+                new GlassFormat()
+                {
+                    Eye = Eye.Derecho,
+                    Distance = Distance.Lejos
+                },
+                new GlassFormat()
+                {
+                    Eye = Eye.Izquierdo,
+                    Distance = Distance.Lejos
+                },
+                new GlassFormat()
+                {
+                    Eye = Eye.Derecho,
+                    Distance = Distance.Cerca
+                },
+                new GlassFormat()
+                {
+                    Eye = Eye.Izquierdo,
+                    Distance = Distance.Cerca
+                }
+            };
+
             NewViewModel viewModel = new()
             {
                 Doctors = _workContainer.Doctor.GetDropDownList(),
                 Sellers = _workContainer.Seller.GetDropDownList(),
-                PaymentMethods = _workContainer.PaymentMethod.GetDropDownList(),
+                SalePaymentMethods = methods,
+                GlassFormats = formats,
                 GlassTypes = _workContainer.GlassType.GetAll(),
                 GlassColors = _workContainer.GlassColor.GetDropDownList(),
                 Client = client
@@ -45,39 +77,39 @@ namespace Optica_Gaido.Controllers
             return View("~/Views/Error/CustomError.cshtml", error);
         }
 
-        /*[HttpPost]
+        [HttpPost]
         [ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(IndexViewModel provider)
+        public IActionResult Create(NewViewModel sale)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (_workContainer.Provider.IsDuplicated(provider.CreateViewModel))
-                    {
-                        return BadRequest(new
-                        {
-                            success = false,
-                            title = "Error al agregar el proveedor",
-                            message = "Ya existe otro con el mismo nombre y apellido",
-                        });
-                    }
-                    _workContainer.Provider.Add(provider.CreateViewModel);
-                    _workContainer.Save();
-                    return Json(new
-                    {
-                        success = true,
-                        data = provider.CreateViewModel,
-                        message = "El provider se agregó correctamente",
-                    });
+                    //if (_workContainer.Provider.IsDuplicated(provider.CreateViewModel))
+                    //{
+                    //    return BadRequest(new
+                    //    {
+                    //        success = false,
+                    //        title = "Error al agregar el proveedor",
+                    //        message = "Ya existe otro con el mismo nombre y apellido",
+                    //    });
+                    //}
+                    //_workContainer.Provider.Add(provider.CreateViewModel);
+                    //_workContainer.Save();
+                    //return Json(new
+                    //{
+                    //    success = true,
+                    //    data = provider.CreateViewModel,
+                    //    message = "El provider se agregó correctamente",
+                    //});
                 }
                 catch (Exception e)
                 {
                     return BadRequest(new
                     {
                         success = false,
-                        title = "Error al agregar el proveedor",
+                        title = "Error al crear la venta",
                         message = "Intente nuevamente o comuníquese para soporte",
                         error = e.Message,
                     });
@@ -86,10 +118,10 @@ namespace Optica_Gaido.Controllers
             return BadRequest(new
             {
                 success = false,
-                title = "Error al agregar el proveedor",
+                title = "Error al crear la venta",
                 message = "Alguno de los campos ingresados no es válido",
             });
-        }*/
+        }
 
         /*[HttpPost]
         [ActionName("Edit")]

@@ -22,6 +22,7 @@ namespace Optica_Gaido.Data.Repository
             Doctor = new DoctorRepository(_db);
             Client = new ClientRepository(_db);
             PaymentMethod = new PaymentMethodRepository(_db);
+            SalePaymentMethod = new SalePaymentMethodRepository(_db);
             Seller = new SellerRepository(_db);
             GlassColor = new GlassColorRepository(_db);
             GlassType = new GlassTypeRepository(_db);
@@ -37,6 +38,7 @@ namespace Optica_Gaido.Data.Repository
         public IDoctorRepository Doctor { get; private set; }
         public IClientRepository Client { get; private set; }
         public IPaymentMethodRepository PaymentMethod { get; private set; }
+        public ISalePaymentMethodRepository SalePaymentMethod { get; private set; }
         public ISellerRepository Seller { get; private set; }
         public IGlassColorRepository GlassColor { get; private set; }
         public IGlassTypeRepository GlassType { get; private set; }

@@ -13,6 +13,12 @@
 <!-- This is data table -->
 <script src="~/lib/datatables/datatables.min.js"></script>
 
+<!-- Editable -->
+<script src="~/lib/jquery-datatables-editable/jquery.dataTables.js"></script>
+<script src="~/lib/datatables/media/js/dataTables.bootstrap.js"></script>
+<script src="~/lib/tiny-editable/mindmup-editabletable.js"></script>
+<script src="~/lib/tiny-editable/numeric-input-validation.js"></script>
+
 <!-- icheck -->
 <script src="~/lib/icheck/icheck.min.js"></script>
 <script src="~/lib/icheck/icheck.init.js"></script>
@@ -40,51 +46,21 @@
     <!-- ============================================================== -->
     <!-- Start Page Content -->
     <!-- ============================================================== -->
-    <!-- Modal -->
-    <div id="modalCreate" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-        <div id="formContainer" class="modal-dialog">
-            <form role="form" class="" method="POST" asp-area="" asp-controller="Sales" asp-action="Create" id="form-create" autocomplete="off">
-                <input type="hidden" name="CreateViewModel.ID" value="" />
-                @Html.AntiForgeryToken()
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 id="modalTitle" class="modal-title"></h4>
-                        <button type="button" class="close" id="btnCloseModalCreate" data-dismiss="modal" aria-hidden="true">×</button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-column">
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
-                        <button id="btnSendModal" type="submit" class="btn btn-success waves-effect waves-light">Agregar</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    <!-- End Modal -->
-
-
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body wizard-content">
                     <h4 class="card-title">Nueva venta</h4>
                     <h6 class="card-subtitle mb-0">@DateTime.UtcNow.AddHours(-3).ToString("dd/MM/yyyy")</h6>
-                    <form asp-area="" asp-controller="Sales" asp-action="Create" class="tab-wizard wizard-circle">
+                    <form asp-area="" asp-controller="Sales" asp-action="Create" class="tab-wizard wizard-circle" id="form_data">
+                        <input asp-for="CreateViewModel.ClientID" value="@Model.Client.ID" type="hidden"/>
                         <!-- Step 1 -->
                         <h6>Cliente</h6>
                         <section>
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-body">
-                                        <h3 class="box-title">Datos</h3>
+                                        <h3 class="box-title">Cliente</h3>
                                         <hr class="m-t-0 m-b-20">
                                         <div class="row">
                                             <div class="col-md-6">
@@ -156,7 +132,10 @@
                         <!-- Step 2 -->
                         <h6>Datos</h6>
                         <section>
+                            <h3 class="box-title">Datos</h3>
+                            <hr class="m-t-0 m-b-20">
                             <div class="row col-12 m-0 p-0">
+
 
                                 <!-- Precio -->
                                 <div class="col-12 col-sm-6 col-lg-3 col-xxl-3 mb-3">
@@ -231,7 +210,7 @@
                                 </div>
 
                                 <!-- Doctor -->
-                                <div class="col-12 col-md-6 col-lg-6 col-xxl-3 mb-3">
+                                <div class="col-12 col-lg-6 col-xxl-3 mb-3">
                                     <label asp-for="CreateViewModel.DoctorID" class="mb-0"></label>
                                     @Html.DropDownListFor(x => x.CreateViewModel.DoctorID, Model.Doctors, null, new { @class = "form-control" })
                                     <span asp-validation-for="CreateViewModel.DoctorID" class="text-danger"></span>
@@ -239,109 +218,63 @@
                             </div>
                         </section>
                         <!-- Step 3 -->
-                        <h6>Formato del material</h6>
+                        <h6>Formato</h6>
                         <section>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="int1">Interview For :</label>
-                                        <input type="text" class="form-control" id="int1">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="intType1">Interview Type :</label>
-                                        <select class="custom-select form-control" id="intType1" data-placeholder="Type to search cities" name="intType1">
-                                            <option value="Banquet">Normal</option>
-                                            <option value="Fund Raiser">Difficult</option>
-                                            <option value="Dinner Party">Hard</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="Location1">Location :</label>
-                                        <select class="custom-select form-control" id="Location1" name="location">
-                                            <option value="">Select City</option>
-                                            <option value="India">India</option>
-                                            <option value="USA">USA</option>
-                                            <option value="Dubai">Dubai</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="jobTitle2">Interview Date :</label>
-                                        <input type="date" class="form-control" id="jobTitle2">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Requirements :</label>
-                                        <div class="c-inputs-stacked">
-                                            <div class="m-b-10">
-                                                <label class="custom-control custom-radio">
-                                                    <input id="radio1" name="radio" type="radio" class="custom-control-input">
-                                                    <span class="custom-control-label">Employee</span>
-                                                </label>
-                                                <label class="custom-control custom-radio">
-                                                    <input id="radio2" name="radio" type="radio" class="custom-control-input">
-                                                    <span class="custom-control-label">Contract</span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <h3 class="box-title">Formato</h3>
+                            <hr class="m-t-0 m-b-20">
+                            <div class="row col-12 m-0 p-0">
+                                <div class=" table-responsive">
+                                    <table id="formatTable" class="table table-bordered editable-table">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-3">Visión</th>
+                                                <th class="col-3"></th>
+                                                <th class="col-2">Esf.</th>
+                                                <th class="col-2">Cil.</th>
+                                                <th class="col-2">Eje</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>            
+                                            @foreach (var item in Model.GlassFormats)
+                                            {
+                                                <tr>
+                                                    <td>@item.Distance</td>
+                                                    <td>@item.Eye</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </section>
                         <!-- Step 4 -->
                         <h6>Métodos de pago</h6>
                         <section>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="behName1">Behaviour :</label>
-                                        <input type="text" class="form-control" id="behName1">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="participants1">Confidance</label>
-                                        <input type="text" class="form-control" id="participants1">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="participants1">Result</label>
-                                        <select class="custom-select form-control" id="participants1" name="location">
-                                            <option value="">Select Result</option>
-                                            <option value="Selected">Selected</option>
-                                            <option value="Rejected">Rejected</option>
-                                            <option value="Call Second-time">Call Second-time</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="decisions1">Comments</label>
-                                        <textarea name="decisions" id="decisions1" rows="4" class="form-control"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Rate Interviwer :</label>
-                                        <div class="c-inputs-stacked">
-                                            <label class="inline custom-control custom-checkbox block">
-                                                <input type="checkbox" class="custom-control-input">
-                                                <span class="custom-control-label ml-0">1 star</span>
-                                            </label>
-                                            <label class="inline custom-control custom-checkbox block">
-                                                <input type="checkbox" class="custom-control-input">
-                                                <span class="custom-control-label ml-0">2 star</span>
-                                            </label>
-                                            <label class="inline custom-control custom-checkbox block">
-                                                <input type="checkbox" class="custom-control-input">
-                                                <span class="custom-control-label ml-0">3 star</span>
-                                            </label>
-                                            <label class="inline custom-control custom-checkbox block">
-                                                <input type="checkbox" class="custom-control-input">
-                                                <span class="custom-control-label ml-0">4 star</span>
-                                            </label>
-                                            <label class="inline custom-control custom-checkbox block">
-                                                <input type="checkbox" class="custom-control-input">
-                                                <span class="custom-control-label ml-0">5 star</span>
-                                            </label>
+                            <h3 class="box-title">Métodos de pago</h3>
+                            <hr class="m-t-0 m-b-20">
+                            <div class="row col-12 m-0 p-0">
+                                @foreach (var item in Model.SalePaymentMethods)
+                                {
+                                    <div class="col-12 col-md-6 col-lg-3 col-xxl-3 mb-3">
+                                        <div class="demo-switch-title">@(item.PaymentMethod.Name)</div>
+                                        <div class="d-flex flex-row align-items-end justify-content-between">
+                                            <div class="switch">
+                                                <label>
+                                                    <input type="checkbox" class="payment_method_checkbox"><span class="lever switch-col-light-blue"></span>
+                                                </label>
+                                            </div>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">$</span>
+                                                </div>
+                                                <input name="PaymentMethod.Amount" class="form-control payment_method" disabled min="0" type="number" data-val-number="Debes ingresar un número" />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                         </section>
                     </form>
@@ -353,6 +286,9 @@
 
 
 <script>
+    $(document).ready(function () {
+        $('#formatTable').editableTableWidget().numericInputExample();
+    });
     $(".tab-wizard").steps({
         headerTag: "h6"
         , bodyTag: "section"
@@ -365,7 +301,9 @@
             finish: "Vender",
         }
         , onFinished: function (event, currentIndex) {
-            swal("Form Submitted!", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lorem erat eleifend ex semper, lobortis purus sed.");
+            if (validateData()) {
+                sendForm();
+            }
         }
     });
 </script>
@@ -375,80 +313,61 @@
         $(this).val($(this).find('option:first').val());
     });
 
-    function sendForm(action) {
-        let form = document.getElementById(`form-${action}`);
+    $('form .payment_method').each(function () {
+        $(this).val("");
+    });
+    
+    $('form .payment_method_checkbox').on("change", function () {
+        let checkbox = $(this);
+        let input = checkbox.closest(".d-flex").find(".payment_method");
 
-        let errors = $(".input-validation-error");
-
-        if (errors.length === 0) {
-            // Enviar solicitud AJAX
-            $.ajax({
-                url: $(form).attr('action'), // Utiliza la ruta del formulario
-                method: $(form).attr('method'), // Utiliza el método del formulario
-                data: $(form).serialize(), // Utiliza los datos del formulario
-                success: function (response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: response.message,
-                        confirmButtonColor: '#1e88e5',
-                    });
-                    $("#btnCloseModalCreate").click();
-                    if (action === 'create') {
-                        fillTable(response.data);
-                    } else if (action === 'edit') {
-                        fillTable(response.data);
-                        removeFromTable(response.data.id);
-                    } else {
-                        removeFromTable(response.data);
-                    }
-                },
-                error: function (errorThrown) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: errorThrown.responseJSON.title,
-                        text: errorThrown.responseJSON.message,
-                        confirmButtonColor: '#1e88e5',
-                    });
-                }
-            });
+        // Habilitar o deshabilitar el input según el estado del checkbox
+        if (checkbox.is(":checked")) {
+            input.prop("disabled", false);
+        } else {
+            input.prop("disabled", true);
         }
+    });
+
+    function validateData() {
+
+        return true;
     }
-</script>
 
-<script>
-    $("#btnAdd").on("click", function () {
-        $("#modalTitle").text("Agregar marco");
-        $("#formContainer form").attr("action", "/Sales/Create");
-        $("#formContainer form").attr("id", "form-create");
-        $("#formContainer form input:not([type='hidden']").val("");
-        $("input[name='CreateViewModel.ID']").prop("disabled", true);
-        $('#formContainer form select').each(function () {
-            $(this).val($(this).find('option:first').val());
-        });
-        $("#btnSendModal").text("Agregar");
+    function sendForm() {
+        let form = $("#form_data");
 
-        $("#form-create").on("submit", function (e) {
-            e.preventDefault();
-            sendForm("create");
-        })
-    });
-
-    $('#DataTable').DataTable({
-        "language": {
-            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ marcos",
-            "sInfoEmpty": "Mostrando 0 a 0 de 0 marcos",
-            "sInfoFiltered": "(filtrado de _MAX_ marcos en total)",
-            "emptyTable": 'No hay marcos que coincidan con la búsqueda',
-            "sLengthMenu": "Mostrar _MENU_ marcos",
-            "sSearch": "Buscar:",
-            "oPaginate": {
-                "sFirst": "Primero",
-                "sLast": "Último",
-                "sNext": "Siguiente",
-                "sPrevious": "Anterior",
+        // Enviar solicitud AJAX
+        $.ajax({
+            url: $(form).attr('action'), // Utiliza la ruta del formulario
+            method: $(form).attr('method'), // Utiliza el método del formulario
+            data: $(form).serialize(), // Utiliza los datos del formulario
+            success: function (response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: response.message,
+                    confirmButtonColor: '#1e88e5',
+                });
+                $("#btnCloseModalCreate").click();
+                if (action === 'create') {
+                    fillTable(response.data);
+                } else if (action === 'edit') {
+                    fillTable(response.data);
+                    removeFromTable(response.data.id);
+                } else {
+                    removeFromTable(response.data);
+                }
             },
-        },
-    });
+            error: function (errorThrown) {
+                Swal.fire({
+                    icon: 'error',
+                    title: errorThrown.responseJSON.title,
+                    text: errorThrown.responseJSON.message,
+                    confirmButtonColor: '#1e88e5',
+                });
+            }
+        });
+    }
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

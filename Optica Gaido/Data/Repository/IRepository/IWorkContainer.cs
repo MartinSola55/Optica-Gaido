@@ -17,6 +17,7 @@ namespace Optica_Gaido.Data.Repository.IRepository
         IDoctorRepository Doctor { get; }
         IClientRepository Client { get; }
         IPaymentMethodRepository PaymentMethod { get; }
+        ISalePaymentMethodRepository SalePaymentMethod { get; }
         ISellerRepository Seller { get; }
         IGlassColorRepository GlassColor { get; }
         IGlassTypeRepository GlassType { get; }

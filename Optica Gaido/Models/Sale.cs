@@ -33,7 +33,7 @@ public partial class Sale
     [Required(ErrorMessage = "Debes ingresar una distancia interpelicular")]
     [Display(Name = "D.I.P")]
     [StringLength(50, MinimumLength = 1, ErrorMessage = "Debes ingresar una distancia de menos de 50 caracteres")]
-    [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s']+$", ErrorMessage = "Ingrese una distancia válida")]
+    [RegularExpression(@"^[a-zA-Z0-9\u00C0-\u017F\s']+$", ErrorMessage = "Ingrese una distancia válida")]
     public string Dip { get; set; } = null!;
 
     [Display(Name = "Observaciones")]

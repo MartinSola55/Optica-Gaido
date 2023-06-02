@@ -21,5 +21,5 @@ public partial class SalePaymentMethod
 
     public virtual PaymentMethod PaymentMethod { get; set; } = null!;
 
-    public virtual Sale Sale { get; set; } = null!;
+    //public virtual Sale Sale { get; set; } = null!;
 }
