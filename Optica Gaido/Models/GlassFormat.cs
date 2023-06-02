@@ -7,8 +7,8 @@ namespace Optica_Gaido.Models;
 
 public enum Eye
 {
-    Izquierdo = 1,
-    Derecho = 2
+    Derecho = 1,
+    Izquierdo = 2,
 }
 
 public enum Distance

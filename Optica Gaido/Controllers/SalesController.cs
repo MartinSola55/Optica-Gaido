@@ -34,36 +34,11 @@ namespace Optica_Gaido.Controllers
                 methods.Add(new SalePaymentMethod() { PaymentMethod = method });
             }
 
-            List<GlassFormat> formats = new()
-            {
-                new GlassFormat()
-                {
-                    Eye = Eye.Derecho,
-                    Distance = Distance.Lejos
-                },
-                new GlassFormat()
-                {
-                    Eye = Eye.Izquierdo,
-                    Distance = Distance.Lejos
-                },
-                new GlassFormat()
-                {
-                    Eye = Eye.Derecho,
-                    Distance = Distance.Cerca
-                },
-                new GlassFormat()
-                {
-                    Eye = Eye.Izquierdo,
-                    Distance = Distance.Cerca
-                }
-            };
-
             NewViewModel viewModel = new()
             {
                 Doctors = _workContainer.Doctor.GetDropDownList(),
                 Sellers = _workContainer.Seller.GetDropDownList(),
                 SalePaymentMethods = methods,
-                GlassFormats = formats,
                 GlassTypes = _workContainer.GlassType.GetAll(),
                 GlassColors = _workContainer.GlassColor.GetDropDownList(),
                 Client = client
