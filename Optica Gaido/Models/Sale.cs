@@ -75,6 +75,7 @@ public partial class Sale
     public DateTime DeliveryDate { get; set; }
 
     public DateTime CreatedAt { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
     public virtual Client Client { get; set; } = null!;
 

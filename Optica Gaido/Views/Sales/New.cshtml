@@ -9,6 +9,13 @@
 <link href="~/lib/icheck/skins/all.css" rel="stylesheet" />
 <link href="~/lib/wizard/steps.css" rel="stylesheet" />
 
+<!-- Datepicker -->
+<link href="~/lib/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet">
+
+<!-- Datepicker -->
+<script src="~/lib/moment/moment-with-locales.js"></script>
+@*<script src="https://cdn.jsdelivr.net/npm/moment-with-locales@2.29.1/moment-with-locales.min.js"></script>*@
+<script src="~/lib/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
 
 <!-- This is data table -->
 <script src="~/lib/datatables/datatables.min.js"></script>
@@ -136,7 +143,6 @@
                             <hr class="m-t-0 m-b-20">
                             <div class="row col-12 m-0 p-0">
 
-
                                 <!-- Precio -->
                                 <div class="col-12 col-sm-6 col-lg-3 col-xxl-3 mb-3">
                                     <label asp-for="CreateViewModel.Price" class="mb-0"></label>
@@ -215,6 +221,20 @@
                                     @Html.DropDownListFor(x => x.CreateViewModel.DoctorID, Model.Doctors, null, new { @class = "form-control" })
                                     <span asp-validation-for="CreateViewModel.DoctorID" class="text-danger"></span>
                                 </div>
+
+                                <!-- Date -->
+                                <div class="col-12 col-md-6 col-lg-4 col-xxl-3 mb-3">
+                                    <label asp-for="CreateViewModel.DeliveryDate" class="mb-0"></label>
+                                    <input asp-for="CreateViewModel.DeliveryDate" class="form-control" type="text" placeholder="dd/mm/aaaa"/>
+                                    <span asp-validation-for="CreateViewModel.DeliveryDate" class="text-danger"></span>
+                                </div>
+
+                                <!-- Observation -->
+                                <div class="col-12 col-md-6 col-lg-5 col-xxl-4 mb-3">
+                                    <label asp-for="CreateViewModel.Observation" class="mb-0"></label>
+                                    <textarea asp-for="CreateViewModel.Observation" class="form-control" style="height: 100px"></textarea>
+                                    <span asp-validation-for="CreateViewModel.Observation" class="text-danger"></span>
+                                </div>
                             </div>
                         </section>
                         <!-- Step 3 -->
@@ -238,28 +258,28 @@
                                             <tr>
                                                 <td rowspan="2">Lejos</td>
                                                 <td>Derecho</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td class="validateCol"></td>
+                                                <td class="validateCol"></td>
+                                                <td class="validateCol"></td>
                                             </tr>
                                             <tr>
                                                 <td>Izquierdo</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td class="validateCol"></td>
+                                                <td class="validateCol"></td>
+                                                <td class="validateCol"></td>
                                             </tr>
                                             <tr>
                                                 <td rowspan="2">Cerca</td>
                                                 <td>Derecho</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td class="validateCol"></td>
+                                                <td class="validateCol"></td>
+                                                <td class="validateCol"></td>
                                             </tr>
                                             <tr>
                                                 <td>Izquierdo</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td class="validateCol"></td>
+                                                <td class="validateCol"></td>
+                                                <td class="validateCol"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -267,6 +287,16 @@
                             </div>
                         </section>
                         <!-- Step 4 -->
+                        <h6>Marco</h6>
+                        <section>
+                            <h3 class="box-title">Marco</h3>
+                            <hr class="m-t-0 m-b-20">
+                            <div class="row col-12 m-0 p-0">
+
+                                
+                            </div>
+                        </section>
+                        <!-- Step 5 -->
                         <h6>Métodos de pago</h6>
                         <section>
                             <h3 class="box-title">Métodos de pago</h3>
@@ -321,6 +351,21 @@
                 sendForm();
             }
         }
+    });
+
+    $(document).ready(function () {
+        // Establecer el idioma de Moment.js en español
+        moment.locale('es');
+
+        // Configurar bootstrapMaterialDatePicker con el formato y opciones deseadas
+        $('#CreateViewModel_DeliveryDate').bootstrapMaterialDatePicker({
+            minDate: moment(),
+            time: false,
+            format: 'DD/MM/YYYY',
+            cancelText: 'Cancelar',
+            weekStart: 1,
+            lang: 'es',
+        });
     });
 </script>
 
@@ -471,20 +516,12 @@
             method: $(form).attr('method'), // Utiliza el método del formulario
             data: $(form).serialize() + "&" + $.param(paymentMethodsData) + "&" + $.param(formatsData), // Utiliza los datos del formulario
             success: function (response) {
+                console.log(response);
                 Swal.fire({
                     icon: 'success',
                     title: response.message,
                     confirmButtonColor: '#1e88e5',
                 });
-                $("#btnCloseModalCreate").click();
-                if (action === 'create') {
-                    fillTable(response.data);
-                } else if (action === 'edit') {
-                    fillTable(response.data);
-                    removeFromTable(response.data.id);
-                } else {
-                    removeFromTable(response.data);
-                }
             },
             error: function (errorThrown) {
                 Swal.fire({

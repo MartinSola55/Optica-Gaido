@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Optica_Gaido.Data.Repository.IRepository;
 using Optica_Gaido.Models;
 using Optica_Gaido.Models.ViewModels.Materials;
 
 namespace Optica_Gaido.Controllers
 {
+    [Authorize]
     public class MaterialsController : Controller
     {
         private readonly IWorkContainer _workContainer;

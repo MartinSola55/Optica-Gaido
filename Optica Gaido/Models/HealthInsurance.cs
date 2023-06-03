@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Optica_Gaido.Models;
@@ -17,6 +18,7 @@ public partial class HealthInsurance
 
     [Required(ErrorMessage = "Debes seleccionar si está o no habilitada")]
     [Display(Name = "Habilitada")]
+    [DefaultValue(true)]
     public bool IsActive { get; set; } = true;
 
     //public virtual ICollection<Client> Clients { get; set; } = new List<Client>();

@@ -7,21 +7,21 @@ $.fn.numericInputExample = function () {
         let cell = $(this),
             column = cell.index();
 
-
         table.find('tbody tr').each(function () {
             let row = $(this);
         });
 
-        if (column === 0 || column === 1) {
-            return false; // changes can be rejected
+        if (!cell.hasClass('validateCol')) {
+            return false;
         }
+        
     }).on('validate', function (evt, value) {
-        let cell = $(this),
-            column = cell.index();
+        let cell = $(this);
 
-        if (column >= 2) {
-            return !isNaN(parseFloat(value)) && isFinite(value);
+        if (cell.hasClass('validateCol')) {
+            return value === "" || (!isNaN(parseFloat(value)) && isFinite(value));
         }
+        return false;
     });
 
     return this;

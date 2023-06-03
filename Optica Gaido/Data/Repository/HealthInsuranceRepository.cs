@@ -41,7 +41,7 @@ namespace Optica_Gaido.Data.Repository
 
         public bool IsDuplicated(HealthInsurance healthInsurance)
         {
-            var dbObject = _db.HealthInsurances.FirstOrDefault(x => string.Equals(x.Name, healthInsurance.Name, StringComparison.OrdinalIgnoreCase) && x.ID != healthInsurance.ID);
+            var dbObject = _db.HealthInsurances.FirstOrDefault(x => x.Name.ToLower() == healthInsurance.Name.ToLower() && x.ID != healthInsurance.ID);
             return dbObject != null;
         }
 

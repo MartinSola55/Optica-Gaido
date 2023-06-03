@@ -40,7 +40,7 @@ namespace Optica_Gaido.Data.Repository
 
         public bool IsDuplicated(PaymentMethod method)
         {
-            var dbObject = _db.PaymentMethods.FirstOrDefault(x => string.Equals(x.Name, method.Name, StringComparison.OrdinalIgnoreCase) && x.ID != method.ID);
+            var dbObject = _db.PaymentMethods.FirstOrDefault(x => x.Name.ToLower() == method.Name.ToLower() && x.ID != method.ID);
             return dbObject != null;
         }
 

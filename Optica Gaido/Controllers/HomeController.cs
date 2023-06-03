@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace Optica_Gaido.Controllers
 {
-    // [Authorize]
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly IWorkContainer _workContainer;

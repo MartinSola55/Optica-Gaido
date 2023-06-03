@@ -43,8 +43,8 @@ namespace Optica_Gaido.Data.Repository
         public bool IsDuplicated(Doctor doctor)
         {
             var dbObject = _db.Doctors.FirstOrDefault(
-                x => ((string.Equals(x.Name, doctor.Name, StringComparison.OrdinalIgnoreCase) && string.Equals(x.Surname, doctor.Surname, StringComparison.OrdinalIgnoreCase)) ||
-                string.Equals(x.License, doctor.License, StringComparison.OrdinalIgnoreCase)) && x.ID != doctor.ID);
+                x => ((x.Name.ToLower() == doctor.Name.ToLower() && x.Surname.ToLower() == doctor.Surname.ToLower()) ||
+                x.License.ToLower() == doctor.License.ToLower()) && x.ID != doctor.ID); ;
             return dbObject != null;
         }
 

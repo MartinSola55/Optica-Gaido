@@ -38,8 +38,8 @@ namespace Optica_Gaido.Data.Repository
         public bool IsDuplicated(Client client)
         {
             var dbObject = _db.Clients.FirstOrDefault(
-                x => string.Equals(x.Name, client.Name, StringComparison.OrdinalIgnoreCase) && string.Equals(x.Surname, client.Surname, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(x.Phone, client.Phone, StringComparison.OrdinalIgnoreCase) && x.ID != client.ID);
+                x =>x.Name.ToLower() == client.Name.ToLower() &&x.Surname.ToLower() == client.Surname.ToLower() &&
+                x.Phone.ToLower() == client.Phone.ToLower() && x.ID != client.ID);
 
             return dbObject != null;
         }

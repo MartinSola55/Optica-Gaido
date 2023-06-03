@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Optica_Gaido.Data;
 using Optica_Gaido.Data.Repository.IRepository;
@@ -10,6 +11,7 @@ using Optica_Gaido.Models.ViewModels.Brands;
 
 namespace Optica_Gaido.Controllers
 {
+    [Authorize]
     public class BrandsController : Controller
     {
         private readonly IWorkContainer _workContainer;

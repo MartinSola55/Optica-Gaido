@@ -22,6 +22,9 @@ public partial class GlassFormat
     [Key]
     public long ID { get; set; }
 
+    [Required]
+    public long SaleID { get; set; }
+
     [Required(ErrorMessage = "Debes ingresar una distancia")]
     public Distance Distance { get; set; }
 
@@ -43,5 +46,5 @@ public partial class GlassFormat
     [Display(Name = "Eliminado")]
     public DateTime? DeletedAt { get; set; }
 
-    public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
+    public virtual Sale Sale { get; set; } = null!;
 }

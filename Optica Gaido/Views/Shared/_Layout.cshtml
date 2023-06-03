@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
+
+<!DOCTYPE html>
 <html lang="es">
     <head>
         <meta charset="utf-8" />
@@ -49,8 +53,7 @@
         <script src="~/lib/wizard/jquery.validate.min.js"></script>
         <!-- Sweet-Alert  -->
         <script src="~/lib/sweetalert/sweetalert.min.js"></script>
-        <script src="~/lib/wizard/steps.js"></script>
-
+@*      <script src="~/lib/wizard/steps.js"></script>*@
 
         <!-- ============================================================== -->
         <!-- Style switcher -->
@@ -79,13 +82,16 @@
             <partial name="_LoginPartial" />
         </div>
 
-        <main role="main" class="page-wrapper">
+        <main role="main" class="@(SignInManager.IsSignedIn(User) ? "page-wrapper" : "")">
             @RenderBody()
         </main>
 
-        <footer class="footer">
-                &copy; 2023 - Óptica Gaido
-        </footer>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <footer class="footer">
+                    &copy; 2023 - Óptica Gaido
+            </footer>
+        }
 
         @await RenderSectionAsync("Scripts", required: false)
     </body>

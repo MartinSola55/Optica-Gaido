@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Optica_Gaido.Data.Repository.IRepository;
@@ -8,6 +9,7 @@ using Optica_Gaido.Models.ViewModels.Frames;
 
 namespace Optica_Gaido.Controllers
 {
+    [Authorize]
     public class FramesController : Controller
     {
         private readonly IWorkContainer _workContainer;

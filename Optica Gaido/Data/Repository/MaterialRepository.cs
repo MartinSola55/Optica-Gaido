@@ -41,7 +41,7 @@ namespace Optica_Gaido.Data.Repository
 
         public bool IsDuplicated(Material material)
         {
-            var dbObject = _db.Materials.FirstOrDefault(x => string.Equals(x.Description, material.Description, StringComparison.OrdinalIgnoreCase) && x.ID != material.ID);
+            var dbObject = _db.Materials.FirstOrDefault(x => x.Description.ToLower() == material.Description.ToLower() && x.ID != material.ID);
             return dbObject != null;
         }
 

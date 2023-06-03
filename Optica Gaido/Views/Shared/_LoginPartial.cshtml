@@ -2,7 +2,7 @@
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
-@if (!SignInManager.IsSignedIn(User))
+@if (SignInManager.IsSignedIn(User))
 {
     <header class="topbar">
         <nav class="navbar top-navbar navbar-expand-md navbar-light">
@@ -54,15 +54,15 @@
                                     <div class="dw-user-box">
                                         <div class="u-img"><img src="~/images/profile.png" alt="Usuario"></div>
                                         <div class="u-text">
-                                            <h4>@User.Identity.Name</h4>
+                                            <h4>@*@User.Identity.Name*@Nombre</h4>
                                             <p class="text-muted">@User.Identity.Name</p>
                                         </div>
                                     </div>
                                 </li>
                                 <li role="separator" class="divider"></li>
                                 <li>
-                                    <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                                        <button type="submit" class="nav-link btn btn-link text-dark"><i class="fa fa-power-off"></i>Cerrar sesión</button>
+                                    <form id="logout-form" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                        <a style="cursor: pointer" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-power-off"></i> Cerrar sesión</a>
                                     </form>
                                 </li>
                             </ul>

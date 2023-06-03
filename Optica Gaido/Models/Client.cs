@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -45,6 +46,7 @@ public partial class Client
 
     [Required(ErrorMessage = "Debes seleccionar si está o no habilitado")]
     [Display(Name = "Habilitado")]
+    [DefaultValue(true)]
     public bool IsActive { get; set; } = true;
 
     public DateTime CreatedAt { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Optica_Gaido.Models;
@@ -16,6 +17,7 @@ public partial class PaymentMethod
 
     [Required(ErrorMessage = "Debes seleccionar si está o no habilitado")]
     [Display(Name = "Habilitado")]
+    [DefaultValue(true)]
     public bool IsActive { get; set; } = true;
 
     public virtual ICollection<SalePaymentMethod> SalePaymentMethods { get; set; } = new List<SalePaymentMethod>();

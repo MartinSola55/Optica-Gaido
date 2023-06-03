@@ -21,7 +21,11 @@ namespace Optica_Gaido.Data.Repository.IRepository
         ISellerRepository Seller { get; }
         IGlassColorRepository GlassColor { get; }
         IGlassTypeRepository GlassType { get; }
+        ISaleRepository Sale { get; }
 
+        void BeginTransaction();
+        void Commit();
+        void Rollback();
         void Save();
     }
 }
