@@ -9,6 +9,7 @@ namespace Optica_Gaido.Data.Repository.IRepository
 {
     public interface ISaleRepository : IRepository<Sale>
     {
+        IEnumerable<SelectListItem> GetYears();
         void Update(Sale sale);
         void SoftDelete(long id);
     }

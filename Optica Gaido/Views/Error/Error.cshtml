@@ -34,8 +34,11 @@
             <div class="error-body text-center">
                 <h1 class="text-info">@(Model.ErrorCode.Value)</h1>
                 <h3 class="text-uppercase">ERROR</h3>
-                <p class="text-muted m-t-30 m-b-30">@(Model.Message)</p>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-info btn-rounded waves-effect waves-light m-b-40">Volver al inicio</a>
+                <p class="text-muted m-t-30 m-b-30">@Html.Raw(Model.Message.Replace("\n", "<br>"))</p>
+                @if (Model.ErrorCode < 500)
+                {
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-info btn-rounded waves-effect waves-light m-b-40">Volver al inicio</a>
+                }
             </div>
             <footer class="footer text-center">© @DateTime.UtcNow.AddHours(-3).ToString("yyyy") - Óptica Gaido</footer>
         </div>

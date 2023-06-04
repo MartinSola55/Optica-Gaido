@@ -20,5 +20,5 @@ public partial class PaymentMethod
     [DefaultValue(true)]
     public bool IsActive { get; set; } = true;
 
-    public virtual ICollection<SalePaymentMethod> SalePaymentMethods { get; set; } = new List<SalePaymentMethod>();
+    //public virtual ICollection<SalePaymentMethod> SalePaymentMethods { get; set; } = new List<SalePaymentMethod>();
 }

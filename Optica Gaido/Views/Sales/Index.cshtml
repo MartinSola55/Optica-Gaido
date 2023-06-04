@@ -1,0 +1,161 @@
+﻿@model Optica_Gaido.Models.ViewModels.Sales.IndexViewModel
+
+@{
+    ViewData["Title"] = "Ventas";
+}
+
+<!-- Data table -->
+<link href="~/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
+
+<!-- This is data table -->
+<script src="~/lib/datatables/datatables.min.js"></script>
+
+<div class="container-fluid">
+    <!-- ============================================================== -->
+    <!-- Bread crumb and right sidebar toggle -->
+    <!-- ============================================================== -->
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Ventas</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
+                <li class="breadcrumb-item active">Ventas</li>
+            </ol>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Bread crumb and right sidebar toggle -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Start Page Content -->
+    <!-- ============================================================== -->
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-column flex-sm-row justify-content-start">
+                        <h2 class="card-title mr-2">Ventas del año</h2>
+                        @Html.DropDownList("yearSelected", Model.Years, new { @class = "form-control", @style = "max-width: fit-content" })
+                    </div>
+                    <div class="table-responsive m-t-10">
+                        <table id="DataTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="col-3">Cliente</th>
+                                    <th class="col-2">Vendido</th>
+                                    <th class="col-2">Entrega</th>
+                                    <th class="col-1">Precio</th>
+                                    <th class="col-1">Seña</th>
+                                    <th class="col-3">Pagos</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_body">
+                                @foreach (var item in Model.Sales)
+                                {
+                                    <tr data-id="@item.ID">
+                                        <td>@Html.DisplayFor(x => item.Client.Surname), @Html.DisplayFor(x => item.Client.Name)</td>
+                                        <td>@item.CreatedAt.ToString("dd/MM/yyyy - HH:mm")</td>
+                                        <td>@item.DeliveryDate.ToString("dd/MM/yyyy")</td>
+                                        <td>$@(item.Price.ToString("0"))</td>
+                                        <td>$@(item.Deposit.Value.ToString("0"))</td>
+                                        <td>
+                                            @foreach (var pm in item.SalePaymentMethods)
+                                            {
+                                                <span>@pm.PaymentMethod.Name: $@pm.Amount.ToString("0")</span><br />
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#DataTable').DataTable({
+        "order": [[1, "desc"]],
+        "language": {
+            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ ventas",
+            "sInfoEmpty": "Mostrando 0 a 0 de 0 ventas",
+            "sInfoFiltered": "(filtrado de _MAX_ ventas en total)",
+            "emptyTable": 'No hay ventas que coincidan con la búsqueda',
+            "sLengthMenu": "Mostrar _MENU_ ventas",
+            "sSearch": "Buscar:",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior",
+            },
+        },
+    });
+</script>
+
+<script>
+    function createDateWithTime(dateString) {
+        let date = new Date(dateString);
+        let day = ("0" + date.getDate()).slice(-2);
+        let month = ("0" + (date.getMonth() + 1)).slice(-2);
+        let year = date.getFullYear();
+        let hours = ("0" + date.getHours()).slice(-2);
+        let minutes = ("0" + date.getMinutes()).slice(-2);
+        return day + "/" + month + "/" + year + " - " + hours + ":" + minutes;
+    }
+
+    function createDate(date) {
+        return new Date(date).toLocaleString("es-AR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        });
+    }
+
+    function fillTable(data) {
+        data.forEach(function (s) {
+            let methods = "";
+            s.paymentMethods.forEach(function (pm) {
+                methods += `<span>${pm.paymentMethod.name}: $${pm.amount}</span><br />`;
+            })
+            let row = [
+                `${s.surname}, ${s.name}`,
+                createDateWithTime(s.createdAt),
+                createDate(s.deliveryDate),
+                `$${s.price}`,
+                `$${s.deposit}`,
+                methods
+            ];
+            $('#DataTable').DataTable().row.add(row).draw();
+        });
+    }
+
+    function removeFromTable() {
+        $('#DataTable').DataTable().clear().draw();
+    }
+
+    $("#yearSelected").on("change", function () {
+        $.ajax({
+            url: "/Sales/GetSalesByYear", // Utiliza la ruta del formulario
+            method: "GET", // Utiliza el método del formulario
+            data: { year: $(this).val() }, // Utiliza los datos del formulario
+            success: function (response) {
+                removeFromTable();
+                fillTable(response.data);
+            },
+            error: function (errorThrown) {
+                Swal.fire({
+                    icon: 'error',
+                    title: errorThrown.responseJSON.title,
+                    text: errorThrown.responseJSON.message,
+                    confirmButtonColor: '#1e88e5',
+                });
+            }
+        });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

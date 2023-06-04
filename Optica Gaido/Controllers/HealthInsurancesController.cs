@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Optica_Gaido.Data;
 using Optica_Gaido.Data.Repository.IRepository;
 using Optica_Gaido.Models;
@@ -26,12 +27,20 @@ namespace Optica_Gaido.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            IndexViewModel viewModel = new()
+            try
             {
-                HealthInsurances = _workContainer.HealthInsurance.GetAll(),
-                CreateViewModel = new HealthInsurance()
-            };
-            return View(viewModel);
+                IndexViewModel viewModel = new()
+                {
+                    HealthInsurances = _workContainer.HealthInsurance.GetAll(),
+                    CreateViewModel = new HealthInsurance()
+                };
+                return View(viewModel);
+            }
+            catch (Exception)
+            {
+                TempData["ObjectData"] = JsonConvert.SerializeObject(new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpPost]
@@ -164,11 +173,7 @@ namespace Optica_Gaido.Controllers
         }
 
         #region Llamadas a la API
-        [HttpGet]
-        public IActionResult GetDropDownList()
-        {
-            return Json(new { data = _workContainer.HealthInsurance.GetDropDownList() });
-        }
+
         #endregion
     }
 }

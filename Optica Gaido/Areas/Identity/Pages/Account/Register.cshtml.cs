@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Optica_Gaido.Areas.Identity.Pages.Account
 {
+    [Authorize(Policy = "DisallowRegistration")]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;

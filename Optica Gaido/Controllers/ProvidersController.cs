@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Optica_Gaido.Data.Repository.IRepository;
 using Optica_Gaido.Models;
 using Optica_Gaido.Models.ViewModels.Providers;
@@ -19,12 +20,20 @@ namespace Optica_Gaido.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            IndexViewModel viewModel = new()
+            try
             {
-                Providers = _workContainer.Provider.GetAll(),
-                CreateViewModel = new Provider()
-            };
-            return View(viewModel);
+                IndexViewModel viewModel = new()
+                {
+                    Providers = _workContainer.Provider.GetAll(),
+                    CreateViewModel = new Provider()
+                };
+                return View(viewModel);
+            }
+            catch (Exception)
+            {
+                TempData["ObjectData"] = JsonConvert.SerializeObject(new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpPost]

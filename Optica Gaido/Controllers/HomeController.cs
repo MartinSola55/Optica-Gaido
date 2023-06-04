@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Optica_Gaido.Data.Repository.IRepository;
 using Optica_Gaido.Models;
 using Optica_Gaido.Models.ViewModels.Home;
@@ -18,6 +19,13 @@ namespace Optica_Gaido.Controllers
         }
 
         [HttpGet]
+        public IActionResult Error()
+        {
+            var error = JsonConvert.DeserializeObject<ErrorViewModel>(TempData["ObjectData"].ToString());
+            return View("~/Views/Error.cshtml", error);
+        }
+
+        [HttpGet]
         public IActionResult Index()
         {
             IndexViewModel viewModel = new()
@@ -27,10 +35,10 @@ namespace Optica_Gaido.Controllers
             return View(viewModel);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        /*[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        }*/
     }
 }

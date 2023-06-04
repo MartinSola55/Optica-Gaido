@@ -19,6 +19,15 @@ builder.Services.AddControllersWithViews();
 // Agregar work container
 builder.Services.AddScoped<IWorkContainer, WorkContainer>();
 
+// Negar nuevos registros
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("DisallowRegistration", policy =>
+    {
+        policy.RequireAuthenticatedUser(); // Requiere que el usuario esté autenticado
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

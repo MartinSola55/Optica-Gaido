@@ -2,11 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
+using Newtonsoft.Json;
 using Optica_Gaido.Data;
+using Optica_Gaido.Data.Repository;
 using Optica_Gaido.Data.Repository.IRepository;
 using Optica_Gaido.Models;
 using Optica_Gaido.Models.ViewModels.Sales;
@@ -24,38 +28,62 @@ namespace Optica_Gaido.Controllers
         }
 
         [HttpGet]
-        public IActionResult New(long id)
+        public IActionResult Index()
         {
-            Client client = _workContainer.Client.GetOneWithProperties(id, properties: "HealthInsurance");
-            if (client == null)
+            try
             {
-                return this.CustomError(new ErrorViewModel { Message = "El cliente no existe", ErrorCode = 404 });
+                Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year == DateTime.UtcNow.AddHours(-3).Year;
+                IndexViewModel viewModel = new()
+                {
+                    Sales = _workContainer.Sale.GetAll(filter, includeProperties: "Client, SalePaymentMethods, SalePaymentMethods.PaymentMethod"),
+                    Years = _workContainer.Sale.GetYears()
+                };
+                return View(viewModel);
             }
-            List<SalePaymentMethod> methods = new();
-
-            foreach (var method in _workContainer.PaymentMethod.GetAll())
+            catch (Exception)
             {
-                methods.Add(new SalePaymentMethod() { PaymentMethod = method });
+                TempData["ObjectData"] = JsonConvert.SerializeObject(new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+                return RedirectToAction("Error", "Home");
             }
-
-            NewViewModel viewModel = new()
-            {
-                Doctors = _workContainer.Doctor.GetDropDownList(),
-                Sellers = _workContainer.Seller.GetDropDownList(),
-                Frames = _workContainer.Frame.GetAll(includeProperties: "Brand, Material"),
-                SalePaymentMethods = methods,
-                GlassTypes = _workContainer.GlassType.GetAll(),
-                GlassColors = _workContainer.GlassColor.GetDropDownList(),
-                Client = client
-            };
-            return View(viewModel);
         }
 
         [HttpGet]
-        public IActionResult CustomError(ErrorViewModel error)
+        public IActionResult New(long id)
         {
-            return View("~/Views/Error/CustomError.cshtml", error);
+            try
+            {
+                Client client = _workContainer.Client.GetOneWithProperties(id, properties: "HealthInsurance");
+                if (client == null)
+                {
+                    TempData["ObjectData"] = JsonConvert.SerializeObject(new ErrorViewModel { Message = "El cliente no existe", ErrorCode = 404 });
+                    return RedirectToAction("Error", "Home");
+                }
+                List<SalePaymentMethod> methods = new();
+
+                foreach (var method in _workContainer.PaymentMethod.GetAll())
+                {
+                    methods.Add(new SalePaymentMethod() { PaymentMethod = method });
+                }
+
+                NewViewModel viewModel = new()
+                {
+                    Doctors = _workContainer.Doctor.GetDropDownList(),
+                    Sellers = _workContainer.Seller.GetDropDownList(),
+                    Frames = _workContainer.Frame.GetAll(includeProperties: "Brand, Material"),
+                    SalePaymentMethods = methods,
+                    GlassTypes = _workContainer.GlassType.GetAll(),
+                    GlassColors = _workContainer.GlassColor.GetDropDownList(),
+                    Client = client
+                };
+                return View(viewModel);
+            }
+            catch (Exception)
+            {
+                TempData["ObjectData"] = JsonConvert.SerializeObject(new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+                return RedirectToAction("Error", "Home");
+            }
         }
+
 
         [HttpPost]
         [ActionName("Create")]
@@ -209,5 +237,44 @@ namespace Optica_Gaido.Controllers
                 });
             }
         }
+
+
+        #region Llamadas a la API
+
+        [HttpGet]
+        public IActionResult GetSalesByYear(string year)
+        {
+            try
+            {
+                Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year.ToString() == year;
+                var sales = _workContainer.Sale.GetAll(filter, includeProperties: "Client, SalePaymentMethods, SalePaymentMethods.PaymentMethod")
+                    .Select(x => new
+                    {
+                        name = x.Client.Name,
+                        surname = x.Client.Surname,
+                        createdAt = x.CreatedAt,
+                        deliveryDate = x.DeliveryDate,
+                        price = x.Price,
+                        deposit = x.Deposit,
+                        paymentMethods = x.SalePaymentMethods
+                    });
+                return Json(new
+                {
+                    success = true,
+                    data = sales
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    title = "Error al recuperar las ventas del " + year,
+                    message = "Intente nuevamente o comuníquese para soporte",
+                    error = e.Message,
+                });
+            }
+        }
+        #endregion
     }
 }

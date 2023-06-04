@@ -50,5 +50,21 @@ namespace Optica_Gaido.Data.Repository
                 _db.SaveChanges();
             }
         }
+
+        public IEnumerable<SelectListItem> GetYears()
+        {
+            var years = this.GetAll()
+            .Select(sale => sale.CreatedAt.Year)
+            .Distinct()
+            .OrderByDescending(year => year)
+            .ToList();
+
+            return years.Select(year => new SelectListItem
+            {
+                Text = year.ToString(),
+                Value = year.ToString(),
+                Selected = (year == DateTime.UtcNow.AddHours(-3).Year)
+            });
+        }
     }
 }

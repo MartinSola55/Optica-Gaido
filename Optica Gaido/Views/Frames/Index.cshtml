@@ -53,10 +53,12 @@
                                     <div class="col-12 mb-3">
                                         <label asp-for="CreateViewModel.BrandID" class="mb-0"></label>
                                         @Html.DropDownListFor(x => x.CreateViewModel.BrandID, Model.Brands, null, new { @class = "form-control" })
+                                        <span asp-validation-for="CreateViewModel.BrandID" class="text-danger"></span>
                                     </div>
                                     <div class="col-12 mb-3">
                                         <label asp-for="CreateViewModel.MaterialID" class="mb-0"></label>
                                         @Html.DropDownListFor(x => x.CreateViewModel.MaterialID, Model.Materials, null, new { @class = "form-control" })
+                                        <span asp-validation-for="CreateViewModel.MaterialID" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>

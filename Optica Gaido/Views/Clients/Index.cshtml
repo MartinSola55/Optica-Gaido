@@ -71,13 +71,14 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">$</span>
                                             </div>
-                                            <input asp-for="CreateViewModel.Debt" class="form-control" type="number" required />
+                                            <input asp-for="CreateViewModel.Debt" class="form-control" type="number" required data-val-number="Debes ingresar un número" />
                                         </div>
                                         <span asp-validation-for="CreateViewModel.Debt" class="text-danger"></span>
                                     </div>
                                     <div class="col-12 mb-3">
                                         <label asp-for="CreateViewModel.HealthInsuranceID" class="mb-0"></label>
                                         @Html.DropDownListFor(x => x.CreateViewModel.HealthInsuranceID, Model.HealthInsurances, null, new { @class = "form-control" })
+                                        <span asp-validation-for="CreateViewModel.HealthInsuranceID" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
@@ -254,7 +255,7 @@
 
 <script>
     $("#btnAdd").on("click", function () {
-        $("#modalTitle").text("Agregar client");
+        $("#modalTitle").text("Agregar cliente");
         $("#formContainer form").attr("action", "/Clients/Create");
         $("#formContainer form").attr("id", "form-create");
         $("#formContainer form input:not([type='hidden']").val("");
@@ -275,7 +276,7 @@
         $("input[name='CreateViewModel.ID']").val(entity.id);
         $("input[name='CreateViewModel.ID']").prop("disabled", false);
 
-        $("#modalTitle").text("Editar client");
+        $("#modalTitle").text("Editar cliente");
         $("#formContainer form").attr("action", "/Clients/Edit");
         $("#formContainer form").attr("id", "form-edit");
         $("#btnSendModal").text("Confirmar");
