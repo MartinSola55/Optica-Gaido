@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Optica_Gaido.Data;
@@ -12,6 +13,7 @@ using Optica_Gaido.Models.ViewModels.Sales;
 
 namespace Optica_Gaido.Controllers
 {
+    [Authorize]
     public class SalesController : Controller
     {
         private readonly IWorkContainer _workContainer;
@@ -40,6 +42,7 @@ namespace Optica_Gaido.Controllers
             {
                 Doctors = _workContainer.Doctor.GetDropDownList(),
                 Sellers = _workContainer.Seller.GetDropDownList(),
+                Frames = _workContainer.Frame.GetAll(includeProperties: "Brand, Material"),
                 SalePaymentMethods = methods,
                 GlassTypes = _workContainer.GlassType.GetAll(),
                 GlassColors = _workContainer.GlassColor.GetDropDownList(),
@@ -79,8 +82,11 @@ namespace Optica_Gaido.Controllers
                     if(_workContainer.GlassType.GetOne(newSale.GlassTypeID) == null) return customBadRequest("El tipo de vidrio ingresado no existe");
                     if(_workContainer.GlassColor.GetOne(newSale.GlassColorID) == null) return customBadRequest("El color de vidrio ingresado no existe");
                     if(_workContainer.Doctor.GetOne(newSale.DoctorID) == null) return customBadRequest("El médico ingresado no existe");
-                    if(_workContainer.Seller.GetOne(newSale.SellerID) == null) return customBadRequest("El vendedor ingresado no existe");
+                    if(_workContainer.Seller.GetOne(newSale.SellerID) == null) return customBadRequest("El vendedor/a ingresado/a no existe");
+                    //if (newSale.FrameID != 0) // Agregar este if si pongo que el marco puede ser nulo al crear la venta
+                    if(_workContainer.Frame.GetOne(newSale.FrameID) == null) return customBadRequest("El marco ingresado no existe");
 
+                    newSale.CreatedAt = DateTime.UtcNow.AddHours(-3);
                     _workContainer.Sale.Add(newSale);
                     _workContainer.Save();
 
@@ -98,7 +104,6 @@ namespace Optica_Gaido.Controllers
                     return Json(new
                     {
                         success = true,
-                        data = sale.CreateViewModel,
                         message = "La venta se creó correctamente",
                     });
                 }

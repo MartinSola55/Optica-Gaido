@@ -8,31 +8,23 @@
 <link href="~/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet" />
 <link href="~/lib/icheck/skins/all.css" rel="stylesheet" />
 <link href="~/lib/wizard/steps.css" rel="stylesheet" />
-
 <!-- Datepicker -->
 <link href="~/lib/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet">
 
 <!-- Datepicker -->
 <script src="~/lib/moment/moment-with-locales.js"></script>
-@*<script src="https://cdn.jsdelivr.net/npm/moment-with-locales@2.29.1/moment-with-locales.min.js"></script>*@
 <script src="~/lib/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
-
-<!-- This is data table -->
-<script src="~/lib/datatables/datatables.min.js"></script>
-
 <!-- Editable -->
 <script src="~/lib/jquery-datatables-editable/jquery.dataTables.js"></script>
-<script src="~/lib/datatables/media/js/dataTables.bootstrap.js"></script>
+<script src="~/lib/datatables/datatables.min.js"></script>
 <script src="~/lib/tiny-editable/mindmup-editabletable.js"></script>
 <script src="~/lib/tiny-editable/numeric-input-validation.js"></script>
-
 <!-- icheck -->
 <script src="~/lib/icheck/icheck.min.js"></script>
 <script src="~/lib/icheck/icheck.init.js"></script>
-
 <!-- Steps -->
 <script src="~/lib/wizard/jquery.steps.min.js"></script>
-@*<script src="~/lib/wizard/steps.js"></script>*@
+
 <div class="container-fluid">
     <!-- ============================================================== -->
     <!-- Bread crumb and right sidebar toggle -->
@@ -258,28 +250,28 @@
                                             <tr>
                                                 <td rowspan="2">Lejos</td>
                                                 <td>Derecho</td>
-                                                <td class="validateCol"></td>
-                                                <td class="validateCol"></td>
-                                                <td class="validateCol"></td>
+                                                <td class="validateCol column1"></td>
+                                                <td class="validateCol column2"></td>
+                                                <td class="validateCol column3"></td>
                                             </tr>
                                             <tr>
                                                 <td>Izquierdo</td>
-                                                <td class="validateCol"></td>
-                                                <td class="validateCol"></td>
-                                                <td class="validateCol"></td>
+                                                <td class="validateCol column1"></td>
+                                                <td class="validateCol column2"></td>
+                                                <td class="validateCol column3"></td>
                                             </tr>
                                             <tr>
                                                 <td rowspan="2">Cerca</td>
                                                 <td>Derecho</td>
-                                                <td class="validateCol"></td>
-                                                <td class="validateCol"></td>
-                                                <td class="validateCol"></td>
+                                                <td class="validateCol column1"></td>
+                                                <td class="validateCol column2"></td>
+                                                <td class="validateCol column3"></td>
                                             </tr>
                                             <tr>
                                                 <td>Izquierdo</td>
-                                                <td class="validateCol"></td>
-                                                <td class="validateCol"></td>
-                                                <td class="validateCol"></td>
+                                                <td class="validateCol column1"></td>
+                                                <td class="validateCol column2"></td>
+                                                <td class="validateCol column3"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -293,7 +285,31 @@
                             <hr class="m-t-0 m-b-20">
                             <div class="row col-12 m-0 p-0">
 
-                                
+                                <div class="table-responsive">
+                                    <table id="DataTable" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-4">Modelo</th>
+                                                <th class="col-3">Marca</th>
+                                                <th class="col-3">Material</th>
+                                                <th class="col-2">Seleccionar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table_body">
+                                            @foreach (var item in Model.Frames)
+                                            {
+                                                <tr data-id="@item.ID">
+                                                    <td>@Html.DisplayFor(c => item.Model)</td>
+                                                    <td>@Html.DisplayFor(c => item.Brand.Name)</td>
+                                                    <td>@Html.DisplayFor(c => item.Material.Description)</td>
+                                                    <td class="text-center">
+                                                        <input type="radio" asp-for="CreateViewModel.FrameID" value="@item.ID" id="frame_@(item.ID)" class="check" data-radio="iradio_square-purple" />
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </section>
                         <!-- Step 5 -->
@@ -330,10 +346,36 @@
     </div>
 </div>
 
+<style>
+    #DataTable_wrapper > div:nth-child(2) > div > div > div.dataTables_scrollHead > div,
+    #DataTable_wrapper > div:nth-child(2) > div > div > div.dataTables_scrollHead > div > table {
+        width: 100% !important;
+    }
+</style>
+
 
 <script>
     $(document).ready(function () {
         $('#formatsTable').editableTableWidget().numericInputExample();
+        $('#DataTable').DataTable({
+            scrollY: '30vh',
+            scrollCollapse: true,
+            paging: false,
+            "language": {
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ marcos",
+                "sInfoEmpty": "Mostrando 0 a 0 de 0 marcos",
+                "sInfoFiltered": "(filtrado de _MAX_ marcos en total)",
+                "emptyTable": 'No hay marcos que coincidan con la búsqueda',
+                "sLengthMenu": "Mostrar _MENU_ marcos",
+                "sSearch": "Buscar:",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior",
+                },
+            },
+        });
     });
     $(".tab-wizard").steps({
         headerTag: "h6"
@@ -410,14 +452,14 @@
         $(".payment_method_checkbox:checked").each(function () {
             let checkbox = $(this);
             let payment_method_id = checkbox.data("id");
-            let amountInput = $(`input[data-id='${payment_method_id}'][type='number']`);
-
-            let paymentMethod = {
-                PaymentMethodID: payment_method_id,
-                Amount: amountInput.val()
-            };
-
-            paymentMethods.push(paymentMethod);
+            let amount = $(`input[data-id='${payment_method_id}'][type='number']`).val();
+            if (amount !== "" && amount != null) {
+                let paymentMethod = {
+                    PaymentMethodID: payment_method_id,
+                    Amount: amount
+                };
+                paymentMethods.push(paymentMethod);
+            }
         });
 
         // Crear un objeto que contenga los métodos de pago y sus cantidades
@@ -440,6 +482,7 @@
         let dip = $("input[name='CreateViewModel.Dip']").val();
         let seller = $("select[name='CreateViewModel.SellerID']").val();
         let doctor = $("select[name='CreateViewModel.DoctorID']").val();
+        let date = $("input[name='CreateViewModel.DeliveryDate']").val();
 
         if (price == "" || isNaN(parseInt(price))) return fireAlert("Debes ingresar un precio");
         if (deposit.length > 0 && isNaN(parseInt(deposit))) return fireAlert("Debes ingresar una seña válida");
@@ -449,6 +492,7 @@
         if (dip == "") return fireAlert("Debes ingresar una distancia interpupilar");
         if (seller == null) return fireAlert("Debes ingresar un vendedor/a");
         if (doctor == null) return fireAlert("Debes ingresar un médico");
+        if (date == "") return fireAlert("Debes ingresar una fecha de entrega");
 
         return true;
     }
@@ -456,14 +500,22 @@
     let formatsData;
     function validateFormats() {
         let formats = [];
-
+        let valid = true;
         // Obtener los valores de las columnas 3, 4 y 5 de todas las filas
         $('#formatsTable tbody tr').each(function (index) {
             let $row = $(this);
             let rowNumber = index + 1;
-            let esferic = $row.find('td:eq(2)').text().trim();
-            let cilindric = $row.find('td:eq(3)').text().trim();
-            let axis = $row.find('td:eq(4)').text().trim();
+            let esferic = $row.find('td.column1').text().trim();
+            let cilindric = $row.find('td.column2').text().trim();
+            let axis = $row.find('td.column3').text().trim();
+
+            // Validar que ninguna de las tres columnas esté vacía en una fila
+            if ((esferic != '' && (cilindric == '' || axis == '')) ||
+                (cilindric != '' && (esferic == '' || axis == '')) ||
+                (axis != '' && (esferic == '' || cilindric == ''))) {
+                valid = false;
+                return false;
+            }
 
             // Agregar los valores al arreglo
             if (esferic != '' && cilindric != '' && axis != '' && esferic != null && cilindric != null && axis != null) {
@@ -477,6 +529,9 @@
             }
         });
 
+        if (valid === false) return fireAlert("Alguna de las filas del formato no está completa");
+
+
         formatsData = {
             CreateViewModel: {
                 GlassFormats: formats
@@ -484,17 +539,8 @@
         };
 
         // Validar que exista al menos una fila completa
-        if (formats.length == 0) {
+        if (formats.length <= 0) {
             return fireAlert("Debes completar al menos una fila del formato");
-        } else {
-            // Verificar si las propiedades son números
-            formats.forEach(function (format) {
-                if (format.Esferic != '' && format.Esferic != null && format.Cilindric != '' && format.Cilindric != null && format.Axis != '' && format.Axis != null) {
-                    if (isNaN(parseFloat(format.Esferic))) return fireAlert("Alguno de los campos del formato no es válido");
-                    if (isNaN(parseFloat(format.Cilindric))) return fireAlert("Alguno de los campos del formato no es válido");
-                    if (isNaN(parseFloat(format.Axis))) return fireAlert("Alguno de los campos del formato no es válido");
-                }
-            });
         }
 
         return true;
@@ -503,6 +549,7 @@
     function validateData() {
         if (!validateSale()) return false;
         if (!validateFormats()) return false;
+        //if (!validateFrame()) return false;
         if (!validatePaymentMethods()) return false;
         return true;
     }
@@ -516,7 +563,6 @@
             method: $(form).attr('method'), // Utiliza el método del formulario
             data: $(form).serialize() + "&" + $.param(paymentMethodsData) + "&" + $.param(formatsData), // Utiliza los datos del formulario
             success: function (response) {
-                console.log(response);
                 Swal.fire({
                     icon: 'success',
                     title: response.message,
