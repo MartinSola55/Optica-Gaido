@@ -86,10 +86,25 @@
                     <ul id="sidebarnav">
 
                         @* ADMIN *@
-                        <li class="nav-small-cap">NEGOCIO</li>
+                        <li class="nav-small-cap">VENTAS</li>
                         <li>
                             <a class="waves-effect waves-dark" asp-area="" asp-controller="Home" asp-action="Index" aria-expanded="false"><i class="bi bi-house"></i><span class="hide-menu">Inicio</span></a>
                         </li>
+                        <li>
+                            <a class="waves-effect waves-dark" asp-area="" asp-controller="Sales" asp-action="Index" aria-expanded="false"><i class="bi bi-receipt"></i><span class="hide-menu">Ventas</span></a>
+                        </li>
+                        <li>
+                            <a class="waves-effect waves-dark" asp-area="" asp-controller="Providers" asp-action="Index" aria-expanded="false"><i class="bi bi-truck"></i><span class="hide-menu">Proveedores</span></a>
+                        </li>
+                        <li>
+                            <a class="waves-effect waves-dark" asp-area="" asp-controller="Expenses" asp-action="Index" aria-expanded="false"><i class="bi bi-cash"></i><span class="hide-menu">Gastos</span></a>
+                        </li>
+                        <li>
+                            <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-graph-up"></i><span class="hide-menu">Estadísticas</span></a>
+                        </li>
+                        <li class="nav-devider"></li>
+
+                        <li class="nav-small-cap">NEGOCIO</li>
                         <li>
                             <a class="waves-effect waves-dark" asp-area="" asp-controller="Frames" asp-action="Index" aria-expanded="false"><i class="bi bi-sunglasses"></i><span class="hide-menu">Marcos</span></a>
                         </li>
@@ -99,18 +114,6 @@
                         <li>
                             <a class="waves-effect waves-dark" asp-area="" asp-controller="Doctors" asp-action="Index" aria-expanded="false"><i class="fas fa-solid fa-user-doctor"></i><span class="hide-menu">Médicos</span></a>
                         </li>
-                        <li class="nav-devider"></li>
-
-                        <li class="nav-small-cap">VENTAS</li>
-                        <li>
-                            <a class="waves-effect waves-dark" asp-area="" asp-controller="Providers" asp-action="Index" aria-expanded="false"><i class="bi bi-truck"></i><span class="hide-menu">Proveedores</span></a>
-                        </li>
-                        <li>
-                            <a class="waves-effect waves-dark" asp-area="" asp-controller="Expenses" asp-action="Index" aria-expanded="false"><i class="bi bi-cash"></i><span class="hide-menu">Gastos</span></a>
-                        </li>
-                        <li>
-                            <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="bi bi-graph-up"></i><span class="hide-menu">Estadísticas</span></a>
-                        </li>                        
                         <li class="nav-devider"></li>
 
                         <li class="nav-small-cap">CONFIGURACIÓN</li>

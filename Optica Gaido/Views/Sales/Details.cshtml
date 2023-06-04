@@ -1,0 +1,324 @@
+﻿@model Optica_Gaido.Models.ViewModels.Sales.DetailsViewModel
+
+@{
+    ViewData["Title"] = "Ventas";
+}
+
+<!-- Styles -->
+<link href="~/lib/icheck/skins/all.css" rel="stylesheet" />
+<!-- Data table -->
+<link href="~/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
+<!-- Switchery -->
+<link href="~/lib/switchery/dist/switchery.min.css" rel="stylesheet" />
+<!-- Datepicker -->
+<link href="~/lib/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet">
+
+<!-- Data table -->
+<script src="~/lib/datatables/datatables.min.js"></script>
+<!-- Switchery -->
+<script src="~/lib/switchery/dist/switchery.min.js"></script>
+<!-- icheck -->
+<script src="~/lib/icheck/icheck.min.js"></script>
+<script src="~/lib/icheck/icheck.init.js"></script>
+<!-- Datepicker -->
+<script src="~/lib/moment/moment-with-locales.js"></script>
+<script src="~/lib/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+
+<div class="container-fluid">
+    <!-- ============================================================== -->
+    <!-- Bread crumb and right sidebar toggle -->
+    <!-- ============================================================== -->
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Ventas</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Sales" asp-action="Index">Ventas</a></li>
+                <li class="breadcrumb-item active">Detalles</li>
+            </ol>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Bread crumb and right sidebar toggle -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Start Page Content -->
+    <div class="text-center">
+        <h1>Detalles de venta</h1>
+        <hr class="mb-4">
+    </div>
+    <div class="row">
+
+    <!-- Lente -->
+        <div class="col-12 col-lg-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-row justify-content-center">
+                        <h2 class="card-title mb-0 ml-auto">Lente</h2>
+                        <button id="btnEdit" class="btn btn-outline-secondary waves-effect waves-light ml-auto" type="button"><i class="fa fa-pencil"></i></button>
+                    </div>
+                    <hr />
+                    <form id="formEdit" asp-area="" asp-controller="Sales" asp-action="Edit" method="POST" class="form-material m-t-40 row">
+                        <input asp-for="Sale.ID" value="@Model.Sale.ID" type="hidden" />
+                        <input asp-for="Sale.ClientID" value="@Model.Sale.ClientID" type="hidden" />
+                        @Html.AntiForgeryToken()
+
+                        <!-- Precio -->
+                        <div class="col-12 col-sm-6 col-lg-3 col-xxl-3 mb-3">
+                            <label asp-for="Sale.Price" class="mb-0"></label>
+                            <input asp-for="Sale.Price" class="form-control" type="number" data-val-number="Debes ingresar un número" disabled />
+                            <span asp-validation-for="Sale.Deposit" class="text-danger"></span>
+                        </div>
+
+                        <!-- Seña -->
+                        <div class="col-12 col-sm-6 col-lg-3 col-xxl-3 mb-3">
+                            <label asp-for="Sale.Deposit" class="mb-0"></label>
+                            <input asp-for="Sale.Deposit" class="form-control" type="number" data-val-number="Debes ingresar un número" disabled />
+                            <span asp-validation-for="Sale.Deposit" class="text-danger"></span>
+                        </div>
+
+                        <!-- Tipo -->
+                        <div class="col-6 col-lg-3 col-xxl-2 mb-3 d-flex justify-content-center align-items-center">
+                            <ul class="icheck-list p-0">
+                                @foreach (var item in Model.GlassTypes)
+                                {
+                                    <li>
+                                        <input type="radio" asp-for="Sale.GlassTypeID" value="@item.ID" id="type_@(item.ID)" class="check" data-radio="iradio_square-purple" disabled />
+                                        <label for="type_@item.ID" class="mb-0" style="cursor: pointer">@item.Name</label>
+                                    </li>
+                                }
+                            </ul>
+                            <span asp-validation-for="Sale.GlassTypeID" class="text-danger"></span>
+                        </div>
+
+                        <!-- AR -->
+                        <div class="col-6 col-lg-3 col-xxl-2 mb-3 d-flex justify-content-center align-items-center">
+                            <input asp-for="Sale.IsAr" type="checkbox" class="js-switch" data-color="#009efb" disabled />
+                            <label asp-for="Sale.IsAr" class="mb-0 ml-2"></label>
+                            <span asp-validation-for="Sale.IsAr" class="text-danger"></span>
+                        </div>
+
+                        <!-- Altura película -->
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-4 col-xxl-2 mb-3">
+                            <label asp-for="Sale.MovieHeight" class="mb-0"></label>
+                            <input asp-for="Sale.MovieHeight" class="form-control" type="number" data-val-number="Debes ingresar un número" disabled />
+                            <span asp-validation-for="Sale.MovieHeight" class="text-danger"></span>
+                        </div>
+
+                        <!-- Color -->
+                        <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-3">
+                            <label asp-for="Sale.GlassColorID" class="mb-0"></label>
+                            @Html.DropDownListFor(x => x.Sale.GlassColorID, Model.GlassColors, null, new { @class = "form-control", @disabled = "disabled" })
+                            <span asp-validation-for="Sale.GlassColorID" class="text-danger"></span>
+                        </div>
+
+                        <!-- DIP -->
+                        <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-3">
+                            <label asp-for="Sale.Dip" class="mb-0"></label>
+                            <input asp-for="Sale.Dip" class="form-control" disabled />
+                            <span asp-validation-for="Sale.Dip" class="text-danger"></span>
+                        </div>
+
+                        <!-- Vendedor -->
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-3">
+                            <label asp-for="Sale.SellerID" class="mb-0"></label>
+                            @Html.DropDownListFor(x => x.Sale.SellerID, Model.Sellers, null, new { @class = "form-control", @disabled = "disabled" })
+                            <span asp-validation-for="Sale.SellerID" class="text-danger"></span>
+                        </div>
+
+                        <!-- Doctor -->
+                        <div class="col-12 col-lg-6 col-xxl-3 mb-3">
+                            <label asp-for="Sale.DoctorID" class="mb-0"></label>
+                            @Html.DropDownListFor(x => x.Sale.DoctorID, Model.Doctors, null, new { @class = "form-control", @disabled = "disabled" })
+                            <span asp-validation-for="Sale.DoctorID" class="text-danger"></span>
+                        </div>
+
+                        <!-- Date -->
+                        <div class="col-12 col-md-6 col-lg-4 col-xxl-3 mb-3">
+                            <label asp-for="Sale.DeliveryDate" class="mb-0"></label>
+                            <input asp-for="Sale.DeliveryDate" class="form-control" type="text" placeholder="dd/mm/aaaa" disabled />
+                            <span asp-validation-for="Sale.DeliveryDate" class="text-danger"></span>
+                        </div>
+
+                        <!-- Observation -->
+                        <div class="col-12 col-md-6 col-lg-5 col-xxl-4 mb-3">
+                            <label asp-for="Sale.Observation" class="mb-0"></label>
+                            <textarea asp-for="Sale.Observation" class="form-control" style="height: auto" disabled></textarea>
+                            <span asp-validation-for="Sale.Observation" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12 d-flex">
+                            <button type="button" id="btnSend" onclick="sendForm()" class="btn btn-success waves-effect waves-light ml-auto" style="display: none">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+    <!-- Cliente -->
+    <div class="col-12 col-lg-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Cliente</h2>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-6 col-lg-12">
+                            <div class="form-group row">
+                                <label class="control-label text-md-left col-5"><b>Nombre:</b></label>
+                                <div class="col-7 pr-0">
+                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Name)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                        <div class="col-md-6 col-lg-12">
+                            <div class="form-group row">
+                                <label class="control-label text-md-left col-5"><b>Apellido:</b></label>
+                                <div class="col-7 pr-0">
+                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Surname)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                    </div>
+                    <!--/row-->
+                    <div class="row">
+                        <div class="col-md-6 col-lg-12">
+                            <div class="form-group row">
+                                <label class="control-label text-md-left col-5"><b>Teléfono:</b></label>
+                                <div class="col-7 pr-0">
+                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Phone)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                        <div class="col-md-6 col-lg-12">
+                            <div class="form-group row">
+                                <label class="control-label text-md-left col-5"><b>Dirección:</b></label>
+                                <div class="col-7 pr-0">
+                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Adress)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                    </div>
+                    <!--/row-->
+                    <div class="row">
+                        <div class="col-md-6 col-lg-12">
+                            <div class="form-group row">
+                                <label class="control-label text-md-left col-5"><b>@(Model.Sale.Client.Debt >= 0 ? "Deuda" : "Saldo a favor:")</b></label>
+                                <div class="col-7 pr-0">
+                                    <p class="form-control-static">$@(Model.Sale.Client.Debt >= 0 ? Model.Sale.Client.Debt.ToString("0") : (-Model.Sale.Client.Debt).ToString("0"))</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                        <div class="col-md-6 col-lg-12">
+                            <div class="form-group row">
+                                <label class="control-label text-md-left col-5"><b>Obra social:</b></label>
+                                <div class="col-7 pr-0">
+                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.HealthInsurance.Name)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                    </div>
+                    <!--/row-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Establecer el idioma de Moment.js en español
+        moment.locale('es');
+
+        $('#Sale_DeliveryDate').bootstrapMaterialDatePicker({
+            minDate: moment(),
+            time: false,
+            format: 'DD/MM/YYYY',
+            cancelText: 'Cancelar',
+            weekStart: 1,
+            lang: 'es',
+        });
+
+        $('.js-switch').each(function () {
+            new Switchery($(this)[0], $(this).data());
+        });
+    });
+</script>
+
+<script>
+    $("#btnEdit").on("click", function() {
+        // Inputs
+        $('#formEdit input:not(:hidden), textarea, select').each(function () {
+            $(this).prop('disabled', function (_, val) {
+                return !val;
+            });
+        });
+
+        // Switch
+        let elem = document.querySelector('.js-switch');
+        $("span.switchery").remove()
+        $('.js-switch').prop('disabled', !$('.js-switch').prop('disabled'));
+        $('.js-switch').data('switchery', !$('.js-switch').data('switchery'));
+        let switchery = new Switchery(elem, { color: "#009efb" });
+
+        if ($('.js-switch').data('switchery')) {
+            switchery.disable();
+        } else {
+            switchery.enable();
+        }
+
+        // Radio
+        if ($("div.iradio_square-purple").hasClass('disabled')) {
+            $("div.iradio_square-purple").removeClass('disabled');
+        } else {
+            $("div.iradio_square-purple").addClass('disabled');
+        }
+
+        // Btn edit
+        $(this).find('i').toggleClass('fa bi');
+        $(this).find('i').toggleClass('fa-pencil bi-x-lg');
+        $(this).toggleClass('btn-outline-secondary btn-danger');
+
+        // Btn save
+        $("#btnSend").toggle();
+    });
+
+    function sendForm() {
+        let form = document.getElementById("formEdit");
+
+        let errors = $(".input-validation-error");
+        if (errors.length === 0) {
+            // Enviar solicitud AJAX
+            $.ajax({
+                url: $(form).attr('action'), // Utiliza la ruta del formulario
+                method: $(form).attr('method'), // Utiliza el método del formulario
+                data: $(form).serialize(), // Utiliza los datos del formulario
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: response.message,
+                        confirmButtonColor: '#1e88e5',
+                    });
+                    $("#btnEdit").click();
+                },
+                error: function (errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: errorThrown.responseJSON.title,
+                        text: errorThrown.responseJSON.message,
+                        confirmButtonColor: '#1e88e5',
+                    });
+                }
+            });
+        }
+    }
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

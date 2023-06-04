@@ -39,6 +39,7 @@ public partial class Client
     [Column(TypeName = "money")]
     [Display(Name = "Cuenta corriente")]
     [Range(0, 100000, ErrorMessage = "Debes ingresar una cuenta corriente entre $0 y $100.000")]
+    [DisplayFormat(DataFormatString = "{0:F0}", ApplyFormatInEditMode = true)]
     public decimal Debt { get; set; } = 0;
 
     [Display(Name = "Obra social")]

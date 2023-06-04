@@ -17,17 +17,20 @@ public partial class Sale
     [Column(TypeName = "money")]
     [Display(Name = "Precio")]
     [Range(0, 1000000, ErrorMessage = "Debes ingresar un precio entre $0 y $1.000.000")]
+    [DisplayFormat(DataFormatString = "{0:F0}", ApplyFormatInEditMode = true)]
     public decimal Price { get; set; }
 
     [Display(Name = "Seña")]
     [Column(TypeName = "money")]
     [Range(1, 1000000, ErrorMessage = "Debes ingresar una seña entre $1 y $1.000.000")]
+    [DisplayFormat(DataFormatString = "{0:F0}", ApplyFormatInEditMode = true)]
     public decimal? Deposit { get; set; }
 
     [Required(ErrorMessage = "Debes ingresar una altura de película en mm.")]
     [Precision(18, 2)]
     [Display(Name = "Altura de película")]
     [Range(0, 1000000, ErrorMessage = "Debes ingresar una altura entre 0 y 1.000")]
+    [DisplayFormat(DataFormatString = "{0:F0}", ApplyFormatInEditMode = true)]
     public decimal MovieHeight { get; set; }
 
     [Required(ErrorMessage = "Debes ingresar una distancia interpelicular")]

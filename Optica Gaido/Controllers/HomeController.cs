@@ -19,20 +19,20 @@ namespace Optica_Gaido.Controllers
         }
 
         [HttpGet]
-        public IActionResult Error()
-        {
-            var error = JsonConvert.DeserializeObject<ErrorViewModel>(TempData["ObjectData"].ToString());
-            return View("~/Views/Error.cshtml", error);
-        }
-
-        [HttpGet]
         public IActionResult Index()
         {
-            IndexViewModel viewModel = new()
+            try
             {
-                Clients = _workContainer.Client.GetAll(includeProperties: "HealthInsurance"),
-            };
-            return View(viewModel);
+                IndexViewModel viewModel = new()
+                {
+                    Clients = _workContainer.Client.GetAll(includeProperties: "HealthInsurance"),
+                };
+                return View(viewModel);
+            }
+            catch (Exception)
+            {
+                return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+            }
         }
 
         /*[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

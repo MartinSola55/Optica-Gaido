@@ -17,6 +17,7 @@ public partial class SalePaymentMethod
     [Column(TypeName = "money")]
     [Display(Name = "Monto")]
     [Range(0, 100000, ErrorMessage = "Debes ingresar un monto entre $0 y $100.000")]
+    [DisplayFormat(DataFormatString = "{0:F0}", ApplyFormatInEditMode = true)]
     public decimal Amount { get; set; }
 
     public virtual PaymentMethod PaymentMethod { get; set; } = null!;

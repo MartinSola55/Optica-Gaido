@@ -39,7 +39,7 @@
                         @Html.DropDownList("yearSelected", Model.Years, new { @class = "form-control", @style = "max-width: fit-content" })
                     </div>
                     <div class="table-responsive m-t-10">
-                        <table id="DataTable" class="table table-bordered table-striped">
+                        <table id="DataTable" class="table table-hover">
                             <thead>
                                 <tr>
                                     <th class="col-3">Cliente</th>
@@ -53,7 +53,7 @@
                             <tbody id="table_body">
                                 @foreach (var item in Model.Sales)
                                 {
-                                    <tr data-id="@item.ID">
+                                    <tr data-id="@item.ID" style="cursor: pointer">
                                         <td>@Html.DisplayFor(x => item.Client.Surname), @Html.DisplayFor(x => item.Client.Name)</td>
                                         <td>@item.CreatedAt.ToString("dd/MM/yyyy - HH:mm")</td>
                                         <td>@item.DeliveryDate.ToString("dd/MM/yyyy")</td>
@@ -94,6 +94,9 @@
             },
         },
     });
+    $("#DataTable tbody tr").on("click", function () {
+        window.location.href = window.location.origin + "/Sales/Details/" + $(this).data("id");
+    });
 </script>
 
 <script>
@@ -116,20 +119,26 @@
     }
 
     function fillTable(data) {
-        data.forEach(function (s) {
+        data.forEach(function (sale) {
             let methods = "";
-            s.paymentMethods.forEach(function (pm) {
+            sale.paymentMethods.forEach(function (pm) {
                 methods += `<span>${pm.paymentMethod.name}: $${pm.amount}</span><br />`;
             })
             let row = [
-                `${s.surname}, ${s.name}`,
-                createDateWithTime(s.createdAt),
-                createDate(s.deliveryDate),
-                `$${s.price}`,
-                `$${s.deposit}`,
+                `${sale.surname}, ${sale.name}`,
+                createDateWithTime(sale.createdAt),
+                createDate(sale.deliveryDate),
+                `$${sale.price}`,
+                `$${sale.deposit}`,
                 methods
             ];
-            $('#DataTable').DataTable().row.add(row).draw();
+            let addedRow = $('#DataTable').DataTable().row.add(row).draw().node();
+            addedRow.style.cursor = 'pointer';
+            // Establecer el atributo data-id en la fila
+            addedRow.setAttribute('data-id', sale.id);
+        });
+        $("#DataTable tbody tr").on("click", function () {
+            window.location.href = window.location.origin + "/Sales/Details/" + $(this).data("id");
         });
     }
 

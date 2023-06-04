@@ -14,6 +14,7 @@ using Optica_Gaido.Data.Repository;
 using Optica_Gaido.Data.Repository.IRepository;
 using Optica_Gaido.Models;
 using Optica_Gaido.Models.ViewModels.Sales;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Optica_Gaido.Controllers
 {
@@ -25,6 +26,17 @@ namespace Optica_Gaido.Controllers
         public SalesController(IWorkContainer workContainer)
         {
             _workContainer = workContainer;
+        }
+
+        private IActionResult CustomBadRequest(string message, string error = null)
+        {
+            return BadRequest(new
+            {
+                success = false,
+                title = "Error al crear la venta",
+                message,
+                error,
+            });
         }
 
         [HttpGet]
@@ -42,8 +54,7 @@ namespace Optica_Gaido.Controllers
             }
             catch (Exception)
             {
-                TempData["ObjectData"] = JsonConvert.SerializeObject(new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
-                return RedirectToAction("Error", "Home");
+                return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
             }
         }
 
@@ -55,11 +66,10 @@ namespace Optica_Gaido.Controllers
                 Client client = _workContainer.Client.GetOneWithProperties(id, properties: "HealthInsurance");
                 if (client == null)
                 {
-                    TempData["ObjectData"] = JsonConvert.SerializeObject(new ErrorViewModel { Message = "El cliente no existe", ErrorCode = 404 });
-                    return RedirectToAction("Error", "Home");
+                    return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "El cliente no existe", ErrorCode = 404 });
                 }
-                List<SalePaymentMethod> methods = new();
 
+                List<SalePaymentMethod> methods = new();
                 foreach (var method in _workContainer.PaymentMethod.GetAll())
                 {
                     methods.Add(new SalePaymentMethod() { PaymentMethod = method });
@@ -79,11 +89,38 @@ namespace Optica_Gaido.Controllers
             }
             catch (Exception)
             {
-                TempData["ObjectData"] = JsonConvert.SerializeObject(new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
-                return RedirectToAction("Error", "Home");
+                return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
             }
         }
 
+        [HttpGet]
+        public IActionResult Details(long id)
+        {
+            try
+            {
+                Expression<Func<Sale, bool>> filter = sale => sale.ID == id;
+                Sale sale = _workContainer.Sale.GetFirstOrDefault(filter, includeProperties: "Client, Client.HealthInsurance, SalePaymentMethods, SalePaymentMethods.PaymentMethod");
+                if (sale == null)
+                {
+                    return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "La venta no existe", ErrorCode = 404 });
+                }
+
+                DetailsViewModel viewModel = new()
+                {
+                    Sale = sale,
+                    Doctors = _workContainer.Doctor.GetDropDownList(),
+                    Sellers = _workContainer.Seller.GetDropDownList(),
+                    GlassTypes = _workContainer.GlassType.GetAll(),
+                    GlassColors = _workContainer.GlassColor.GetDropDownList(),
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception)
+            {
+                return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+            }
+        }
 
         [HttpPost]
         [ActionName("Create")]
@@ -106,13 +143,13 @@ namespace Optica_Gaido.Controllers
                 try
                 {
                     Sale newSale = sale.CreateViewModel;
-                    if(_workContainer.Client.GetOne(newSale.ClientID) == null) return customBadRequest("El cliente ingresado no existe");
-                    if(_workContainer.GlassType.GetOne(newSale.GlassTypeID) == null) return customBadRequest("El tipo de vidrio ingresado no existe");
-                    if(_workContainer.GlassColor.GetOne(newSale.GlassColorID) == null) return customBadRequest("El color de vidrio ingresado no existe");
-                    if(_workContainer.Doctor.GetOne(newSale.DoctorID) == null) return customBadRequest("El médico ingresado no existe");
-                    if(_workContainer.Seller.GetOne(newSale.SellerID) == null) return customBadRequest("El vendedor/a ingresado/a no existe");
+                    if(_workContainer.Client.GetOne(newSale.ClientID) == null) return CustomBadRequest("El cliente ingresado no existe");
+                    if(_workContainer.GlassType.GetOne(newSale.GlassTypeID) == null) return CustomBadRequest("El tipo de vidrio ingresado no existe");
+                    if(_workContainer.GlassColor.GetOne(newSale.GlassColorID) == null) return CustomBadRequest("El color de vidrio ingresado no existe");
+                    if(_workContainer.Doctor.GetOne(newSale.DoctorID) == null) return CustomBadRequest("El médico ingresado no existe");
+                    if(_workContainer.Seller.GetOne(newSale.SellerID) == null) return CustomBadRequest("El vendedor/a ingresado/a no existe");
                     //if (newSale.FrameID != 0) // Agregar este if si pongo que el marco puede ser nulo al crear la venta
-                    if(_workContainer.Frame.GetOne(newSale.FrameID) == null) return customBadRequest("El marco ingresado no existe");
+                    if(_workContainer.Frame.GetOne(newSale.FrameID) == null) return CustomBadRequest("El marco ingresado no existe");
 
                     newSale.CreatedAt = DateTime.UtcNow.AddHours(-3);
                     _workContainer.Sale.Add(newSale);
@@ -138,56 +175,30 @@ namespace Optica_Gaido.Controllers
                 catch (Exception e)
                 {
                     _workContainer.Rollback();
-                    return customBadRequest("Intente nuevamente o comuníquese para soporte", e.Message);
+                    return CustomBadRequest("Intente nuevamente o comuníquese para soporte", e.Message);
                 }
             }
-            return customBadRequest("Alguno de los campos ingresados no es válido");
+            return CustomBadRequest("Alguno de los campos ingresados no es válido");
         }
 
-        private IActionResult customBadRequest(string message, string error = null)
-        {
-            return BadRequest(new
-            {
-                success = false,
-                title = "Error al crear la venta",
-                message,
-                error,
-            });
-        }
-
-        /*[HttpPost]
+        [HttpPost]
         [ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(IndexViewModel provider)
+        public IActionResult Edit(DetailsViewModel sale)
         {
+            Sale newSale = sale.Sale;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (_workContainer.Provider.IsDuplicated(provider.CreateViewModel))
-                    {
-                        return BadRequest(new
-                        {
-                            success = false,
-                            title = "Error al editar el proveedor",
-                            message = "Ya existe otro con el mismo nombre y apellido",
-                        });
-                    }
-                    _workContainer.Provider.Update(provider.CreateViewModel);
-                    _workContainer.Save();
-                    return Json(new
-                    {
-                        success = true,
-                        data = provider.CreateViewModel,
-                        message = "El proveedor se editó correctamente",
-                    });
+                    
                 }
                 catch (Exception e)
                 {
                     return BadRequest(new
                     {
                         success = false,
-                        title = "Error al editar el proveedor",
+                        title = "Error al editar la venta",
                         message = "Intente nuevamente o comuníquese para soporte",
                         error = e.Message,
                     });
@@ -196,10 +207,10 @@ namespace Optica_Gaido.Controllers
             return BadRequest(new
             {
                 success = false,
-                title = "Error al editar el proveedor",
+                title = "Error al editar la venta",
                 message = "Alguno de los campos ingresados no es válido",
             });
-        }*/
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -250,6 +261,7 @@ namespace Optica_Gaido.Controllers
                 var sales = _workContainer.Sale.GetAll(filter, includeProperties: "Client, SalePaymentMethods, SalePaymentMethods.PaymentMethod")
                     .Select(x => new
                     {
+                        id = x.ID,
                         name = x.Client.Name,
                         surname = x.Client.Surname,
                         createdAt = x.CreatedAt,
