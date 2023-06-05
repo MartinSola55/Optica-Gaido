@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Optica_Gaido.Data;
 using Optica_Gaido.Data.Repository;
 using Optica_Gaido.Data.Repository.IRepository;
+using Optica_Gaido.Data.Seeding;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,10 @@ builder.Services.AddControllersWithViews();
 
 // Agregar work container
 builder.Services.AddScoped<IWorkContainer, WorkContainer>();
+
+// Agregar seeding
+builder.Services.AddScoped<ISeeder, Seeder>();
+var users = builder.Configuration["User"];
 
 // Negar nuevos registros
 builder.Services.AddAuthorization(options =>
@@ -41,6 +46,9 @@ else
 }
 app.UseStaticFiles();
 
+// Método para hacer seeding
+Seed();
+
 app.UseRouting();
 
 app.UseAuthorization();
@@ -51,3 +59,13 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
+// Método Seed()
+void Seed()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbSeeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
+        dbSeeder.Seed();
+    }
+}
