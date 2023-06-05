@@ -185,9 +185,8 @@ namespace Optica_Gaido.Controllers
         [HttpPost]
         [ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(DetailsViewModel sale)
+        public IActionResult Edit([Bind("Sale")] DetailsViewModel editedSale)
         {
-            Sale editedSale = sale.EditedSale;
             if (ModelState.IsValid)
             {
                 try
