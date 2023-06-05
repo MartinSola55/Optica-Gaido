@@ -59,22 +59,21 @@
                     </div>
                     <hr />
                     <form id="formEdit" asp-area="" asp-controller="Sales" asp-action="Edit" method="POST" class="form-material m-t-40 row">
-                        <input asp-for="Sale.ID" value="@Model.Sale.ID" type="hidden" />
-                        <input asp-for="Sale.ClientID" value="@Model.Sale.ClientID" type="hidden" />
+                        <input asp-for="EditedSale.ID" value="@Model.Sale.ID" type="hidden" />
                         @Html.AntiForgeryToken()
 
                         <!-- Precio -->
                         <div class="col-12 col-sm-6 col-lg-3 col-xxl-3 mb-3">
-                            <label asp-for="Sale.Price" class="mb-0"></label>
-                            <input asp-for="Sale.Price" class="form-control" type="number" data-val-number="Debes ingresar un número" disabled />
-                            <span asp-validation-for="Sale.Deposit" class="text-danger"></span>
+                            <label asp-for="EditedSale.Price" class="mb-0"></label>
+                            <input asp-for="EditedSale.Price" value="@Model.Sale.Price.ToString("F0")" class="form-control" type="number" data-val-number="Debes ingresar un número" disabled />
+                            <span asp-validation-for="EditedSale.Deposit" class="text-danger"></span>
                         </div>
 
                         <!-- Seña -->
                         <div class="col-12 col-sm-6 col-lg-3 col-xxl-3 mb-3">
-                            <label asp-for="Sale.Deposit" class="mb-0"></label>
-                            <input asp-for="Sale.Deposit" class="form-control" type="number" data-val-number="Debes ingresar un número" disabled />
-                            <span asp-validation-for="Sale.Deposit" class="text-danger"></span>
+                            <label asp-for="EditedSale.Deposit" class="mb-0"></label>
+                            <input asp-for="EditedSale.Deposit" value="@(Model.Sale.Deposit != null ? Model.Sale.Deposit.Value.ToString("F0") : "" )" class="form-control" type="number" data-val-number="Debes ingresar un número" disabled />
+                            <span asp-validation-for="EditedSale.Deposit" class="text-danger"></span>
                         </div>
 
                         <!-- Tipo -->
@@ -82,74 +81,83 @@
                             <ul class="icheck-list p-0">
                                 @foreach (var item in Model.GlassTypes)
                                 {
+                                    bool isChecked = item.ID == Model.Sale.GlassTypeID;
                                     <li>
-                                        <input type="radio" asp-for="Sale.GlassTypeID" value="@item.ID" id="type_@(item.ID)" class="check" data-radio="iradio_square-purple" disabled />
+                                        <input type="radio" name="EditedSale.GlassTypeID" value="@item.ID" id="type_@(item.ID)" class="check" data-radio="iradio_square-purple" disabled @(isChecked ? "checked" : "") />
                                         <label for="type_@item.ID" class="mb-0" style="cursor: pointer">@item.Name</label>
                                     </li>
                                 }
+
                             </ul>
-                            <span asp-validation-for="Sale.GlassTypeID" class="text-danger"></span>
+                            <span asp-validation-for="EditedSale.GlassTypeID" class="text-danger"></span>
                         </div>
 
                         <!-- AR -->
                         <div class="col-6 col-lg-3 col-xxl-2 mb-3 d-flex justify-content-center align-items-center">
-                            <input asp-for="Sale.IsAr" type="checkbox" class="js-switch" data-color="#009efb" disabled />
-                            <label asp-for="Sale.IsAr" class="mb-0 ml-2"></label>
-                            <span asp-validation-for="Sale.IsAr" class="text-danger"></span>
+                            <input name="EditedSale.IsAr" type="hidden" />
+                            <input id="EditedSale.IsAr" type="checkbox" class="js-switch" data-color="#009efb" disabled @(Model.Sale.IsAr ? "checked" : "") />
+                            <label for="EditedSale.IsAr" class="mb-0 ml-2">Anti reflex</label>
+                            <span asp-validation-for="EditedSale.IsAr" class="text-danger"></span>
                         </div>
 
                         <!-- Altura película -->
                         <div class="col-12 col-sm-6 col-lg-4 col-xl-4 col-xxl-2 mb-3">
-                            <label asp-for="Sale.MovieHeight" class="mb-0"></label>
-                            <input asp-for="Sale.MovieHeight" class="form-control" type="number" data-val-number="Debes ingresar un número" disabled />
-                            <span asp-validation-for="Sale.MovieHeight" class="text-danger"></span>
+                            <label asp-for="EditedSale.MovieHeight" class="mb-0"></label>
+                            <input asp-for="EditedSale.MovieHeight" value="@Model.Sale.MovieHeight.ToString("F0")" class="form-control" type="number" data-val-number="Debes ingresar un número" disabled />
+                            <span asp-validation-for="EditedSale.MovieHeight" class="text-danger"></span>
                         </div>
 
                         <!-- Color -->
                         <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-3">
-                            <label asp-for="Sale.GlassColorID" class="mb-0"></label>
-                            @Html.DropDownListFor(x => x.Sale.GlassColorID, Model.GlassColors, null, new { @class = "form-control", @disabled = "disabled" })
-                            <span asp-validation-for="Sale.GlassColorID" class="text-danger"></span>
+                            <label asp-for="EditedSale.GlassColorID" class="mb-0"></label>
+                            @Html.DropDownListFor(x => x.EditedSale.GlassColorID, Model.GlassColors, null, new { @class = "form-control", @disabled = "disabled" })
+                            <span asp-validation-for="EditedSale.GlassColorID" class="text-danger"></span>
                         </div>
 
                         <!-- DIP -->
                         <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-3">
-                            <label asp-for="Sale.Dip" class="mb-0"></label>
-                            <input asp-for="Sale.Dip" class="form-control" disabled />
-                            <span asp-validation-for="Sale.Dip" class="text-danger"></span>
+                            <label asp-for="EditedSale.Dip" class="mb-0"></label>
+                            <input asp-for="EditedSale.Dip" value="@Model.Sale.Dip" class="form-control" disabled />
+                            <span asp-validation-for="EditedSale.Dip" class="text-danger"></span>
                         </div>
 
                         <!-- Vendedor -->
                         <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-3">
-                            <label asp-for="Sale.SellerID" class="mb-0"></label>
-                            @Html.DropDownListFor(x => x.Sale.SellerID, Model.Sellers, null, new { @class = "form-control", @disabled = "disabled" })
-                            <span asp-validation-for="Sale.SellerID" class="text-danger"></span>
+                            <label asp-for="EditedSale.SellerID" class="mb-0"></label>
+                            @Html.DropDownListFor(x => x.EditedSale.SellerID, Model.Sellers, null, new { @class = "form-control", @disabled = "disabled" })
+                            <span asp-validation-for="EditedSale.SellerID" class="text-danger"></span>
                         </div>
 
                         <!-- Doctor -->
                         <div class="col-12 col-lg-6 col-xxl-3 mb-3">
-                            <label asp-for="Sale.DoctorID" class="mb-0"></label>
-                            @Html.DropDownListFor(x => x.Sale.DoctorID, Model.Doctors, null, new { @class = "form-control", @disabled = "disabled" })
-                            <span asp-validation-for="Sale.DoctorID" class="text-danger"></span>
+                            <label asp-for="EditedSale.DoctorID" class="mb-0"></label>
+                            @Html.DropDownListFor(x => x.EditedSale.DoctorID, Model.Doctors, null, new { @class = "form-control", @disabled = "disabled" })
+                            <span asp-validation-for="EditedSale.DoctorID" class="text-danger"></span>
                         </div>
 
                         <!-- Date -->
                         <div class="col-12 col-md-6 col-lg-4 col-xxl-3 mb-3">
-                            <label asp-for="Sale.DeliveryDate" class="mb-0"></label>
-                            <input asp-for="Sale.DeliveryDate" class="form-control" type="text" placeholder="dd/mm/aaaa" disabled />
-                            <span asp-validation-for="Sale.DeliveryDate" class="text-danger"></span>
+                            <label asp-for="EditedSale.DeliveryDate" class="mb-0"></label>
+                            <input asp-for="EditedSale.DeliveryDate" value="@Model.Sale.DeliveryDate.ToString("dd/MM/yyyy")" class="form-control" type="text" placeholder="dd/mm/aaaa" disabled />
+                            <span asp-validation-for="EditedSale.DeliveryDate" class="text-danger"></span>
                         </div>
 
                         <!-- Observation -->
                         <div class="col-12 col-md-6 col-lg-5 col-xxl-4 mb-3">
-                            <label asp-for="Sale.Observation" class="mb-0"></label>
-                            <textarea asp-for="Sale.Observation" class="form-control" style="height: auto" disabled></textarea>
-                            <span asp-validation-for="Sale.Observation" class="text-danger"></span>
+                            <label asp-for="EditedSale.Observation" class="mb-0"></label>
+                            <textarea asp-for="EditedSale.Observation" value="@Model.Sale.Observation" class="form-control" style="height: auto" disabled></textarea>
+                            <span asp-validation-for="EditedSale.Observation" class="text-danger"></span>
                         </div>
 
                         <div class="col-12 d-flex">
+                            <button type="button" id="btnDelete" onclick="deleteSale()" class="btn btn-danger waves-effect waves-light" style="display: none">Eliminar</button>
                             <button type="button" id="btnSend" onclick="sendForm()" class="btn btn-success waves-effect waves-light ml-auto" style="display: none">Guardar</button>
                         </div>
+                    </form>
+
+                    <form id="form-delete" method="POST" asp-area="" asp-controller="Sales" asp-action="SoftDelete">
+                        @Html.AntiForgeryToken()
+                        <input asp-for="Sale.ID" name="id" type="hidden"/>
                     </form>
                 </div>
             </div>
@@ -236,7 +244,7 @@
         // Establecer el idioma de Moment.js en español
         moment.locale('es');
 
-        $('#Sale_DeliveryDate').bootstrapMaterialDatePicker({
+        $('#EditedSale_DeliveryDate').bootstrapMaterialDatePicker({
             minDate: moment(),
             time: false,
             format: 'DD/MM/YYYY',
@@ -260,7 +268,7 @@
             });
         });
 
-        // Switch
+        //// Switch
         let elem = document.querySelector('.js-switch');
         $("span.switchery").remove()
         $('.js-switch').prop('disabled', !$('.js-switch').prop('disabled'));
@@ -273,7 +281,7 @@
             switchery.enable();
         }
 
-        // Radio
+        //// Radio
         if ($("div.iradio_square-purple").hasClass('disabled')) {
             $("div.iradio_square-purple").removeClass('disabled');
         } else {
@@ -285,11 +293,60 @@
         $(this).find('i').toggleClass('fa-pencil bi-x-lg');
         $(this).toggleClass('btn-outline-secondary btn-danger');
 
-        // Btn save
+        // Btns
         $("#btnSend").toggle();
+        $("#btnDelete").toggle();
     });
 
+    function deleteSale() {
+        Swal.fire({
+            title: "Esta acción no se puede revertir",
+            text: '¿Seguro deseas eliminar esta venta?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Eliminar',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
+                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+            }
+        })
+        .then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: $("#form-delete").attr('action'), // Utiliza la ruta del formulario
+                    method: $("#form-delete").attr('method'), // Utiliza el método del formulario
+                    data: $("#form-delete").serialize(), // Utiliza los datos del formulario
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: response.message,
+                            confirmButtonColor: '#1e88e5',
+                            allowOutsideClick: false,
+                        })
+                        .then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = window.location.origin + "/Sales";
+                            }
+                        });
+                    },
+                    error: function (errorThrown) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: errorThrown.responseJSON.title,
+                            text: errorThrown.responseJSON.message,
+                            confirmButtonColor: '#1e88e5',
+                        });
+                    }
+                });
+            }
+        })
+    }
+
     function sendForm() {
+        let clickCheckbox = document.querySelector('.js-switch');
+        $("input[name='EditedSale.IsAr']").val(clickCheckbox.checked);
+
         let form = document.getElementById("formEdit");
 
         let errors = $(".input-validation-error");

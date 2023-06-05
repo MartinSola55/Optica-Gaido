@@ -15,7 +15,9 @@ namespace Optica_Gaido.Data.Repository.IRepository
         IEnumerable<T> GetAll(
             Expression<Func<T, bool>> filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-            string includeProperties = null
+            string includeProperties = null,
+            bool hasIsActive = false,
+            bool hasDeletedAt = false
         );
 
         T GetFirstOrDefault(

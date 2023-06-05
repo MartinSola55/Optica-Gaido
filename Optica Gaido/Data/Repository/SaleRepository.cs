@@ -2,9 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
+using Microsoft.Data.Sqlite;
 using Microsoft.DotNet.Scaffolding.Shared;
+using Microsoft.EntityFrameworkCore;
 using Optica_Gaido.Data.Repository.IRepository;
 using Optica_Gaido.Models;
 
@@ -34,7 +38,6 @@ namespace Optica_Gaido.Data.Repository
                 dbObject.GlassColorID = sale.GlassColorID;
                 dbObject.DoctorID = sale.DoctorID;
                 dbObject.SellerID = sale.SellerID;
-                dbObject.ClientID = sale.ClientID;
                 dbObject.FrameID = sale.FrameID;
                 dbObject.DeliveryDate = sale.DeliveryDate;
                 _db.SaveChanges();
@@ -43,17 +46,39 @@ namespace Optica_Gaido.Data.Repository
 
         public void SoftDelete(long id)
         {
-            var dbObject = _db.Sales.FirstOrDefault(x => x.ID == id);
-            if (dbObject != null)
+            _db.Database.BeginTransaction();
+            try
             {
-                dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
-                _db.SaveChanges();
+                Sale dbObject = _db.Sales.Include(x => x.SalePaymentMethods).Include(x => x.GlassFormats).Where(x => x.ID == id).FirstOrDefault();
+                if (dbObject != null)
+                {
+
+                    dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
+                    foreach (var pm in dbObject.SalePaymentMethods)
+                    {
+                        pm.DeletedAt = DateTime.UtcNow.AddHours(-3);
+                    }
+                    foreach (var format in dbObject.GlassFormats)
+                    {
+                        format.DeletedAt = DateTime.UtcNow.AddHours(-3);
+                    }
+                    _db.SaveChanges();
+                    _db.Database.CommitTransaction();
+                } else
+                {
+                    throw new Exception("No se encontró la venta");
+                }
+            }
+            catch (Exception)
+            {
+                _db.Database.RollbackTransaction();
+                throw;
             }
         }
 
         public IEnumerable<SelectListItem> GetYears()
         {
-            var years = this.GetAll()
+            var years = this.GetAll(hasDeletedAt: true)
             .Select(sale => sale.CreatedAt.Year)
             .Distinct()
             .OrderByDescending(year => year)
