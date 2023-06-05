@@ -100,7 +100,7 @@ namespace Optica_Gaido.Controllers
             try
             {
                 Expression<Func<Sale, bool>> filter = sale => sale.ID == id;
-                Sale sale = _workContainer.Sale.GetFirstOrDefault(filter, includeProperties: "Client, Client.HealthInsurance, SalePaymentMethods, SalePaymentMethods.PaymentMethod");
+                Sale sale = _workContainer.Sale.GetFirstOrDefault(filter, includeProperties: "Client, Client.HealthInsurance, SalePaymentMethods, SalePaymentMethods.PaymentMethod, GlassFormats");
                 if (sale == null)
                 {
                     return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "La venta no existe", ErrorCode = 404 });
@@ -140,9 +140,10 @@ namespace Optica_Gaido.Controllers
             ModelState.Remove("Client.Adress");
             if (ModelState.IsValid)
             {
-                _workContainer.BeginTransaction();
                 try
                 {
+                    _workContainer.BeginTransaction();
+
                     Sale newSale = sale.CreateViewModel;
                     if(_workContainer.Client.GetOne(newSale.ClientID) == null) return CustomBadRequest(title: "Error al crear la venta", message: "El cliente ingresado no existe");
                     if(_workContainer.GlassType.GetOne(newSale.GlassTypeID) == null) return CustomBadRequest(title: "Error al crear la venta", message: "El tipo de vidrio ingresado no existe");
@@ -191,14 +192,74 @@ namespace Optica_Gaido.Controllers
             {
                 try
                 {
-                    //
+                    _workContainer.BeginTransaction();
+
+                    Sale newSale = editedSale.Sale;
+                    if (_workContainer.GlassType.GetOne(newSale.GlassTypeID) == null) return CustomBadRequest(title: "Error al editar la venta", message: "El tipo de vidrio ingresado no existe");
+                    if (_workContainer.GlassColor.GetOne(newSale.GlassColorID) == null) return CustomBadRequest(title: "Error al editar la venta", message: "El color de vidrio ingresado no existe");
+                    if (_workContainer.Doctor.GetOne(newSale.DoctorID) == null) return CustomBadRequest(title: "Error al editar la venta", message: "El médico ingresado no existe");
+                    if (_workContainer.Seller.GetOne(newSale.SellerID) == null) return CustomBadRequest(title: "Error al editar la venta", message: "El vendedor/a ingresado/a no existe");
+                    //if (newSale.FrameID != 0) // Agregar este if si pongo que el marco puede ser nulo al editar la venta
+                    //if (_workContainer.Frame.GetOne(newSale.FrameID) == null) return CustomBadRequest(title: "Error al editar la venta", message: "El marco ingresado no existe");
+                    _workContainer.Sale.Update(newSale);
+
+                    _workContainer.Commit();
+                    return Json(new
+                    {
+                        success = true,
+                        message = "La venta se editó correctamente",
+                    });
                 }
                 catch (Exception e)
                 {
+                    _workContainer.Rollback();
                     return CustomBadRequest(title: "Error al editar la venta", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
                 }
             }
             return CustomBadRequest(title: "Error al editar la venta", message: "Alguno de los campos ingresados no es válido");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateFormats([Bind("GlassFormats, ID")] Sale editedFormats)
+        {
+            ModelState.Remove("Dip");
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _workContainer.BeginTransaction();
+
+                    Expression<Func<Sale, bool>> filter = sale => sale.ID == editedFormats.ID;
+                    Sale sale = _workContainer.Sale.GetFirstOrDefault(filter, includeProperties: "GlassFormats");
+
+                    if (sale == null) return CustomBadRequest(title: "Error al editar los formatos", message: "No se encontró la venta solicitada");
+
+                    foreach (var format in sale.GlassFormats)
+                    {
+                        _workContainer.GlassFormat.Remove(format);
+                    }
+
+                    foreach (var format in editedFormats.GlassFormats)
+                    {
+                        sale.GlassFormats.Add(format);
+                    }
+                    _workContainer.Save();
+
+                    _workContainer.Commit();
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Los formatos se editaron correctamente",
+                    });
+                }
+                catch (Exception e)
+                {
+                    _workContainer.Rollback();
+                    return CustomBadRequest(title: "Error al editar los formatos", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
+                }
+            }
+            return CustomBadRequest(title: "Error al editar los formatos", message: "Alguno de los campos ingresados no es válido");
         }
 
         [HttpPost]

@@ -11,13 +11,16 @@ $.fn.numericInputExample = function () {
             let row = $(this);
         });
 
-        if (!cell.hasClass('validateCol')) {
+        if (!cell.hasClass('validateCol') || cell.hasClass('disabled')) {
             return false;
         }
         
     }).on('validate', function (evt, value) {
         let cell = $(this);
 
+        if (cell.hasClass('disabled')) {
+            return false;
+        }
         if (cell.hasClass('validateCol')) {
             return value === "" || (!isNaN(parseFloat(value)) && isFinite(value));
         }

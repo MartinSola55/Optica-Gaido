@@ -38,7 +38,7 @@ namespace Optica_Gaido.Data.Repository
                 dbObject.GlassColorID = sale.GlassColorID;
                 dbObject.DoctorID = sale.DoctorID;
                 dbObject.SellerID = sale.SellerID;
-                dbObject.FrameID = sale.FrameID;
+                //dbObject.FrameID = sale.FrameID;
                 dbObject.DeliveryDate = sale.DeliveryDate;
                 _db.SaveChanges();
             }

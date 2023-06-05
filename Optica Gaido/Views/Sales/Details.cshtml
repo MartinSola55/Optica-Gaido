@@ -2,6 +2,10 @@
 
 @{
     ViewData["Title"] = "Ventas";
+    GlassFormat row1 = Model.Sale.GlassFormats.Where(x => x.Distance == Distance.Lejos && x.Eye == Eye.Derecho).FirstOrDefault() ?? null;
+    GlassFormat row2 = Model.Sale.GlassFormats.Where(x => x.Distance == Distance.Lejos && x.Eye == Eye.Izquierdo).FirstOrDefault() ?? null;
+    GlassFormat row3 = Model.Sale.GlassFormats.Where(x => x.Distance == Distance.Cerca && x.Eye == Eye.Derecho).FirstOrDefault() ?? null;
+    GlassFormat row4 = Model.Sale.GlassFormats.Where(x => x.Distance == Distance.Cerca && x.Eye == Eye.Izquierdo).FirstOrDefault() ?? null;
 }
 
 <!-- Styles -->
@@ -13,8 +17,11 @@
 <!-- Datepicker -->
 <link href="~/lib/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet">
 
-<!-- Data table -->
+<!-- Editable -->
+<script src="~/lib/jquery-datatables-editable/jquery.dataTables.js"></script>
 <script src="~/lib/datatables/datatables.min.js"></script>
+<script src="~/lib/tiny-editable/mindmup-editabletable.js"></script>
+<script src="~/lib/tiny-editable/numeric-input-validation.js"></script>
 <!-- Switchery -->
 <script src="~/lib/switchery/dist/switchery.min.js"></script>
 <!-- icheck -->
@@ -48,14 +55,13 @@
         <hr class="mb-4">
     </div>
     <div class="row">
-
-    <!-- Lente -->
         <div class="col-12 col-lg-8">
+            <!-- Lente -->
             <div class="card shadow">
                 <div class="card-body">
                     <div class="d-flex flex-row justify-content-center">
                         <h2 class="card-title mb-0 ml-auto">Lente</h2>
-                        <button id="btnEdit" class="btn btn-outline-secondary waves-effect waves-light ml-auto" type="button"><i class="fa fa-pencil"></i></button>
+                        <button id="btnEditGlass" class="btn btn-outline-secondary waves-effect waves-light ml-auto" type="button"><i class="fa fa-pencil"></i></button>
                     </div>
                     <hr />
                     <form id="formEdit" asp-area="" asp-controller="Sales" asp-action="Edit" method="POST" class="form-material m-t-40 row">
@@ -150,7 +156,7 @@
 
                         <div class="col-12 d-flex">
                             <button type="button" id="btnDelete" onclick="deleteSale()" class="btn btn-danger waves-effect waves-light" style="display: none">Eliminar</button>
-                            <button type="button" id="btnSend" onclick="sendForm()" class="btn btn-success waves-effect waves-light ml-auto" style="display: none">Guardar</button>
+                            <button type="button" id="btnSendSale" onclick="sendFormSale()" class="btn btn-success waves-effect waves-light ml-auto" style="display: none">Guardar</button>
                         </div>
                     </form>
 
@@ -160,89 +166,154 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Formato -->
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-row justify-content-center">
+                        <h2 class="card-title mb-0 ml-auto">Formato</h2>
+                        <button id="btnEditFormats" class="btn btn-outline-secondary waves-effect waves-light ml-auto" type="button"><i class="fa fa-pencil"></i></button>
+                    </div>
+                    <hr />
+                    <div class="row col-12 m-0">
+                        <div class="table-responsive">
+                            <table id="formatsTable" class="table table-bordered editable-table disabled">
+                                <thead>
+                                    <tr>
+                                        <th class="col-3">Visión</th>
+                                        <th class="col-3"></th>
+                                        <th class="col-2">Esf.</th>
+                                        <th class="col-2">Cil.</th>
+                                        <th class="col-2">Eje</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td rowspan="2" style="cursor: default">Lejos</td>
+                                        <td style="cursor: default">Derecho</td>
+                                        <td class="validateCol disabled column1">@(row1 != null ? row1.Esferic : "")</td>
+                                        <td class="validateCol disabled column2">@(row1 != null ? row1.Cilindric : "")</td>
+                                        <td class="validateCol disabled column3">@(row1 != null ? row1.Axis.ToString("F0") : "")</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="cursor: default">Izquierdo</td>
+                                        <td class="validateCol disabled column1">@(row2 != null ? row2.Esferic : "")</td>
+                                        <td class="validateCol disabled column2">@(row2 != null ? row2.Cilindric : "")</td>
+                                        <td class="validateCol disabled column3">@(row2 != null ? row2.Axis.ToString("F0") : "")</td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2" style="cursor: default">Cerca</td>
+                                        <td style="cursor: default">Derecho</td>
+                                        <td class="validateCol disabled column1">@(row3 != null ? row3.Esferic : "")</td>
+                                        <td class="validateCol disabled column2">@(row3 != null ? row3.Cilindric : "")</td>
+                                        <td class="validateCol disabled column3">@(row3 != null ? row3.Axis.ToString("F0") : "")</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="cursor: default">Izquierdo</td>
+                                        <td class="validateCol disabled column1">@(row4 != null ? row4.Esferic : "")</td>
+                                        <td class="validateCol disabled column2">@(row4 != null ? row4.Cilindric : "")</td>
+                                        <td class="validateCol disabled column3">@(row4 != null ? row4.Axis.ToString("F0") : "")</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-12 d-flex">
+                            <button type="button" id="btnSendFormats" onclick="sendFormFormats()" class="btn btn-success waves-effect waves-light ml-auto" style="display: none">Guardar</button>
+                        </div>
+                        <form id="form-update-formats" method="POST" asp-area="" asp-controller="Sales" asp-action="UpdateFormats">
+                            @Html.AntiForgeryToken()
+                            <input name="ID" value="@Model.Sale.ID" type="hidden" />
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
 
 
     <!-- Cliente -->
     <div class="col-12 col-lg-4">
-            <div class="card shadow">
-                <div class="card-body">
-                    <h2 class="card-title text-center">Cliente</h2>
-                    <hr />
-                    <div class="row">
-                        <div class="col-md-6 col-lg-12">
-                            <div class="form-group row">
-                                <label class="control-label text-md-left col-5"><b>Nombre:</b></label>
-                                <div class="col-7 pr-0">
-                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Name)</p>
-                                </div>
+        <div class="card shadow">
+            <div class="card-body">
+                <h2 class="card-title text-center">Cliente</h2>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6 col-lg-12">
+                        <div class="form-group row">
+                            <label class="control-label text-md-left col-5"><b>Nombre:</b></label>
+                            <div class="col-7 pr-0">
+                                <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Name)</p>
                             </div>
                         </div>
-                        <!--/span-->
-                        <div class="col-md-6 col-lg-12">
-                            <div class="form-group row">
-                                <label class="control-label text-md-left col-5"><b>Apellido:</b></label>
-                                <div class="col-7 pr-0">
-                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Surname)</p>
-                                </div>
-                            </div>
-                        </div>
-                        <!--/span-->
                     </div>
-                    <!--/row-->
-                    <div class="row">
-                        <div class="col-md-6 col-lg-12">
-                            <div class="form-group row">
-                                <label class="control-label text-md-left col-5"><b>Teléfono:</b></label>
-                                <div class="col-7 pr-0">
-                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Phone)</p>
-                                </div>
+                    <!--/span-->
+                    <div class="col-md-6 col-lg-12">
+                        <div class="form-group row">
+                            <label class="control-label text-md-left col-5"><b>Apellido:</b></label>
+                            <div class="col-7 pr-0">
+                                <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Surname)</p>
                             </div>
                         </div>
-                        <!--/span-->
-                        <div class="col-md-6 col-lg-12">
-                            <div class="form-group row">
-                                <label class="control-label text-md-left col-5"><b>Dirección:</b></label>
-                                <div class="col-7 pr-0">
-                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Adress)</p>
-                                </div>
-                            </div>
-                        </div>
-                        <!--/span-->
                     </div>
-                    <!--/row-->
-                    <div class="row">
-                        <div class="col-md-6 col-lg-12">
-                            <div class="form-group row">
-                                <label class="control-label text-md-left col-5"><b>@(Model.Sale.Client.Debt >= 0 ? "Deuda" : "Saldo a favor:")</b></label>
-                                <div class="col-7 pr-0">
-                                    <p class="form-control-static">$@(Model.Sale.Client.Debt >= 0 ? Model.Sale.Client.Debt.ToString("0") : (-Model.Sale.Client.Debt).ToString("0"))</p>
-                                </div>
-                            </div>
-                        </div>
-                        <!--/span-->
-                        <div class="col-md-6 col-lg-12">
-                            <div class="form-group row">
-                                <label class="control-label text-md-left col-5"><b>Obra social:</b></label>
-                                <div class="col-7 pr-0">
-                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.HealthInsurance.Name)</p>
-                                </div>
-                            </div>
-                        </div>
-                        <!--/span-->
-                    </div>
-                    <!--/row-->
+                    <!--/span-->
                 </div>
+                <!--/row-->
+                <div class="row">
+                    <div class="col-md-6 col-lg-12">
+                        <div class="form-group row">
+                            <label class="control-label text-md-left col-5"><b>Teléfono:</b></label>
+                            <div class="col-7 pr-0">
+                                <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Phone)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col-md-6 col-lg-12">
+                        <div class="form-group row">
+                            <label class="control-label text-md-left col-5"><b>Dirección:</b></label>
+                            <div class="col-7 pr-0">
+                                <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Adress)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/span-->
+                </div>
+                <!--/row-->
+                <div class="row">
+                    <div class="col-md-6 col-lg-12">
+                        <div class="form-group row">
+                            <label class="control-label text-md-left col-5"><b>@(Model.Sale.Client.Debt >= 0 ? "Deuda" : "Saldo a favor:")</b></label>
+                            <div class="col-7 pr-0">
+                                <p class="form-control-static">$@(Model.Sale.Client.Debt >= 0 ? Model.Sale.Client.Debt.ToString("0") : (-Model.Sale.Client.Debt).ToString("0"))</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col-md-6 col-lg-12">
+                        <div class="form-group row">
+                            <label class="control-label text-md-left col-5"><b>Obra social:</b></label>
+                            <div class="col-7 pr-0">
+                                <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.HealthInsurance.Name)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/span-->
+                </div>
+                <!--/row-->
             </div>
         </div>
     </div>
 </div>
 
+<style>
+    #formatsTable.disabled {
+        cursor: default !important;
+    }
+</style>
+
 <script>
     $(document).ready(function () {
         // Establecer el idioma de Moment.js en español
         moment.locale('es');
-
         $('#Sale_DeliveryDate').bootstrapMaterialDatePicker({
             minDate: moment(),
             time: false,
@@ -255,11 +326,32 @@
         $('.js-switch').each(function () {
             new Switchery($(this)[0], $(this).data());
         });
+        
+        $('#formatsTable').editableTableWidget().numericInputExample();
+        $("#formatsTable tbody tr td").on("click", function () {
+            if (!$(this).hasClass("validateCol") || $(this).hasClass("disabled")) {
+                $(this).blur();
+            }
+        });
     });
+
+    const fireAlert = (text) => {
+        Swal.fire({
+            icon: 'warning',
+            title: 'ALERTA',
+            text: text,
+            showCancelButton: false,
+            confirmButtonColor: '#1e88e5',
+            confirmButtonText: 'OK',
+            allowOutsideClick: false,
+        });
+        return false;
+    };
 </script>
 
+<!-- Lente -->
 <script>
-    $("#btnEdit").on("click", function() {
+    $("#btnEditGlass").on("click", function() {
         // Inputs
         $('#formEdit input:not(:hidden), textarea, select').each(function () {
             $(this).prop('disabled', function (_, val) {
@@ -293,7 +385,7 @@
         $(this).toggleClass('btn-outline-secondary btn-danger');
 
         // Btns
-        $("#btnSend").toggle();
+        $("#btnSendSale").toggle();
         $("#btnDelete").toggle();
     });
 
@@ -342,7 +434,7 @@
         })
     }
 
-    function sendForm() {
+    function sendFormSale() {
         let clickCheckbox = document.querySelector('.js-switch');
         $("input[name='Sale.IsAr']").val(clickCheckbox.checked);
 
@@ -361,7 +453,7 @@
                         title: response.message,
                         confirmButtonColor: '#1e88e5',
                     });
-                    $("#btnEdit").click();
+                    $("#btnEditGlass").click();
                 },
                 error: function (errorThrown) {
                     Swal.fire({
@@ -374,7 +466,112 @@
             });
         }
     }
+</script>
 
+<!-- Formatos -->
+<script>
+    $("#btnEditFormats").on("click", function() {
+        // Tabla
+        let table = $("#formatsTable");
+
+        if (table.hasClass("disabled")) {
+            table.removeClass("disabled");
+        } else {
+            table.addClass("disabled");
+        }
+
+        let filas = $(".validateCol");
+
+        // Itera sobre cada fila y agrega o quita la clase "disabled" según corresponda
+        filas.each(function () {
+            $(this).toggleClass("disabled");
+        });
+
+        // Btn edit
+        $(this).find('i').toggleClass('fa bi');
+        $(this).find('i').toggleClass('fa-pencil bi-x-lg');
+        $(this).toggleClass('btn-outline-secondary btn-danger');
+
+        // Btns
+        $("#btnSendFormats").toggle();
+    });
+
+
+    let formatsData;
+    function validateFormats() {
+        let formats = [];
+        let valid = true;
+        // Obtener los valores de las columnas 3, 4 y 5 de todas las filas
+        $('#formatsTable tbody tr').each(function (index) {
+            let $row = $(this);
+            let rowNumber = index + 1;
+            let esferic = $row.find('td.column1').text().trim();
+            let cilindric = $row.find('td.column2').text().trim();
+            let axis = $row.find('td.column3').text().trim();
+
+            // Validar que ninguna de las tres columnas esté vacía en una fila
+            if ((esferic != '' && (cilindric == '' || axis == '')) ||
+                (cilindric != '' && (esferic == '' || axis == '')) ||
+                (axis != '' && (esferic == '' || cilindric == ''))) {
+                valid = false;
+                return false;
+            }
+
+            // Agregar los valores al arreglo
+            if (esferic != '' && cilindric != '' && axis != '' && esferic != null && cilindric != null && axis != null) {
+                formats.push({
+                    Distance: rowNumber > 2 ? 1 : 2, // 1=Cerca 2=Lejos
+                    Eye: (index % 2 === 0) ? 1 : 2, // 1=Derecho 2=Izquierdo
+                    Esferic: esferic,
+                    Cilindric: cilindric,
+                    Axis: axis
+                });
+            }
+        });
+
+        if (valid === false) return fireAlert("Alguna de las filas del formato no está completa");
+
+
+        formatsData = {
+            GlassFormats: formats
+        };
+
+        // Validar que exista al menos una fila completa
+        if (formats.length <= 0) {
+            return fireAlert("Debes completar al menos una fila del formato");
+        }
+
+        return true;
+    }
+
+    function sendFormFormats() {
+        if (validateFormats()) {
+            let form = document.getElementById("form-update-formats");
+
+            // Enviar solicitud AJAX
+            $.ajax({
+                url: $(form).attr('action'), // Utiliza la ruta del formulario
+                method: $(form).attr('method'), // Utiliza el método del formulario
+                data: $(form).serialize() + "&" + $.param(formatsData), // Utiliza los datos del formulario
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: response.message,
+                        confirmButtonColor: '#1e88e5',
+                    });
+                    $("#btnEditFormats").click();
+                },
+                error: function (errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: errorThrown.responseJSON.title,
+                        text: errorThrown.responseJSON.message,
+                        confirmButtonColor: '#1e88e5',
+                    });
+                }
+            });
+        }
+    }
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -26,6 +26,7 @@ namespace Optica_Gaido.Data.Repository
             Seller = new SellerRepository(_db);
             GlassColor = new GlassColorRepository(_db);
             GlassType = new GlassTypeRepository(_db);
+            GlassFormat = new GlassFormatRepository(_db);
             Sale = new SaleRepository(_db);
         }
 
@@ -43,6 +44,7 @@ namespace Optica_Gaido.Data.Repository
         public ISellerRepository Seller { get; private set; }
         public IGlassColorRepository GlassColor { get; private set; }
         public IGlassTypeRepository GlassType { get; private set; }
+        public IGlassFormatRepository GlassFormat { get; private set; }
         public ISaleRepository Sale { get; private set; }
 
         public void BeginTransaction()
