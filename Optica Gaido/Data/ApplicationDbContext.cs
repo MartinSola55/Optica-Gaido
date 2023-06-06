@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Optica_Gaido.Data.Seeding;
 using Optica_Gaido.Models;
 
 namespace Optica_Gaido.Data
@@ -14,7 +15,10 @@ namespace Optica_Gaido.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             // Configuraciones adicionales aquí
+
+            new DbInitializer(modelBuilder).Seed();
 
             modelBuilder.Entity<SalePaymentMethod>()
                 .HasKey(sp => new { sp.SaleID, sp.PaymentMethodID });

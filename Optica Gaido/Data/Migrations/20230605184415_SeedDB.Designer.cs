@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Optica_Gaido.Data;
 
@@ -11,9 +12,11 @@ using Optica_Gaido.Data;
 namespace Optica_Gaido.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230605184415_SeedDB")]
+    partial class SeedDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,8 +236,7 @@ namespace Optica_Gaido.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"));
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -295,8 +297,7 @@ namespace Optica_Gaido.Data.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -329,8 +330,7 @@ namespace Optica_Gaido.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"));
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("bit");
 
                     b.Property<string>("License")
                         .IsRequired()
@@ -469,12 +469,12 @@ namespace Optica_Gaido.Data.Migrations
                         new
                         {
                             ID = 4L,
-                            Name = "Hig H. Lite Blanco"
+                            Name = "Hih H. Lite Blanco"
                         },
                         new
                         {
                             ID = 5L,
-                            Name = "Hig H. Lite Sepia"
+                            Name = "Hih H. Lite Sepia"
                         });
                 });
 
@@ -556,8 +556,7 @@ namespace Optica_Gaido.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("ID"));
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -609,8 +608,7 @@ namespace Optica_Gaido.Data.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("bit");
 
                     b.HasKey("ID");
 
@@ -646,8 +644,7 @@ namespace Optica_Gaido.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("ID"));
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -853,8 +850,7 @@ namespace Optica_Gaido.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("ID"));
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Linq.Expressions;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +28,7 @@ namespace Optica_Gaido.Controllers
             {
                 IndexViewModel viewModel = new()
                 {
-                    Frames = _workContainer.Frame.GetAll(includeProperties: "Brand, Material"),
+                    Frames = _workContainer.Frame.GetAll(includeProperties: "Brand, Material", hasDeletedAt: true),
                     Brands = _workContainer.Brand.GetDropDownList(),
                     Materials = _workContainer.Material.GetDropDownList(),
                     CreateViewModel = new Frame()
@@ -60,10 +61,12 @@ namespace Optica_Gaido.Controllers
                     }
                     _workContainer.Frame.Add(frame.CreateViewModel);
                     _workContainer.Save();
+                    Expression<Func<Frame, bool>> filter = sale => sale.ID == frame.CreateViewModel.ID;
+                    Frame newFrame = _workContainer.Frame.GetFirstOrDefault(filter, includeProperties: "Brand, Material");
                     return Json(new
                     {
                         success = true,
-                        data = frame.CreateViewModel,
+                        data = newFrame,
                         message = "El marco se agregó correctamente",
                     });
                 }
