@@ -5,6 +5,7 @@ using Optica_Gaido.Data.Repository.IRepository;
 using Optica_Gaido.Models;
 using Optica_Gaido.Models.ViewModels.Stats;
 using System.Drawing.Drawing2D;
+using System.Dynamic;
 using System.Linq.Expressions;
 
 namespace Optica_Gaido.Controllers
@@ -28,6 +29,8 @@ namespace Optica_Gaido.Controllers
                 {
                     AnnualSales = this.GetAnnualSales(DateTime.UtcNow.AddHours(-3).Year.ToString()),
                     MonthlySales = this.GetMonthlySales(DateTime.UtcNow.AddHours(-3).Year.ToString(), DateTime.UtcNow.AddHours(-3).Month.ToString()),
+                    MaterialsSales = this.GetMaterialsSales(DateTime.UtcNow.AddHours(-3).Year.ToString()),
+                    BrandsSales = this.GetBrandsSales(DateTime.UtcNow.AddHours(-3).Year.ToString()),
                     Years = _workContainer.Sale.GetYears()
                 };
 
@@ -117,6 +120,69 @@ namespace Optica_Gaido.Controllers
             {
                 success = true,
                 data = monthlySales,
+            });
+        }
+
+        [HttpGet]
+        public IActionResult GetMaterialsSales(string yearString)
+        {
+            Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year.ToString() == yearString;
+            IEnumerable<Sale> allSales = _workContainer.Sale.GetAll(filter, includeProperties: "Frame, Frame.Material", hasDeletedAt: true);
+
+            var materialSales = allSales
+                .GroupBy(sale => sale.Frame.Material.ID)
+                .Select(group => new
+                {
+                    brandID = group.Key,
+                    material = group.First().Frame.Material.Description,
+                    sold = group.Count()
+                })
+                .ToList();
+
+            dynamic dataObject = new ExpandoObject();
+            dataObject.period = yearString;
+
+            foreach (var item in materialSales)
+            {
+                ((IDictionary<string, object>)dataObject)[item.material] = item.sold;
+            }
+
+            return Json(new
+            {
+                success = true,
+                data = dataObject
+            });
+        }
+
+
+        [HttpGet]
+        public IActionResult GetBrandsSales(string yearString)
+        {
+            Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year.ToString() == yearString;
+            IEnumerable<Sale> allSales = _workContainer.Sale.GetAll(filter, includeProperties: "Frame, Frame.Brand", hasDeletedAt: true);
+
+            var brandSales = allSales
+                .GroupBy(sale => sale.Frame.Brand.ID)
+                .Select(group => new
+                {
+                    brandID = group.Key,
+                    brand = group.First().Frame.Brand.Name,
+                    sold = group.Count()
+                })
+                .ToList();
+
+            dynamic dataObject = new ExpandoObject();
+            dataObject.period = yearString;
+
+            foreach (var item in brandSales)
+            {
+                ((IDictionary<string, object>)dataObject)[item.brand] = item.sold;
+            }
+
+            return Json(new
+            {
+                success = true,
+                data = dataObject
             });
         }
     }

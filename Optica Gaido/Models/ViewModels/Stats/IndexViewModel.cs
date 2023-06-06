@@ -8,8 +8,9 @@ namespace Optica_Gaido.Models.ViewModels.Stats
     {
         public IActionResult AnnualSales { get; set; }
         public IActionResult MonthlySales { get; set; }
+        public IActionResult MaterialsSales { get; set; }
+        public IActionResult BrandsSales { get; set; }
         public IEnumerable<SelectListItem> Years { get; set; } = new List<SelectListItem>();
-        //public int AnualSales { get; set; }
         //public int AnualSales { get; set; }
     }
 }

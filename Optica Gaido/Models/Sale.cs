@@ -42,7 +42,8 @@ public partial class Sale
     [Display(Name = "Observaciones")]
     [StringLength(500, MinimumLength = 1, ErrorMessage = "Debes ingresar una observación de menos de 500 caracteres")]
     [RegularExpression(@"^[a-zA-Z0-9\u00C0-\u017F\s']+$", ErrorMessage = "Ingrese una observación válida")]
-    public string? Observation { get; set; }
+    [AllowNull]
+    public string Observation { get; set; }
 
     [Required(ErrorMessage = "Debes seleccionar si cuenta con anti reflex")]
     [Display(Name = "Anti reflex")]
