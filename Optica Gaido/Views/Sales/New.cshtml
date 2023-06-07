@@ -258,27 +258,27 @@
                                         </thead>
                                         <tbody>            
                                             <tr>
-                                                <td rowspan="2">Lejos</td>
-                                                <td>Derecho</td>
+                                                <td rowspan="2" style="cursor: default">Lejos</td>
+                                                <td style="cursor: default">Derecho</td>
                                                 <td class="validateCol column1"></td>
                                                 <td class="validateCol column2"></td>
                                                 <td class="validateCol column3"></td>
                                             </tr>
                                             <tr>
-                                                <td>Izquierdo</td>
+                                                <td style="cursor: default">Izquierdo</td>
                                                 <td class="validateCol column1"></td>
                                                 <td class="validateCol column2"></td>
                                                 <td class="validateCol column3"></td>
                                             </tr>
                                             <tr>
-                                                <td rowspan="2">Cerca</td>
-                                                <td>Derecho</td>
+                                                <td rowspan="2" style="cursor: default">Cerca</td>
+                                                <td style="cursor: default">Derecho</td>
                                                 <td class="validateCol column1"></td>
                                                 <td class="validateCol column2"></td>
                                                 <td class="validateCol column3"></td>
                                             </tr>
                                             <tr>
-                                                <td>Izquierdo</td>
+                                                <td style="cursor: default">Izquierdo</td>
                                                 <td class="validateCol column1"></td>
                                                 <td class="validateCol column2"></td>
                                                 <td class="validateCol column3"></td>
@@ -363,6 +363,13 @@
 <script>
     $(document).ready(function () {
         $('#formatsTable').editableTableWidget().numericInputExample();
+
+        $("#formatsTable tbody tr td").on("click", function () {
+            if (!$(this).hasClass("validateCol")) {
+                $(this).blur();
+            }
+        });
+
         $('#DataTable').DataTable({
             scrollY: '30vh',
             scrollCollapse: true,

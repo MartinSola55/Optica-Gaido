@@ -45,6 +45,7 @@ namespace Optica_Gaido.Controllers
             {
                 try
                 {
+                    expense.CreateViewModel.CreatedAt = DateTime.UtcNow.AddHours(-3);
                     _workContainer.Expense.Add(expense.CreateViewModel);
                     _workContainer.Save();
                     return Json(new

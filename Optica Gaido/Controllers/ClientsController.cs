@@ -54,6 +54,7 @@ namespace Optica_Gaido.Controllers
                             message = "Ya existe otro con el mismo nombre, apellido y dirección",
                         });
                     }
+                    client.CreateViewModel.CreatedAt = DateTime.UtcNow.AddHours(-3);
                     _workContainer.Client.Add(client.CreateViewModel);
                     _workContainer.Save();
 
