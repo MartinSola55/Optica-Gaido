@@ -40,7 +40,7 @@ namespace Optica_Gaido.Data.Seeding
             // Crear usuarios
             _userManager.CreateAsync(new IdentityUser
             {
-                UserName = _config["User:Email"],
+                UserName = _config["User:Name"],
                 Email = _config["User:Email"],
                 EmailConfirmed = true,
             }, _config["User:Password"]).GetAwaiter().GetResult();

@@ -31,7 +31,6 @@
         <!-- Scripts -->
         <script src="~/lib/jquery/jquery.min.js"></script>
         <!-- Bootstrap tether Core JavaScript -->
-        <script src="~/lib/popper/popper.min.js"></script>
         <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
         <!-- slimscrollbar scrollbar JavaScript -->
         <script src="~/js/jquery.slimscroll.js"></script>
@@ -46,11 +45,6 @@
         <script src="~/lib/sparkline/jquery.sparkline.min.js"></script>
         <!--Custom JavaScript -->
         <script src="~/js/custom.min.js"></script>
-
-        <script src="~/lib/wizard/jquery.steps.min.js"></script>
-        <!-- Sweet-Alert  -->
-        <script src="~/lib/sweetalert/sweetalert.min.js"></script>
-
         <!-- ============================================================== -->
         <!-- Style switcher -->
         <!-- ============================================================== -->
@@ -78,18 +72,18 @@
 
         <div id="main-wrapper">
             <partial name="_LoginPartial" />
+
+            <main role="main" class="@(SignInManager.IsSignedIn(User) ? "page-wrapper" : "")">
+                @RenderBody()
+            </main>
+
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <footer class="footer">
+                        &copy; 2023 - Óptica Gaido
+                </footer>
+            }
         </div>
-
-        <main role="main" class="@(SignInManager.IsSignedIn(User) ? "page-wrapper" : "")">
-            @RenderBody()
-        </main>
-
-        @if (SignInManager.IsSignedIn(User))
-        {
-            <footer class="footer">
-                    &copy; 2023 - Óptica Gaido
-            </footer>
-        }
 
         @await RenderSectionAsync("Scripts", required: false)
     </body>
