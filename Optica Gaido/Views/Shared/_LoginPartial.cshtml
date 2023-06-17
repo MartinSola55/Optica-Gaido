@@ -1,13 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
-@{
-    var user = await UserManager.GetUserAsync(User);
-    var userName = await UserManager.GetUserNameAsync(user);
-}
 
 @if (SignInManager.IsSignedIn(User))
 {
+    var user = await UserManager.GetUserAsync(User);
+    var userName = await UserManager.GetUserNameAsync(user);
+
     <header class="topbar">
         <nav class="navbar top-navbar navbar-expand-md navbar-light">
             <!-- ============================================================== -->

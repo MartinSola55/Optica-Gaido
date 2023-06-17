@@ -39,5 +39,7 @@ namespace Optica_Gaido.Data
         public DbSet<Sale> Sales { get; set; }
         public DbSet<SalePaymentMethod> SalePaymentMethods { get; set; }
         public DbSet<Seller> Sellers { get; set; }
+        public DbSet<Debt> Debts { get; set; }
+        public DbSet<DebtPayment> DebtPayments { get; set; }
     }
 }

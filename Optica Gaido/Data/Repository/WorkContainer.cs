@@ -28,6 +28,8 @@ namespace Optica_Gaido.Data.Repository
             GlassType = new GlassTypeRepository(_db);
             GlassFormat = new GlassFormatRepository(_db);
             Sale = new SaleRepository(_db);
+            Debt = new DebtRepository(_db);
+            DebtPayment = new DebtPaymentRepository(_db);
         }
 
         public IBrandRepository Brand { get; private set; }
@@ -46,17 +48,19 @@ namespace Optica_Gaido.Data.Repository
         public IGlassTypeRepository GlassType { get; private set; }
         public IGlassFormatRepository GlassFormat { get; private set; }
         public ISaleRepository Sale { get; private set; }
+        public IDebtRepository Debt { get; private set; }
+        public IDebtPaymentRepository DebtPayment { get; private set; }
 
         public void BeginTransaction()
         {
             _db.Database.BeginTransaction();
         }
-        
+
         public void Commit()
         {
             _db.Database.CommitTransaction();
         }
-        
+
         public void Rollback()
         {
             _db.Database.RollbackTransaction();

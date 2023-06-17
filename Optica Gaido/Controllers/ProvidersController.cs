@@ -17,6 +17,8 @@ namespace Optica_Gaido.Controllers
             _workContainer = workContainer;
         }
 
+#region Providers
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -59,7 +61,7 @@ namespace Optica_Gaido.Controllers
                     {
                         success = true,
                         data = provider.CreateViewModel,
-                        message = "El provider se agregó correctamente",
+                        message = "El proveedor se agregó correctamente",
                     });
                 }
                 catch (Exception e)
@@ -163,9 +165,146 @@ namespace Optica_Gaido.Controllers
                 });
             }
         }
+#endregion
 
-        #region Llamadas a la API
+#region Deudas
 
-        #endregion
+        [HttpGet]
+        public IActionResult Debts(long id)
+        {
+            try
+            {
+                Provider provider = _workContainer.Provider.GetOne(id);
+                if (provider == null)
+                {
+                    return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "El proveedor no existe", ErrorCode = 404 });
+                }
+                DebtsViewModel viewModel = new()
+                {
+                    Provider = provider,
+                    Debts = _workContainer.Debt.GetProviderDebts(id)
+                };
+                return View(viewModel);
+            }
+            catch (Exception)
+            {
+                return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateDebt(DebtsViewModel debt)
+        {
+            ModelState.Remove("CreateViewModel.ID");
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    debt.CreateViewModel.CreatedAt = DateTime.UtcNow.AddHours(-3);
+                    _workContainer.Debt.Add(debt.CreateViewModel);
+                    _workContainer.Save();
+                    return Json(new
+                    {
+                        success = true,
+                        data = debt.CreateViewModel,
+                        message = "La deuda se agregó correctamente",
+                    });
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(new
+                    {
+                        success = false,
+                        title = "Error al agregar la deuda",
+                        message = "Intente nuevamente o comuníquese para soporte",
+                        error = e.Message,
+                    });
+                }
+            }
+            return BadRequest(new
+            {
+                success = false,
+                title = "Error al agregar la deuda",
+                message = "Alguno de los campos ingresados no es válido",
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult PayDebt(DebtsViewModel debt)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    debt.DebtPayment.CreatedAt = DateTime.UtcNow.AddHours(-3);
+                    _workContainer.DebtPayment.Add(debt.DebtPayment);
+                    _workContainer.Save();
+                    return Json(new
+                    {
+                        success = true,
+                        data = debt.DebtPayment,
+                        message = "El pago se realizó correctamente",
+                    });
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(new
+                    {
+                        success = false,
+                        title = "Error al pagar la deuda",
+                        message = "Intente nuevamente o comuníquese para soporte",
+                        error = e.Message,
+                    });
+                }
+            }
+            return BadRequest(new
+            {
+                success = false,
+                title = "Error al pagar la deuda",
+                message = "Alguno de los campos ingresados no es válido",
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SoftDeleteDebt(long id)
+        {
+            try
+            {
+                var debt = _workContainer.Debt.GetOne(id);
+                if (debt != null)
+                {
+                    _workContainer.Debt.SoftDelete(id);
+                    _workContainer.Save();
+                    return Json(new
+                    {
+                        success = true,
+                        data = id,
+                        message = "La deuda se eliminó correctamente",
+                    });
+                }
+                return BadRequest(new
+                {
+                    success = false,
+                    title = "Error al eliminar",
+                    message = "No se encontró la deuda solicitada",
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    title = "Error al eliminar",
+                    message = "Intente nuevamente o comuníquese para soporte",
+                    error = e.Message,
+                });
+            }
+        }
+
+#endregion
+
     }
 }

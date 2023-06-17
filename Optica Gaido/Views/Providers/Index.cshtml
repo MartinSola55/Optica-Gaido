@@ -89,7 +89,7 @@
                                 @foreach (var item in Model.Providers)
                                 {
                                     <tr data-id="@item.ID">
-                                        <td>@Html.DisplayFor(c => item.Surname), @Html.DisplayFor(c => item.Name)</td>
+                                        <td><a asp-area="" asp-controller="Providers" asp-action="Debts" asp-route-id="@item.ID" >@Html.DisplayFor(c => item.Surname), @Html.DisplayFor(c => item.Name)</a></td>
                                         <td class='d-flex flex-row justify-content-center'>
                                             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                                             <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(@item.ID)'><i class='bi bi-trash3'></i></button>
