@@ -81,18 +81,20 @@
                         <table id="DataTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th class="col-10">Nombre</th>
+                                    <th class="col-7">Nombre</th>
+                                    <th class="col-3">Deuda</th>
                                     <th class="col-2">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="table_body">
                                 @foreach (var item in Model.Providers)
                                 {
-                                    <tr data-id="@item.ID">
-                                        <td><a asp-area="" asp-controller="Providers" asp-action="Debts" asp-route-id="@item.ID" >@Html.DisplayFor(c => item.Surname), @Html.DisplayFor(c => item.Name)</a></td>
+                                    <tr data-id="@item.Item1.ID">
+                                        <td><a asp-area="" asp-controller="Providers" asp-action="Debts" asp-route-id="@item.Item1.ID" >@Html.DisplayFor(x => item.Item1.Surname), @Html.DisplayFor(x => item.Item1.Name)</a></td>
+                                        <td>$@(item.Item2.ToString("F0"))</td>
                                         <td class='d-flex flex-row justify-content-center'>
-                                            <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
-                                            <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(@item.ID)'><i class='bi bi-trash3'></i></button>
+                                            <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item.Item1))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                                            <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(@item.Item1.ID)'><i class='bi bi-trash3'></i></button>
                                         </td>
                                     </tr>
                                 }
@@ -114,6 +116,7 @@
         let content = `
             <tr data-id='${item.id}'>
                 <td>${item.surname}, ${item.name}</td>
+                <td>$0</td>
                 <td class='d-flex flex-row justify-content-center'>
                     <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                     <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(${item.id})'><i class='bi bi-trash3'></i></button>

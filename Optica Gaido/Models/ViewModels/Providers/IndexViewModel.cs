@@ -2,7 +2,7 @@
 {
     public class IndexViewModel
     {
-        public IEnumerable<Provider> Providers { get; set; } = new List<Provider>();
+        public List<(Provider, decimal)> Providers { get; set; } = new();
         public Provider CreateViewModel { get; set; } = new Provider();
     }
 }

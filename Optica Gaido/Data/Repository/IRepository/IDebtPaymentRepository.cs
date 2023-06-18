@@ -9,6 +9,6 @@ namespace Optica_Gaido.Data.Repository.IRepository
 {
     public interface IDebtPaymentRepository : IRepository<DebtPayment>
     {
-        //
+        IEnumerable<DebtPayment> GetAllPayments(IEnumerable<long> debtsIDs);
     }
 }

@@ -92,13 +92,13 @@ namespace Optica_Gaido.Controllers
         [HttpPost]
         [ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(IndexViewModel frame)
+        public IActionResult Edit(IndexViewModel updatedFrame)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (_workContainer.Frame.IsDuplicated(frame.CreateViewModel))
+                    if (_workContainer.Frame.IsDuplicated(updatedFrame.CreateViewModel))
                     {
                         return BadRequest(new
                         {
@@ -107,12 +107,13 @@ namespace Optica_Gaido.Controllers
                             message = "Ya existe otro con el mismo código de modelo",
                         });
                     }
-                    _workContainer.Frame.Update(frame.CreateViewModel);
+                    _workContainer.Frame.Update(updatedFrame.CreateViewModel);
                     _workContainer.Save();
+                    Frame frame = _workContainer.Frame.GetFirstOrDefault(x => x.ID == updatedFrame.CreateViewModel.ID, includeProperties: "Brand, Material");
                     return Json(new
                     {
                         success = true,
-                        data = frame.CreateViewModel,
+                        data = frame,
                         message = "El marco se editó correctamente",
                     });
                 }

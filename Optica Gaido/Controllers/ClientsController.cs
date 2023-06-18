@@ -149,7 +149,7 @@ namespace Optica_Gaido.Controllers
         {
             try
             {
-                var client = _workContainer.Client.GetOne(id);
+                var client = _workContainer.Client.GetOneWithProperties(id, properties: "HealthInsurance");
                 if (client != null)
                 {
                     _workContainer.Client.ChangeState(id);

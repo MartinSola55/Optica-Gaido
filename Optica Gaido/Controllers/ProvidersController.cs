@@ -24,11 +24,23 @@ namespace Optica_Gaido.Controllers
         {
             try
             {
-                IndexViewModel viewModel = new()
+                IndexViewModel viewModel = new();
+                foreach (var provider in _workContainer.Provider.GetAll())
                 {
-                    Providers = _workContainer.Provider.GetAll(),
-                    CreateViewModel = new Provider()
-                };
+                    IEnumerable<Debt> debts = _workContainer.Debt.GetProviderDebts(provider.ID);
+
+                    // Calcular la deuda del proveedor sumando los precios de todas las deudas
+                    decimal totalDebt = debts.Sum(x => x.Price);
+
+                    // Obtener todos los pagos de deudas correspondientes a las deudas del proveedor
+                    List<long> debtsIDs = debts.Select(d => d.ID).ToList();
+                    decimal totalPayments = _workContainer.DebtPayment.GetAllPayments(debtsIDs).Sum(x => x.Amount);
+
+                    decimal providerDebt = totalDebt - totalPayments;
+
+                    // Agregar el proveedor al ViewModel
+                    viewModel.Providers.Add((provider, providerDebt));
+                }
                 return View(viewModel);
             }
             catch (Exception)
@@ -232,19 +244,29 @@ namespace Optica_Gaido.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult PayDebt(DebtsViewModel debt)
+        public IActionResult PayDebt(DebtsViewModel payment)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    debt.DebtPayment.CreatedAt = DateTime.UtcNow.AddHours(-3);
-                    _workContainer.DebtPayment.Add(debt.DebtPayment);
+                    Debt debt = _workContainer.Debt.GetOne(payment.DebtPayment.DebtID);
+                    if (payment.DebtPayment.Amount > debt.Price)
+                    {
+                        return BadRequest(new
+                        {
+                            success = false,
+                            title = "Error al pagar la deuda",
+                            message = "El monto ingresado es mayor al de la deuda",
+                        });
+                    }
+                    payment.DebtPayment.CreatedAt = DateTime.UtcNow.AddHours(-3);
+                    _workContainer.DebtPayment.Add(payment.DebtPayment);
                     _workContainer.Save();
                     return Json(new
                     {
                         success = true,
-                        data = debt.DebtPayment,
+                        data = payment.DebtPayment,
                         message = "El pago se realizó correctamente",
                     });
                 }

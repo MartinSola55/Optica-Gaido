@@ -18,5 +18,11 @@ namespace Optica_Gaido.Data.Repository
         {
             _db = db;
         }
+
+        public IEnumerable<DebtPayment> GetAllPayments(IEnumerable<long> debtsIDs)
+        {
+            return _db.DebtPayments.Where(dp => debtsIDs.Contains(dp.DebtID))
+            .ToList();
+        }
     }
 }

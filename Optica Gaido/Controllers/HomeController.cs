@@ -30,13 +30,15 @@ namespace Optica_Gaido.Controllers
                 int totalSales = sales.Count();
                 decimal monthlyEarnings = sales.Sum(x => x.Price);
                 decimal monthlyExpenses = _workContainer.Expense.GetAll(filterExpense).Sum(x => x.Amount);
+                decimal providerDebts = _workContainer.Debt.GetAll(hasDeletedAt: true).Sum(x => x.Price) - _workContainer.DebtPayment.GetAll(hasDeletedAt: true).Sum(x => x.Amount);
 
                 IndexViewModel viewModel = new()
                 {
-                    Clients = _workContainer.Client.GetAll(includeProperties: "HealthInsurance"),
+                    Clients = _workContainer.Client.GetAll(includeProperties: "HealthInsurance", hasIsActive: true),
                     MonthlyEarnings = monthlyEarnings,
                     MonthlyExpenses = monthlyExpenses,
                     TotalSales = totalSales,
+                    ProvidersDebts = providerDebts
                 };
                 return View(viewModel);
             }

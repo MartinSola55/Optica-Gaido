@@ -58,7 +58,7 @@
                                         <td>@item.CreatedAt.ToString("dd/MM/yyyy - HH:mm")</td>
                                         <td>@item.DeliveryDate.ToString("dd/MM/yyyy")</td>
                                         <td>$@(item.Price.ToString("0"))</td>
-                                        <td>$@(item.Deposit.Value.ToString("0"))</td>
+                                        <td>$@(item.Deposit != null ? item.Deposit.Value.ToString("0") : "0")</td>
                                         <td>
                                             @foreach (var pm in item.SalePaymentMethods)
                                             {
@@ -124,12 +124,13 @@
             sale.paymentMethods.forEach(function (pm) {
                 methods += `<span>${pm.paymentMethod.name}: $${pm.amount}</span><br />`;
             })
+            let deposit = sale.deposit ?? "0";
             let row = [
                 `${sale.surname}, ${sale.name}`,
                 createDateWithTime(sale.createdAt),
                 createDate(sale.deliveryDate),
                 `$${sale.price}`,
-                `$${sale.deposit}`,
+                `$${deposit}`,
                 methods
             ];
             let addedRow = $('#DataTable').DataTable().row.add(row).draw().node();

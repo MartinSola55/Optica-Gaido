@@ -134,7 +134,7 @@
                                     <th class="col-2">Monto</th>
                                     <th class="col-2">Pagado</th>
                                     <th class="col-2">Fecha</th>
-                                    <th class="col-2">Pagar</th>
+                                    <th class="col-2">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="table_body">
@@ -176,7 +176,6 @@
     }
 
     $("#btnAdd").on("click", function () {
-        console.log("ADS")
         $("#form-create input[name='CreateViewModel.Description']").val("");
         $("#form-create input[name='CreateViewModel.Price']").val("");
     });
@@ -198,7 +197,12 @@
                 <td>$${item.price}</td>
                 <td>$0</td>
                 <td>${createDate(item.createdAt)}</td>
-                <td></td>
+                <td>
+                    <div class="d-flex justify-content-center">
+                        <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='pay(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalPay"><i class="bi bi-cash"></i></button>
+                        <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(${item.id})'><i class='bi bi-trash3'></i></button>
+                    </div>
+                </td>
             </tr>`;
         $('#DataTable').DataTable().row.add($(content)).draw();
     }
@@ -220,12 +224,12 @@
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
-            .then((result) => {
-                if (result.isConfirmed) {
-                    $("#form-delete input[name='id']").val(id);
-                    sendForm("delete");
-                }
-            });
+        .then((result) => {
+            if (result.isConfirmed) {
+                $("#form-delete input[name='id']").val(id);
+                sendForm("delete");
+            }
+        });
     }
 
     function sendForm(action) {

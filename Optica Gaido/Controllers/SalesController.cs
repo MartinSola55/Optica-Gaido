@@ -48,7 +48,7 @@ namespace Optica_Gaido.Controllers
                 Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year == DateTime.UtcNow.AddHours(-3).Year;
                 IndexViewModel viewModel = new()
                 {
-                    Sales = _workContainer.Sale.GetAll(filter, hasDeletedAt: true, includeProperties: "Client, SalePaymentMethods, SalePaymentMethods.PaymentMethod"),
+                    Sales = _workContainer.Sale.GetAll(filter, includeProperties: "Client, SalePaymentMethods, SalePaymentMethods.PaymentMethod", hasDeletedAt: true),
                     Years = _workContainer.Sale.GetYears()
                 };
                 return View(viewModel);
@@ -80,7 +80,7 @@ namespace Optica_Gaido.Controllers
                 {
                     Doctors = _workContainer.Doctor.GetDropDownList(),
                     Sellers = _workContainer.Seller.GetDropDownList(),
-                    Frames = _workContainer.Frame.GetAll(hasDeletedAt: true, includeProperties: "Brand, Material"),
+                    Frames = _workContainer.Frame.GetAll(includeProperties: "Brand, Material", hasDeletedAt: true),
                     SalePaymentMethods = methods,
                     GlassTypes = _workContainer.GlassType.GetAll(),
                     GlassColors = _workContainer.GlassColor.GetDropDownList(),
@@ -301,7 +301,7 @@ namespace Optica_Gaido.Controllers
             try
             {
                 Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year.ToString() == year;
-                var sales = _workContainer.Sale.GetAll(filter, hasDeletedAt: true, includeProperties: "Client, SalePaymentMethods, SalePaymentMethods.PaymentMethod")
+                var sales = _workContainer.Sale.GetAll(filter, includeProperties: "Client, SalePaymentMethods, SalePaymentMethods.PaymentMethod", hasDeletedAt: true)
                     .Select(x => new
                     {
                         id = x.ID,
