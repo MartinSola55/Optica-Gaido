@@ -10,6 +10,7 @@ namespace Optica_Gaido.Data.Repository.IRepository
     public interface IDebtRepository : IRepository<Debt>
     {
         IEnumerable<Debt> GetProviderDebts(long id);
+        Debt GetOneWithProperties(long id, string properties);
         void SoftDelete(long id);
     }
 }

@@ -191,11 +191,14 @@
     }
 
     function fillTable(item) {
+        let total = item.debtPayment.reduce(function (sum, payment) {
+            return sum + payment.amount;
+        }, 0);
         let content = `
             <tr data-id='${item.id}'>
                 <td>${item.description}</td>
                 <td>$${item.price}</td>
-                <td>$0</td>
+                <td>$${total}</td>
                 <td>${createDate(item.createdAt)}</td>
                 <td>
                     <div class="d-flex justify-content-center">
@@ -254,7 +257,8 @@
                         fillTable(response.data);
                     } else {
                         $("#btnCloseModalPay").click();
-                        removeFromTable(response.data);
+                        removeFromTable(response.data.id);
+                        fillTable(response.data);
                     }
                 },
                 error: function (errorThrown) {
@@ -278,7 +282,24 @@
     $("#form-pay").on("submit", function (e) {
         e.preventDefault();
         let totalAmount = $("#modalSubtitle").text().split("$")[1];
-        if (parseInt($("#form-pay input[name='DebtPayment.Amount']").val()) > parseInt(totalAmount)) {
+        let inputValue = $("#form-pay input[name='DebtPayment.Amount']").val();
+        if (inputValue === "") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'ALERTA',
+                text: 'Debes ingresar un monto',
+                confirmButtonColor: '#1e88e5',
+            });
+            return;
+        } else if (parseInt(inputValue) <= 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'ALERTA',
+                text: 'El monto debe ser superior a $0',
+                confirmButtonColor: '#1e88e5',
+            });
+            return;
+        } else if (parseInt(inputValue) > parseInt(totalAmount)) {
             Swal.fire({
                 icon: 'warning',
                 title: 'ALERTA',

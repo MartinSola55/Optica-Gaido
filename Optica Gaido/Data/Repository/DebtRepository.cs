@@ -38,5 +38,19 @@ namespace Optica_Gaido.Data.Repository
                 _db.SaveChanges();
             }
         }
+
+        public Debt GetOneWithProperties(long id, string properties)
+        {
+            IQueryable<Debt> query = dbSet;
+            // Include properties separados por coma
+            if (properties != null)
+            {
+                foreach (var prop in properties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(prop.Trim());
+                }
+            }
+            return query.Where(x => x.ID == id).FirstOrDefault();
+        }
     }
 }

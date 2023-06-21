@@ -250,7 +250,7 @@ namespace Optica_Gaido.Controllers
             {
                 try
                 {
-                    Debt debt = _workContainer.Debt.GetOne(payment.DebtPayment.DebtID);
+                    Debt debt = _workContainer.Debt.GetOneWithProperties(payment.DebtPayment.DebtID, "DebtPayment");
                     if (payment.DebtPayment.Amount > debt.Price)
                     {
                         return BadRequest(new
@@ -263,10 +263,11 @@ namespace Optica_Gaido.Controllers
                     payment.DebtPayment.CreatedAt = DateTime.UtcNow.AddHours(-3);
                     _workContainer.DebtPayment.Add(payment.DebtPayment);
                     _workContainer.Save();
+
                     return Json(new
                     {
                         success = true,
-                        data = payment.DebtPayment,
+                        data = debt,
                         message = "El pago se realizó correctamente",
                     });
                 }
