@@ -15,12 +15,6 @@ public partial class Provider
     [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s']+$", ErrorMessage = "Ingrese un nombre válido")]
     public string Name { get; set; } = null!;
 
-    [Required(ErrorMessage = "Debes ingresar un apellido")]
-    [Display(Name = "Apellido")]
-    [StringLength(50, MinimumLength = 1, ErrorMessage = "Debes ingresar un apellido de menos de 50 caracteres")]
-    [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s']+$", ErrorMessage = "Ingrese un apellido válido")]
-    public string Surname { get; set; } = null!;
-
     [Display(Name = "Eliminado")]
     public DateTime? DeletedAt { get; set; }
 }

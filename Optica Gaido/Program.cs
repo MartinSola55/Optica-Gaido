@@ -8,7 +8,7 @@ using Optica_Gaido.Data.Seeding;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("MacConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -29,7 +29,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("DisallowRegistration", policy =>
     {
-        policy.RequireAuthenticatedUser(); // Requiere que el usuario est� autenticado
+        policy.RequireAuthenticatedUser(); // Requiere que el usuario este autenticado
     });
 });
 
@@ -60,7 +60,7 @@ app.MapRazorPages();
 
 app.Run();
 
-// M�todo Seed()
+// Metodo Seed()
 void Seed()
 {
     using (var scope = app.Services.CreateScope())

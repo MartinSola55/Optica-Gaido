@@ -118,7 +118,7 @@
 
     <div class="row">
         <div class="col-12">
-            <h2 class="text-center">@Html.DisplayFor(x => x.Provider.Surname), @Html.DisplayFor(x => x.Provider.Name)</h2>
+            <h2 class="text-center">@Html.DisplayFor(x => x.Provider.Name)</h2>
             <hr />
             <div class="card shadow">
                 <div class="card-body">
@@ -271,7 +271,8 @@
                 }
             });
         }
-    }</script>
+    }
+</script>
 
 <script>
     $("#form-create").on("submit", function (e) {

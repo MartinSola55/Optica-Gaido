@@ -50,11 +50,6 @@
                                         <input asp-for="CreateViewModel.Name" class="form-control" required />
                                         <span asp-validation-for="CreateViewModel.Name" class="text-danger"></span>
                                     </div>
-                                    <div class="col-12 mb-3">
-                                        <label asp-for="CreateViewModel.Surname" class="mb-0"></label>
-                                        <input asp-for="CreateViewModel.Surname" class="form-control" required />
-                                        <span asp-validation-for="CreateViewModel.Surname" class="text-danger"></span>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -90,7 +85,7 @@
                                 @foreach (var item in Model.Providers)
                                 {
                                     <tr data-id="@item.Item1.ID">
-                                        <td><a asp-area="" asp-controller="Providers" asp-action="Debts" asp-route-id="@item.Item1.ID" >@Html.DisplayFor(x => item.Item1.Surname), @Html.DisplayFor(x => item.Item1.Name)</a></td>
+                                        <td><a asp-area="" asp-controller="Providers" asp-action="Debts" asp-route-id="@item.Item1.ID" >@Html.DisplayFor(x => item.Item1.Name)</a></td>
                                         <td>$@(item.Item2.ToString("F0"))</td>
                                         <td class='d-flex flex-row justify-content-center'>
                                             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item.Item1))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
@@ -115,7 +110,7 @@
     function fillTable(item) {
         let content = `
             <tr data-id='${item.id}'>
-                <td>${item.surname}, ${item.name}</td>
+                <td>${item.name}</td>
                 <td>$0</td>
                 <td class='d-flex flex-row justify-content-center'>
                     <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>

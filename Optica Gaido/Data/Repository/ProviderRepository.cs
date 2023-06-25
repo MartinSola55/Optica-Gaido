@@ -25,7 +25,6 @@ namespace Optica_Gaido.Data.Repository
             if (dbObject != null)
             {
                 dbObject.Name = provider.Name;
-                dbObject.Surname = provider.Surname;
                 _db.SaveChanges();
             }
         }
@@ -42,8 +41,7 @@ namespace Optica_Gaido.Data.Repository
 
         public bool IsDuplicated(Provider provider)
         {
-            var dbObject = _db.Providers.FirstOrDefault(x => x.Name.ToLower() == provider.Name.ToLower() &&
-                x.Surname.ToLower() == provider.Surname.ToLower() && x.ID != provider.ID);
+            var dbObject = _db.Providers.FirstOrDefault(x => x.Name.ToLower() == provider.Name.ToLower() && x.ID != provider.ID);
             return dbObject != null;
         }
     }

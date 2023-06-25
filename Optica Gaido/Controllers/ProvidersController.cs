@@ -64,7 +64,7 @@ namespace Optica_Gaido.Controllers
                         {
                             success = false,
                             title = "Error al agregar el proveedor",
-                            message = "Ya existe otro con el mismo nombre y apellido",
+                            message = "Ya existe otro con el mismo nombre",
                         });
                     }
                     _workContainer.Provider.Add(provider.CreateViewModel);
