@@ -255,7 +255,9 @@
                     if (action === 'create') {
                         $("#btnCloseModal").click();
                         fillTable(response.data);
-                    } else {
+                    } else if (action === 'delete') {
+                        removeFromTable(response.data);
+                    } else if (action === 'pay') {
                         $("#btnCloseModalPay").click();
                         removeFromTable(response.data.id);
                         fillTable(response.data);
