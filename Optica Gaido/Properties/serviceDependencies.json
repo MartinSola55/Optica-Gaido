@@ -2,8 +2,7 @@
   "dependencies": {
     "mssql2": {
       "type": "mssql",
-      "connectionId": "ProductionConnection",
-      "dynamicId": null
+      "connectionId": "ConnectionStrings:DefaultConnection"
     }
   }
 }
