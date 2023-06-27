@@ -5,6 +5,15 @@
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/optica-gaido/databases/OpticaGaido",
       "type": "mssql.azure",
       "connectionId": "ConnectionStrings:ProductionConnection"
+    },
+    "mssql3": {
+      "ignored": "true",
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:MacConnection"
+    },
+    "sqlite1": {
+      "ignored": "true",
+      "type": "sqlite"
     }
   }
 }

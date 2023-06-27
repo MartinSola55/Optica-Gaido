@@ -6,6 +6,16 @@
       "type": "mssql.azure",
       "connectionId": "ConnectionStrings:ProductionConnection",
       "dynamicId": null
+    },
+    "mssql3": {
+      "ignored": "true",
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:MacConnection"
+    },
+    "mssql2": {
+      "ignored": "true",
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:DefaultConnection"
     }
   }
 }
