@@ -24,7 +24,7 @@ namespace Optica_Gaido.Controllers
             {
                 IndexViewModel viewModel = new()
                 {
-                    Expenses = _workContainer.Expense.GetAll(),
+                    Expenses = _workContainer.Expense.GetAll(hasDeletedAt: true),
                     CreateViewModel = new Expense()
                 };
 
@@ -113,14 +113,13 @@ namespace Optica_Gaido.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(long id)
+        public IActionResult SoftDelete(long id)
         {
             try
             {
-                var expense = _workContainer.Expense.GetOne(id);
-                if (expense != null)
+                if (_workContainer.Expense.GetOne(id) != null)
                 {
-                    _workContainer.Expense.Remove(id);
+                    _workContainer.Expense.SoftDelete(id);
                     _workContainer.Save();
                     return Json(new
                     {

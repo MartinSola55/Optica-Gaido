@@ -29,5 +29,14 @@ namespace Optica_Gaido.Data.Repository
                 _db.SaveChanges();
             }
         }
+        public void SoftDelete(long id)
+        {
+            var dbObject = _db.Expenses.FirstOrDefault(x => x.ID == id);
+            if (dbObject != null)
+            {
+                dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
+                _db.SaveChanges();
+            }
+        }
     }
 }

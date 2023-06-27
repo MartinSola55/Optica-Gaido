@@ -10,5 +10,6 @@ namespace Optica_Gaido.Data.Repository.IRepository
     public interface IExpenseRepository : IRepository<Expense>
     {
         void Update(Expense expense);
+        void SoftDelete(long id);
     }
 }

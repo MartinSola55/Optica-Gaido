@@ -29,7 +29,7 @@ namespace Optica_Gaido.Controllers
                 var sales = _workContainer.Sale.GetAll(filterSale, hasDeletedAt: true);
                 int totalSales = sales.Count();
                 decimal monthlyEarnings = sales.Sum(x => x.Price);
-                decimal monthlyExpenses = _workContainer.Expense.GetAll(filterExpense).Sum(x => x.Amount);
+                decimal monthlyExpenses = _workContainer.Expense.GetAll(filterExpense, hasDeletedAt: true).Sum(x => x.Amount);
                 decimal providerDebts = _workContainer.Debt.GetAll(hasDeletedAt: true).Sum(x => x.Price) - _workContainer.DebtPayment.GetAll(hasDeletedAt: true).Sum(x => x.Amount);
 
                 IndexViewModel viewModel = new()

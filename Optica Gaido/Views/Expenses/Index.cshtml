@@ -106,7 +106,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <form id="form-state" method="POST" asp-area="" asp-controller="Expenses" asp-action="ChangeState">
+                    <form id="form-delete" method="POST" asp-area="" asp-controller="Expenses" asp-action="SoftDelete">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="">
                     </form>
@@ -175,9 +175,8 @@
                     });
                     if (action === 'create') {
                         fillTable(response.data);
-                    } else {
-                        removeFromTable(response.data.id);
-                        fillTable(response.data);
+                    } else if (action === 'delete') {
+                        removeFromTable(response.data);
                     }
                 },
                 error: function (errorThrown) {
