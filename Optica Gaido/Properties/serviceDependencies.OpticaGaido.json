@@ -1,20 +1,11 @@
 {
   "dependencies": {
     "mssql1": {
-      "ignored": "true",
-      "type": "mssql",
-      "connectionId": "ConnectionStrings:DefaultConnection"
-    },
-    "mssql3": {
-      "ignored": "true",
-      "type": "mssql",
-      "connectionId": "ConnectionStrings:MacConnection"
-    },
-    "mssql2": {
       "secretStore": "AzureAppSettings",
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/optica-gaido/databases/OpticaGaido",
       "type": "mssql.azure",
-      "connectionId": "ConnectionStrings:DefaultConnection"
+      "connectionId": "ConnectionStrings:ProductionConnection",
+      "dynamicId": null
     }
   }
 }

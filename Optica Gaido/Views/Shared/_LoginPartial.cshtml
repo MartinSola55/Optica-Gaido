@@ -4,8 +4,10 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    var user = await UserManager.GetUserAsync(User);
-    var userName = await UserManager.GetUserNameAsync(user);
+    string email = User.Identity.Name;
+    string[] parts = email.Split('@');
+    string username = parts[0];
+    string capitalizedUsername = char.ToUpper(username[0]) + username.Substring(1).ToLower();
 
     <header class="topbar">
         <nav class="navbar top-navbar navbar-expand-md navbar-light">
@@ -57,8 +59,8 @@
                                     <div class="dw-user-box">
                                         <div class="u-img"><img src="~/images/profile.png" alt="Usuario"></div>
                                         <div class="u-text">
-                                            <h4>@userName</h4>
-                                            <p class="text-muted">@User.Identity.Name</p>
+                                            <h4>@capitalizedUsername</h4>
+                                            <p class="text-muted">@email</p>
                                         </div>
                                     </div>
                                 </li>

@@ -1,11 +1,10 @@
 {
   "dependencies": {
-    "mssql2": {
+    "mssql1": {
       "secretStore": "LocalSecretsFile",
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/optica-gaido/databases/OpticaGaido",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/optica-gaido/databases/OpticaGaido",
       "type": "mssql.azure",
-      "connectionId": "ProductionConnection",
-      "dynamicId": null
+      "connectionId": "ConnectionStrings:ProductionConnection"
     }
   }
 }
