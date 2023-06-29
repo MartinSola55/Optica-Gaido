@@ -25,7 +25,7 @@ namespace Optica_Gaido.Controllers
             try
             {
                 IndexViewModel viewModel = new();
-                foreach (var provider in _workContainer.Provider.GetAll())
+                foreach (var provider in _workContainer.Provider.GetAll(hasDeletedAt: true))
                 {
                     IEnumerable<Debt> debts = _workContainer.Debt.GetProviderDebts(provider.ID);
 

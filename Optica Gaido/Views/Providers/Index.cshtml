@@ -56,7 +56,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
-                        <button id="btnSendModal" type="submit" class="btn btn-success waves-effect waves-light">Agregar</button>
+                        <button id="btnSendModal" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
                     </div>
                 </div>
             </form>
@@ -110,7 +110,7 @@
     function fillTable(item) {
         let content = `
             <tr data-id='${item.id}'>
-                <td>${item.name}</td>
+                <td><a href="/Providers/Debts/${item.id}">${item.name}</a></td>
                 <td>$0</td>
                 <td class='d-flex flex-row justify-content-center'>
                     <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
@@ -186,6 +186,13 @@
 </script>
 
 <script>
+    $("#btnSendModal").on("click", function () {
+        if ($("#formContainer form").attr('id') === 'form-create') {
+            sendForm("create");
+        } else if ($("#formContainer form").attr('id') === 'form-edit') {
+            sendForm("edit");
+        }
+    });
     $("#btnAdd").on("click", function () {
         $("#modalTitle").text("Agregar proveedor");
         $("#formContainer form").attr("action", "/Providers/Create");
@@ -193,11 +200,6 @@
         $("#formContainer form input:not([type='hidden']").val("");
         $("input[name='CreateViewModel.ID']").prop("disabled", true);
         $("#btnSendModal").text("Agregar");
-
-        $("#form-create").on("submit", function (e) {
-            e.preventDefault();
-            sendForm("create");
-        })
     });
 
     function edit(entity) {
@@ -212,11 +214,6 @@
 
         $("input[name='CreateViewModel.Name']").val(entity.name);
         $("input[name='CreateViewModel.Surname']").val(entity.surname);
-
-        $("#form-edit").on("submit", function (e) {
-            e.preventDefault();
-            sendForm("edit");
-        })
     }
 
     $('#DataTable').DataTable({

@@ -68,7 +68,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-success waves-effect waves-light">Agregar</button>
+                        <button id="btnSendDebt" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
                     </div>
                 </div>
             </form>
@@ -108,7 +108,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-success waves-effect waves-light">Pagar</button>
+                        <button id="btnSendPay" type="button" class="btn btn-success waves-effect waves-light">Pagar</button>
                     </div>
                 </div>
             </form>
@@ -277,13 +277,11 @@
 </script>
 
 <script>
-    $("#form-create").on("submit", function (e) {
-        e.preventDefault();
+    $("#btnSendDebt").on("click", function (e) {
         sendForm("create");
     });
     
-    $("#form-pay").on("submit", function (e) {
-        e.preventDefault();
+    $("#btnSendPay").on("click", function (e) {
         let totalAmount = $("#modalSubtitle").text().split("$")[1];
         let inputValue = $("#form-pay input[name='DebtPayment.Amount']").val();
         if (inputValue === "") {

@@ -66,7 +66,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
-                        <button id="btnSendModal" type="submit" class="btn btn-success waves-effect waves-light">Agregar</button>
+                        <button id="btnSendModal" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
                     </div>
                 </div>
             </form>
@@ -179,8 +179,8 @@
                     if (action === 'create') {
                         fillTable(response.data);
                     } else if (action === 'edit') {
-                        fillTable(response.data);
                         removeFromTable(response.data.id);
+                        fillTable(response.data);
                     } else {
                         removeFromTable(response.data);
                     }
@@ -199,6 +199,13 @@
 </script>
 
 <script>
+    $("#btnSendModal").on("click", function () {
+        if ($("#formContainer form").attr('id') === 'form-create') {
+            sendForm("create");
+        } else if ($("#formContainer form").attr('id') === 'form-edit') {
+            sendForm("edit");
+        }
+    });
     $("#btnAdd").on("click", function () {
         $("#modalTitle").text("Agregar marco");
         $("#formContainer form").attr("action", "/Frames/Create");
@@ -209,11 +216,6 @@
             $(this).val($(this).find('option:first').val());
         });
         $("#btnSendModal").text("Agregar");
-
-        $("#form-create").on("submit", function (e) {
-            e.preventDefault();
-            sendForm("create");
-        })
     });
 
     function edit(entity) {
@@ -229,11 +231,6 @@
         $("input[name='CreateViewModel.Model']").val(entity.model);
         $("select[name='CreateViewModel.BrandID']").val(entity.brand.id);
         $("select[name='CreateViewModel.MaterialID']").val(entity.material.id);
-
-        $("#form-edit").on("submit", function (e) {
-            e.preventDefault();
-            sendForm("edit");
-        })
     }
 
     $('#DataTable').DataTable({

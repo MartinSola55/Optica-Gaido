@@ -41,7 +41,7 @@ namespace Optica_Gaido.Data.Repository
 
         public bool IsDuplicated(Provider provider)
         {
-            var dbObject = _db.Providers.FirstOrDefault(x => x.Name.ToLower() == provider.Name.ToLower() && x.ID != provider.ID);
+            var dbObject = _db.Providers.FirstOrDefault(x => x.Name.ToLower() == provider.Name.ToLower() && x.DeletedAt == null && x.ID != provider.ID);
             return dbObject != null;
         }
     }

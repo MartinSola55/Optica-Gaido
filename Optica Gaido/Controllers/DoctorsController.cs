@@ -101,10 +101,11 @@ namespace Optica_Gaido.Controllers
                     }
                     _workContainer.Doctor.Update(doctor.CreateViewModel);
                     _workContainer.Save();
+                    Doctor editedDoctor = _workContainer.Doctor.GetOne(doctor.CreateViewModel.ID);
                     return Json(new
                     {
                         success = true,
-                        data = doctor.CreateViewModel,
+                        data = editedDoctor,
                         message = "El doctor se editó correctamente",
                     });
                 }

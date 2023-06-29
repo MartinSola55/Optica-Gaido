@@ -57,7 +57,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
-                        <button id="btnSendModal" type="submit" class="btn btn-success waves-effect waves-light">Agregar</button>
+                        <button id="btnSendModal" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
                     </div>
                 </div>
             </form>
@@ -211,6 +211,13 @@
 </script>
 
 <script>
+    $("#btnSendModal").on("click", function () {
+        if ($("#formContainer form").attr('id') === 'form-create') {
+            sendForm("create");
+        } else if ($("#formContainer form").attr('id') === 'form-edit') {
+            sendForm("edit");
+        }
+    });
     $("#btnAddHI").on("click", function () {
         $("#modalTitle").text("Agregar obra social");
         $("#formContainer form").attr("action", "/HealthInsurances/Create");
@@ -218,11 +225,6 @@
         $("#formContainer form input:not([type='hidden']").val("");
         $("input[name='CreateViewModel.ID']").prop("disabled", true);
         $("#btnSendModal").text("Agregar");
-
-        $("#form-create").on("submit", function (e) {
-            e.preventDefault();
-            sendForm("create");
-        })
     });
     
     function editHI(entity) {
@@ -236,11 +238,6 @@
         $("#btnSendModal").text("Confirmar");
 
         $("input[name='CreateViewModel.Name']").val(entity.name);
-
-        $("#form-edit").on("submit", function (e) {
-            e.preventDefault();
-            sendForm("edit");
-        })
     }
 
     $('#HealthInsurancesTable').DataTable({

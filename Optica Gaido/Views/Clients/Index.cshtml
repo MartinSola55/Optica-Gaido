@@ -86,7 +86,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
-                        <button id="btnSendModal" type="submit" class="btn btn-success waves-effect waves-light">Agregar</button>
+                        <button id="btnSendModal" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
                     </div>
                 </div>
             </form>
@@ -157,7 +157,6 @@
 
 <script>
     function fillTable(item) {
-        console.log(item);
         let active = "";
         let btn = "";
         let HI = "-";
@@ -208,12 +207,12 @@
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
-            .then((result) => {
-                if (result.isConfirmed) {
-                    $("#form-state input[name='id']").val(id);
-                    sendForm("state");
-                }
-            });
+        .then((result) => {
+            if (result.isConfirmed) {
+                $("#form-state input[name='id']").val(id);
+                sendForm("state");
+            }
+        });
     }
 
     function sendForm(action) {
@@ -255,6 +254,13 @@
 </script>
 
 <script>
+    $("#btnSendModal").on("click", function () {
+        if ($("#formContainer form").attr('id') === 'form-create') {
+            sendForm("create");
+        } else if ($("#formContainer form").attr('id') === 'form-edit') {
+            sendForm("edit");
+        }
+    });
     $("#btnAdd").on("click", function () {
         $("#modalTitle").text("Agregar cliente");
         $("#formContainer form").attr("action", "/Clients/Create");
@@ -265,11 +271,6 @@
             $(this).val($(this).find('option:first').val());
         });
         $("#btnSendModal").text("Agregar");
-
-        $("#form-create").on("submit", function (e) {
-            e.preventDefault();
-            sendForm("create");
-        })
     });
 
     function edit(entity) {
@@ -288,11 +289,6 @@
         $("input[name='CreateViewModel.Adress']").val(entity.adress);
         $("input[name='CreateViewModel.Debt']").val(entity.debt);
         $("select[name='CreateViewModel.HealthInsuranceID']").val(entity.healthInsurance !== null ? entity.healthInsurance.id : "");
-
-        $("#form-edit").on("submit", function (e) {
-            e.preventDefault();
-            sendForm("edit");
-        })
     }
 
     $('#DataTable').DataTable({

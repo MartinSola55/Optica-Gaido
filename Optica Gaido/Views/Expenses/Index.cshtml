@@ -66,7 +66,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
-                        <button id="btnSendModal" type="submit" class="btn btn-success waves-effect waves-light">Agregar</button>
+                        <button id="btnSendModal" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
                     </div>
                 </div>
             </form>
@@ -136,7 +136,7 @@
 
     function deleteObj(id) {
         Swal.fire({
-            title: "¿Seguro deseas eliminar este marco?",
+            title: "¿Seguro deseas eliminar este gasto?",
             text: "Esta acción no se puede deshacer",
             icon: 'warning',
             showCancelButton: true,
@@ -175,7 +175,10 @@
                     });
                     if (action === 'create') {
                         fillTable(response.data);
-                    } else if (action === 'delete') {
+                    } else if (action === 'edit') {
+                        removeFromTable(response.data.id);
+                        fillTable(response.data);
+                    } else {
                         removeFromTable(response.data);
                     }
                 },
@@ -193,6 +196,13 @@
 </script>
 
 <script>
+    $("#btnSendModal").on("click", function () {
+        if ($("#formContainer form").attr('id') === 'form-create') {
+            sendForm("create");
+        } else if ($("#formContainer form").attr('id') === 'form-edit') {
+            sendForm("edit");
+        }
+    });
     $("#btnAdd").on("click", function () {
         $("#modalTitle").text("Agregar gasto");
         $("#formContainer form").attr("action", "/Expenses/Create");
@@ -200,11 +210,6 @@
         $("#formContainer form input:not([type='hidden']").val("");
         $("input[name='CreateViewModel.ID']").prop("disabled", true);
         $("#btnSendModal").text("Agregar");
-
-        $("#form-create").on("submit", function (e) {
-            e.preventDefault();
-            sendForm("create");
-        })
     });
 
     function edit(entity) {
@@ -219,11 +224,6 @@
 
         $("input[name='CreateViewModel.Description']").val(entity.description);
         $("input[name='CreateViewModel.Amount']").val(entity.amount);
-
-        $("#form-edit").on("submit", function (e) {
-            e.preventDefault();
-            sendForm("edit");
-        })
     }
 
     $('#DataTable').DataTable({
