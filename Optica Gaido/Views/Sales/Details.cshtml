@@ -142,9 +142,9 @@
 
                         <!-- Date -->
                         <div class="col-12 col-md-6 col-lg-4 col-xxl-3 mb-3">
-                            <label asp-for="Sale.DeliveryDate" class="mb-0"></label>
-                            <input asp-for="Sale.DeliveryDate" class="form-control" type="text" placeholder="dd/mm/aaaa" disabled />
-                            <span asp-validation-for="Sale.DeliveryDate" class="text-danger"></span>
+                            <input asp-for="Sale.DeliveryDate" type="hidden" />
+                            <label for="saleDeliveryDate" class="mb-0">Fecha</label>
+                            <input id="saleDeliveryDate" class="form-control" type="text" placeholder="dd/mm/aaaa" disabled value="@Model.Sale.DeliveryDate.ToString("dd/MM/yyyy")" />
                         </div>
 
                         <!-- Observation -->
@@ -162,7 +162,7 @@
 
                     <form id="form-delete" method="POST" asp-area="" asp-controller="Sales" asp-action="SoftDelete">
                         @Html.AntiForgeryToken()
-                        <input asp-for="Sale.ID" name="id" type="hidden"/>
+                        <input asp-for="Sale.ID" name="id" type="hidden" />
                     </form>
                 </div>
             </div>
@@ -230,75 +230,76 @@
         </div>
 
 
-    <!-- Cliente -->
-    <div class="col-12 col-lg-4">
-        <div class="card shadow">
-            <div class="card-body">
-                <h2 class="card-title text-center">Cliente</h2>
-                <hr />
-                <div class="row">
-                    <div class="col-md-6 col-lg-12">
-                        <div class="form-group row">
-                            <label class="control-label text-md-left col-5"><b>Nombre:</b></label>
-                            <div class="col-7 pr-0">
-                                <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Name)</p>
+        <!-- Cliente -->
+        <div class="col-12 col-lg-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Cliente</h2>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-6 col-lg-12">
+                            <div class="form-group row">
+                                <label class="control-label text-md-left col-5"><b>Nombre:</b></label>
+                                <div class="col-7 pr-0">
+                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Name)</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!--/span-->
-                    <div class="col-md-6 col-lg-12">
-                        <div class="form-group row">
-                            <label class="control-label text-md-left col-5"><b>Apellido:</b></label>
-                            <div class="col-7 pr-0">
-                                <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Surname)</p>
+                        <!--/span-->
+                        <div class="col-md-6 col-lg-12">
+                            <div class="form-group row">
+                                <label class="control-label text-md-left col-5"><b>Apellido:</b></label>
+                                <div class="col-7 pr-0">
+                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Surname)</p>
+                                </div>
                             </div>
                         </div>
+                        <!--/span-->
                     </div>
-                    <!--/span-->
+                    <!--/row-->
+                    <div class="row">
+                        <div class="col-md-6 col-lg-12">
+                            <div class="form-group row">
+                                <label class="control-label text-md-left col-5"><b>Teléfono:</b></label>
+                                <div class="col-7 pr-0">
+                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Phone)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                        <div class="col-md-6 col-lg-12">
+                            <div class="form-group row">
+                                <label class="control-label text-md-left col-5"><b>Dirección:</b></label>
+                                <div class="col-7 pr-0">
+                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Adress)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                    </div>
+                    <!--/row-->
+                    <div class="row">
+                        <div class="col-md-6 col-lg-12">
+                            <div class="form-group row">
+                                <label class="control-label text-md-left col-5"><b>@(Model.Sale.Client.Debt >= 0 ? "Deuda" : "Saldo a favor:")</b></label>
+                                <div class="col-7 pr-0">
+                                    <p class="form-control-static">$@(Model.Sale.Client.Debt >= 0 ? Model.Sale.Client.Debt.ToString("0") : (-Model.Sale.Client.Debt).ToString("0"))</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                        <div class="col-md-6 col-lg-12">
+                            <div class="form-group row">
+                                <label class="control-label text-md-left col-5"><b>Obra social:</b></label>
+                                <div class="col-7 pr-0">
+                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.HealthInsurance.Name)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                    </div>
+                    <!--/row-->
                 </div>
-                <!--/row-->
-                <div class="row">
-                    <div class="col-md-6 col-lg-12">
-                        <div class="form-group row">
-                            <label class="control-label text-md-left col-5"><b>Teléfono:</b></label>
-                            <div class="col-7 pr-0">
-                                <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Phone)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--/span-->
-                    <div class="col-md-6 col-lg-12">
-                        <div class="form-group row">
-                            <label class="control-label text-md-left col-5"><b>Dirección:</b></label>
-                            <div class="col-7 pr-0">
-                                <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Adress)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--/span-->
-                </div>
-                <!--/row-->
-                <div class="row">
-                    <div class="col-md-6 col-lg-12">
-                        <div class="form-group row">
-                            <label class="control-label text-md-left col-5"><b>@(Model.Sale.Client.Debt >= 0 ? "Deuda" : "Saldo a favor:")</b></label>
-                            <div class="col-7 pr-0">
-                                <p class="form-control-static">$@(Model.Sale.Client.Debt >= 0 ? Model.Sale.Client.Debt.ToString("0") : (-Model.Sale.Client.Debt).ToString("0"))</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--/span-->
-                    <div class="col-md-6 col-lg-12">
-                        <div class="form-group row">
-                            <label class="control-label text-md-left col-5"><b>Obra social:</b></label>
-                            <div class="col-7 pr-0">
-                                <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.HealthInsurance.Name)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--/span-->
-                </div>
-                <!--/row-->
             </div>
         </div>
     </div>
@@ -314,7 +315,7 @@
     $(document).ready(function () {
         // Establecer el idioma de Moment.js en español
         moment.locale('es');
-        $('#Sale_DeliveryDate').bootstrapMaterialDatePicker({
+        $('#saleDeliveryDate').bootstrapMaterialDatePicker({
             minDate: moment(),
             time: false,
             format: 'DD/MM/YYYY',
@@ -326,7 +327,7 @@
         $('.js-switch').each(function () {
             new Switchery($(this)[0], $(this).data());
         });
-        
+
         $('#formatsTable').editableTableWidget().numericInputExample();
         $("#formatsTable tbody tr td").on("click", function () {
             if (!$(this).hasClass("validateCol") || $(this).hasClass("disabled")) {
@@ -351,7 +352,7 @@
 
 <!-- Lente -->
 <script>
-    $("#btnEditGlass").on("click", function() {
+    $("#btnEditGlass").on("click", function () {
         // Inputs
         $('#formEdit input:not(:hidden), textarea, select').each(function () {
             $(this).prop('disabled', function (_, val) {
@@ -402,36 +403,42 @@
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
-        .then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: $("#form-delete").attr('action'), // Utiliza la ruta del formulario
-                    method: $("#form-delete").attr('method'), // Utiliza el método del formulario
-                    data: $("#form-delete").serialize(), // Utiliza los datos del formulario
-                    success: function (response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: response.message,
-                            confirmButtonColor: '#1e88e5',
-                            allowOutsideClick: false,
-                        })
-                        .then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = window.location.origin + "/Sales";
-                            }
-                        });
-                    },
-                    error: function (errorThrown) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: errorThrown.responseJSON.title,
-                            text: errorThrown.responseJSON.message,
-                            confirmButtonColor: '#1e88e5',
-                        });
-                    }
-                });
-            }
-        })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: $("#form-delete").attr('action'), // Utiliza la ruta del formulario
+                        method: $("#form-delete").attr('method'), // Utiliza el método del formulario
+                        data: $("#form-delete").serialize(), // Utiliza los datos del formulario
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: response.message,
+                                confirmButtonColor: '#1e88e5',
+                                allowOutsideClick: false,
+                            })
+                                .then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.href = window.location.origin + "/Sales";
+                                    }
+                                });
+                        },
+                        error: function (errorThrown) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: errorThrown.responseJSON.title,
+                                text: errorThrown.responseJSON.message,
+                                confirmButtonColor: '#1e88e5',
+                            });
+                        }
+                    });
+                }
+            })
+    }
+
+    function formatUTCDate(dateString) {
+        let parts = dateString.split('/');
+        let formattedDate = parts[1] + '/' + parts[0] + '/' + parts[2];
+        return formattedDate;
     }
 
     function sendFormSale() {
@@ -439,6 +446,9 @@
         $("input[name='Sale.IsAr']").val(clickCheckbox.checked);
 
         let form = document.getElementById("formEdit");
+
+        let date = $("#saleDeliveryDate").val();
+        $("#Sale_DeliveryDate").val(formatUTCDate(date));
 
         let errors = $(".input-validation-error");
         if (errors.length === 0) {
@@ -470,7 +480,7 @@
 
 <!-- Formatos -->
 <script>
-    $("#btnEditFormats").on("click", function() {
+    $("#btnEditFormats").on("click", function () {
         // Tabla
         let table = $("#formatsTable");
 

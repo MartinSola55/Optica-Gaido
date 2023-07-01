@@ -226,9 +226,9 @@
 
                                 <!-- Date -->
                                 <div class="col-12 col-md-6 col-lg-4 col-xxl-3 mb-3">
-                                    <label asp-for="CreateViewModel.DeliveryDate" class="mb-0"></label>
-                                    <input asp-for="CreateViewModel.DeliveryDate" class="form-control" type="text" placeholder="dd/mm/aaaa"/>
-                                    <span asp-validation-for="CreateViewModel.DeliveryDate" class="text-danger"></span>
+                                    <input asp-for="CreateViewModel.DeliveryDate" type="hidden" />
+                                    <label for="saleDeliveryDate" class="mb-0">Fecha</label>
+                                    <input id="saleDeliveryDate" class="form-control" type="text" placeholder="dd/mm/aaaa" />
                                 </div>
 
                                 <!-- Observation -->
@@ -416,7 +416,7 @@
         moment.locale('es');
 
         // Configurar bootstrapMaterialDatePicker con el formato y opciones deseadas
-        $('#CreateViewModel_DeliveryDate').bootstrapMaterialDatePicker({
+        $('#saleDeliveryDate').bootstrapMaterialDatePicker({
             minDate: moment(),
             time: false,
             format: 'DD/MM/YYYY',
@@ -498,7 +498,7 @@
         let dip = $("input[name='CreateViewModel.Dip']").val();
         let seller = $("select[name='CreateViewModel.SellerID']").val();
         let doctor = $("select[name='CreateViewModel.DoctorID']").val();
-        let date = $("input[name='CreateViewModel.DeliveryDate']").val();
+        let date = $("#saleDeliveryDate").val();
 
         if (price == "" || isNaN(parseInt(price))) return fireAlert("Debes ingresar un precio");
         if (deposit.length > 0 && isNaN(parseInt(deposit))) return fireAlert("Debes ingresar una seña válida");
@@ -570,8 +570,17 @@
         return true;
     }
 
+    function formatUTCDate(dateString) {
+        let parts = dateString.split('/');
+        console.log(parts);
+        let formattedDate = parts[1] + '/' + parts[0] + '/' + parts[2];
+        return formattedDate;
+    }
+
     function sendForm() {
         let form = $("#form_data");
+        let date = $("#saleDeliveryDate").val();
+        $("#CreateViewModel_DeliveryDate").val(formatUTCDate(date));
 
         // Enviar solicitud AJAX
         $.ajax({

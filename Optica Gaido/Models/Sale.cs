@@ -74,8 +74,11 @@ public partial class Sale
     public long FrameID { get; set; }
 
     [Required(ErrorMessage = "Debes ingresar una fecha de entrega")]
-    [DataType(DataType.Date)]
     [Display(Name = "Fecha de entrega")]
+    [NotMapped]
+    [DateFormat]
+    public string DeliveryDateString { get; set; }
+
     public DateTime DeliveryDate { get; set; }
 
     public DateTime CreatedAt { get; set; }
@@ -96,4 +99,12 @@ public partial class Sale
     public virtual Seller Seller { get; set; } = null!;
 
     public virtual ICollection<GlassFormat> GlassFormats { get; set; } = new List<GlassFormat>();
+}
+
+public class DateFormatAttribute : RegularExpressionAttribute
+{
+    public DateFormatAttribute() : base(@"^(0[1-9]|1[0-2])/(0[1-9]|1\d|2\d|3[01])/\d{4}$")
+    {
+        ErrorMessage = "El formato de la fecha debe ser dd/mm/yyyy";
+    }
 }
