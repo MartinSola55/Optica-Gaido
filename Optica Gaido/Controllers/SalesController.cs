@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -154,6 +155,8 @@ namespace Optica_Gaido.Controllers
                     if(_workContainer.Frame.GetOne(newSale.FrameID) == null) return CustomBadRequest(title: "Error al crear la venta", message: "El marco ingresado no existe");
 
                     newSale.CreatedAt = DateTime.UtcNow.AddHours(-3);
+
+                    newSale.DeliveryDate = DateTime.ParseExact(sale.CreateViewModel.DeliveryDateString, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     _workContainer.Sale.Add(newSale);
                     _workContainer.Save();
 
@@ -173,6 +176,11 @@ namespace Optica_Gaido.Controllers
                         success = true,
                         message = "La venta se creó correctamente",
                     });
+                }
+                catch (FormatException)
+                {
+                    _workContainer.Rollback();
+                    return CustomBadRequest(title: "Error al editar la venta", message: "Alguno de los campos ingresados no posee un formato válido");
                 }
                 catch (Exception e)
                 {
@@ -201,6 +209,7 @@ namespace Optica_Gaido.Controllers
                     if (_workContainer.Seller.GetOne(newSale.SellerID) == null) return CustomBadRequest(title: "Error al editar la venta", message: "El vendedor/a ingresado/a no existe");
                     //if (newSale.FrameID != 0) // Agregar este if si pongo que el marco puede ser nulo al editar la venta
                     //if (_workContainer.Frame.GetOne(newSale.FrameID) == null) return CustomBadRequest(title: "Error al editar la venta", message: "El marco ingresado no existe");
+                    newSale.DeliveryDate = DateTime.ParseExact(editedSale.Sale.DeliveryDateString, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     _workContainer.Sale.Update(newSale);
 
                     _workContainer.Commit();
@@ -209,6 +218,11 @@ namespace Optica_Gaido.Controllers
                         success = true,
                         message = "La venta se editó correctamente",
                     });
+                }
+                catch (FormatException)
+                {
+                    _workContainer.Rollback();
+                    return CustomBadRequest(title: "Error al editar la venta", message: "Alguno de los campos ingresados no posee un formato válido");
                 }
                 catch (Exception e)
                 {

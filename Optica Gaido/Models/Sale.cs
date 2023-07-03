@@ -103,8 +103,8 @@ public partial class Sale
 
 public class DateFormatAttribute : RegularExpressionAttribute
 {
-    public DateFormatAttribute() : base(@"^(0[1-9]|1[0-2])/(0[1-9]|1\d|2\d|3[01])/\d{4}$")
+    public DateFormatAttribute() : base(@"(((0|1)[0-9]|2[0-9]|3[0-1])\/(0[1-9]|1[0-2])\/((19|20)\d\d))$")
     {
-        ErrorMessage = "El formato de la fecha debe ser dd/mm/yyyy";
+        ErrorMessage = "El formato de la fecha debe ser DD/MM/AAAA";
     }
 }

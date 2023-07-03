@@ -142,9 +142,9 @@
 
                         <!-- Date -->
                         <div class="col-12 col-md-6 col-lg-4 col-xxl-3 mb-3">
-                            <input asp-for="Sale.DeliveryDate" type="hidden" />
-                            <label for="saleDeliveryDate" class="mb-0">Fecha</label>
-                            <input id="saleDeliveryDate" class="form-control" type="text" placeholder="dd/mm/aaaa" disabled value="@Model.Sale.DeliveryDate.ToString("dd/MM/yyyy")" />
+                            <label asp-for="Sale.DeliveryDateString" class="mb-0"></label>
+                            <input asp-for="Sale.DeliveryDateString" class="form-control" type="text" placeholder="dd/mm/aaaa" disabled value="@Model.Sale.DeliveryDate.ToString("dd/MM/yyyy")" />
+                            <span asp-validation-for="Sale.DeliveryDateString" class="text-danger"></span>
                         </div>
 
                         <!-- Observation -->
@@ -315,7 +315,7 @@
     $(document).ready(function () {
         // Establecer el idioma de Moment.js en español
         moment.locale('es');
-        $('#saleDeliveryDate').bootstrapMaterialDatePicker({
+        $('#Sale_DeliveryDateString').bootstrapMaterialDatePicker({
             minDate: moment(),
             time: false,
             format: 'DD/MM/YYYY',
@@ -435,20 +435,11 @@
             })
     }
 
-    function formatUTCDate(dateString) {
-        let parts = dateString.split('/');
-        let formattedDate = parts[1] + '/' + parts[0] + '/' + parts[2];
-        return formattedDate;
-    }
-
     function sendFormSale() {
         let clickCheckbox = document.querySelector('.js-switch');
         $("input[name='Sale.IsAr']").val(clickCheckbox.checked);
 
         let form = document.getElementById("formEdit");
-
-        let date = $("#saleDeliveryDate").val();
-        $("#Sale_DeliveryDate").val(formatUTCDate(date));
 
         let errors = $(".input-validation-error");
         if (errors.length === 0) {
