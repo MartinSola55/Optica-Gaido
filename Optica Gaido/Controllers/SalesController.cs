@@ -238,6 +238,7 @@ namespace Optica_Gaido.Controllers
         public IActionResult UpdateFormats([Bind("GlassFormats, ID")] Sale editedFormats)
         {
             ModelState.Remove("Dip");
+            ModelState.Remove("DeliveryDateString");
             if (ModelState.IsValid)
             {
                 try
