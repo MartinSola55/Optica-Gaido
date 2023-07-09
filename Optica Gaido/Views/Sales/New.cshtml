@@ -203,6 +203,13 @@
                                     <span asp-validation-for="CreateViewModel.GlassColorID" class="text-danger"></span>
                                 </div>
 
+                                <!-- Foco -->
+                                <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-3">
+                                    <label asp-for="CreateViewModel.GlassFocusTypeID" class="mb-0"></label>
+                                    @Html.DropDownListFor(x => x.CreateViewModel.GlassFocusTypeID, Model.GlassFocusTypes, null, new { @class = "form-control" })
+                                    <span asp-validation-for="CreateViewModel.GlassFocusTypeID" class="text-danger"></span>
+                                </div>
+
                                 <!-- DIP -->
                                 <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-3">
                                     <label asp-for="CreateViewModel.Dip" class="mb-0"></label>
@@ -494,7 +501,8 @@
         let deposit = $("input[name='CreateViewModel.Deposit']").val();
         let glassType = $('.icheck-list input[type="radio"]').filter(':checked');
         let glassColor = $("select[name='CreateViewModel.GlassColorID']").val();
-        let movieHeight = $("input[name='CreateViewModel.MovieHeight']").val();
+        let glassFocusType = $("select[name='CreateViewModel.GlassFocusTypeID']").val();
+        //let movieHeight = $("input[name='CreateViewModel.MovieHeight']").val();
         let dip = $("input[name='CreateViewModel.Dip']").val();
         let seller = $("select[name='CreateViewModel.SellerID']").val();
         let doctor = $("select[name='CreateViewModel.DoctorID']").val();
@@ -504,7 +512,8 @@
         if (deposit.length > 0 && isNaN(parseInt(deposit))) return fireAlert("Debes ingresar una seña válida");
         if (glassType.length <= 0) return fireAlert("Debes ingresar tipo de vidrio");
         if (glassColor == null) return fireAlert("Debes ingresar un color de vidrio");
-        if (movieHeight == "" || isNaN(parseInt(movieHeight))) return fireAlert("Debes ingresar una altura de película");
+        if (glassFocusType == null) return fireAlert("Debes ingresar un tipo de foco");
+        //if (movieHeight == "" || isNaN(parseInt(movieHeight))) return fireAlert("Debes ingresar una altura de película");
         if (dip == "") return fireAlert("Debes ingresar una distancia interpupilar");
         if (seller == null) return fireAlert("Debes ingresar un vendedor/a");
         if (doctor == null) return fireAlert("Debes ingresar un médico");
@@ -516,7 +525,7 @@
     let formatsData;
     function validateFormats() {
         let formats = [];
-        let valid = true;
+        //let valid = true;
         // Obtener los valores de las columnas 3, 4 y 5 de todas las filas
         $('#formatsTable tbody tr').each(function (index) {
             let $row = $(this);
@@ -526,15 +535,15 @@
             let axis = $row.find('td.column3').text().trim();
 
             // Validar que ninguna de las tres columnas esté vacía en una fila
-            if ((esferic != '' && (cilindric == '' || axis == '')) ||
+            /*if ((esferic != '' && (cilindric == '' || axis == '')) ||
                 (cilindric != '' && (esferic == '' || axis == '')) ||
                 (axis != '' && (esferic == '' || cilindric == ''))) {
                 valid = false;
                 return false;
-            }
+            }*/
 
             // Agregar los valores al arreglo
-            if (esferic != '' && cilindric != '' && axis != '' && esferic != null && cilindric != null && axis != null) {
+            if (esferic != '' || cilindric != '' || axis != '') {
                 formats.push({
                     Distance: rowNumber > 2 ? 1 : 2, // 1=Cerca 2=Lejos
                     Eye: (index % 2 === 0) ? 1 : 2, // 1=Derecho 2=Izquierdo
@@ -545,7 +554,7 @@
             }
         });
 
-        if (valid === false) return fireAlert("Alguna de las filas del formato no está completa");
+        //if (valid === false) return fireAlert("Alguna de las filas del formato no está completa");
 
 
         formatsData = {

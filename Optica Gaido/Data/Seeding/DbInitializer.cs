@@ -82,6 +82,12 @@ namespace Optica_Gaido.Data.Seeding
                 new GlassType() { ID = 2, Name = "Mineral" }
             );
 
+            modelBuilder.Entity<GlassFocusType>().HasData(
+                new GlassFocusType() { ID = 1, Name = "Monofocal" },
+                new GlassFocusType() { ID = 2, Name = "Bifocal" },
+                new GlassFocusType() { ID = 3, Name = "Multifocal" }
+            );
+
             modelBuilder.Entity<PaymentMethod>().HasData(
                 new PaymentMethod() { ID = 1, Name = "Efectivo" },
                 new PaymentMethod() { ID = 2, Name = "Transferencia" },

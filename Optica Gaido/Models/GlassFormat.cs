@@ -31,17 +31,14 @@ public partial class GlassFormat
     [Required(ErrorMessage = "Debes ingresar un ojo")]
     public Eye Eye { get; set; }
 
-    [Required(ErrorMessage = "Debes ingresar un valor")]
     [Precision(18,2)]
-    public decimal Esferic { get; set; }
+    public decimal? Esferic { get; set; }
 
-    [Required(ErrorMessage = "Debes ingresar un valor")]
     [Precision(18, 2)]
-    public decimal Cilindric { get; set; }
+    public decimal? Cilindric { get; set; }
 
-    [Required(ErrorMessage = "Debes ingresar un eje")]
     [Precision(18, 2)]
-    public decimal Axis { get; set; }
+    public decimal? Axis { get; set; }
 
     [Display(Name = "Eliminado")]
     public DateTime? DeletedAt { get; set; }

@@ -26,12 +26,11 @@ public partial class Sale
     [DisplayFormat(DataFormatString = "{0:F0}", ApplyFormatInEditMode = true)]
     public decimal? Deposit { get; set; }
 
-    [Required(ErrorMessage = "Debes ingresar una altura de película en mm.")]
     [Precision(18, 2)]
     [Display(Name = "Altura de película")]
     [Range(0, 1000000, ErrorMessage = "Debes ingresar una altura entre 0 y 1.000")]
     [DisplayFormat(DataFormatString = "{0:F0}", ApplyFormatInEditMode = true)]
-    public decimal MovieHeight { get; set; }
+    public decimal? MovieHeight { get; set; }
 
     [Required(ErrorMessage = "Debes ingresar una distancia interpelicular")]
     [Display(Name = "D.I.P")]
@@ -56,6 +55,10 @@ public partial class Sale
     [Required(ErrorMessage = "Debes seleccionar un color")]
     [Display(Name = "Color")]
     public long GlassColorID { get; set; }
+
+    [Required(ErrorMessage = "Debes seleccionar un foco")]
+    [Display(Name = "Foco")]
+    public long GlassFocusTypeID { get; set; }
 
     [Required(ErrorMessage = "Debes seleccionar un médico")]
     [Display(Name = "Médico")]
@@ -93,6 +96,8 @@ public partial class Sale
     public virtual GlassColor GlassColor { get; set; } = null!;
 
     public virtual GlassType GlassType { get; set; } = null!;
+
+    public virtual GlassFocusType GlassFocusType { get; set; } = null!;
 
     public virtual ICollection<SalePaymentMethod> SalePaymentMethods { get; set; } = new List<SalePaymentMethod>();
 

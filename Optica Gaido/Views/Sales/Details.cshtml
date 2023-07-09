@@ -119,6 +119,13 @@
                             <span asp-validation-for="Sale.GlassColorID" class="text-danger"></span>
                         </div>
 
+                        <!-- Focus type -->
+                        <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-3">
+                            <label asp-for="Sale.GlassFocusTypeID" class="mb-0"></label>
+                            @Html.DropDownListFor(x => x.Sale.GlassFocusTypeID, Model.GlassFocusTypes, null, new { @class = "form-control", @disabled = "disabled" })
+                            <span asp-validation-for="Sale.GlassFocusTypeID" class="text-danger"></span>
+                        </div>
+
                         <!-- DIP -->
                         <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-3">
                             <label asp-for="Sale.Dip" class="mb-0"></label>
@@ -191,28 +198,64 @@
                                     <tr>
                                         <td rowspan="2" style="cursor: default">Lejos</td>
                                         <td style="cursor: default">Derecho</td>
-                                        <td class="validateCol disabled column1">@(row1 != null ? row1.Esferic : "")</td>
-                                        <td class="validateCol disabled column2">@(row1 != null ? row1.Cilindric : "")</td>
-                                        <td class="validateCol disabled column3">@(row1 != null ? row1.Axis.ToString("F0") : "")</td>
+                                        @if (row1 != null)
+                                        {
+                                            <td class="validateCol disabled column1">@(row1.Esferic != null ? row1.Esferic.Value : "")</td>
+                                            <td class="validateCol disabled column2">@(row1.Cilindric != null ? row1.Cilindric.Value : "")</td>
+                                            <td class="validateCol disabled column3">@(row1.Axis != null ? row1.Axis.Value.ToString("F0") : "")</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="validateCol disabled column1"></td>
+                                            <td class="validateCol disabled column2"></td>
+                                            <td class="validateCol disabled column3"></td>
+                                        }
                                     </tr>
                                     <tr>
                                         <td style="cursor: default">Izquierdo</td>
-                                        <td class="validateCol disabled column1">@(row2 != null ? row2.Esferic : "")</td>
-                                        <td class="validateCol disabled column2">@(row2 != null ? row2.Cilindric : "")</td>
-                                        <td class="validateCol disabled column3">@(row2 != null ? row2.Axis.ToString("F0") : "")</td>
+                                        @if (row2 != null)
+                                        {
+                                            <td class="validateCol disabled column1">@(row2.Esferic != null ? row2.Esferic.Value : "")</td>
+                                            <td class="validateCol disabled column2">@(row2.Cilindric != null ? row2.Cilindric.Value : "")</td>
+                                            <td class="validateCol disabled column3">@(row2.Axis != null ? row2.Axis.Value.ToString("F0") : "")</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="validateCol disabled column1"></td>
+                                            <td class="validateCol disabled column2"></td>
+                                            <td class="validateCol disabled column3"></td>
+                                        }
                                     </tr>
                                     <tr>
                                         <td rowspan="2" style="cursor: default">Cerca</td>
                                         <td style="cursor: default">Derecho</td>
-                                        <td class="validateCol disabled column1">@(row3 != null ? row3.Esferic : "")</td>
-                                        <td class="validateCol disabled column2">@(row3 != null ? row3.Cilindric : "")</td>
-                                        <td class="validateCol disabled column3">@(row3 != null ? row3.Axis.ToString("F0") : "")</td>
+                                        @if (row3 != null)
+                                        {
+                                            <td class="validateCol disabled column1">@(row3.Esferic != null ? row3.Esferic.Value : "")</td>
+                                            <td class="validateCol disabled column2">@(row3.Cilindric != null ? row3.Cilindric.Value : "")</td>
+                                            <td class="validateCol disabled column3">@(row3.Axis != null ? row3.Axis.Value.ToString("F0") : "")</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="validateCol disabled column1"></td>
+                                            <td class="validateCol disabled column2"></td>
+                                            <td class="validateCol disabled column3"></td>
+                                        }
                                     </tr>
                                     <tr>
                                         <td style="cursor: default">Izquierdo</td>
-                                        <td class="validateCol disabled column1">@(row4 != null ? row4.Esferic : "")</td>
-                                        <td class="validateCol disabled column2">@(row4 != null ? row4.Cilindric : "")</td>
-                                        <td class="validateCol disabled column3">@(row4 != null ? row4.Axis.ToString("F0") : "")</td>
+                                        @if (row4 != null)
+                                        {
+                                            <td class="validateCol disabled column1">@(row4.Esferic != null ? row4.Esferic.Value : "")</td>
+                                            <td class="validateCol disabled column2">@(row4.Cilindric != null ? row4.Cilindric.Value : "")</td>
+                                            <td class="validateCol disabled column3">@(row4.Axis != null ? row4.Axis.Value.ToString("F0") : "")</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="validateCol disabled column1"></td>
+                                            <td class="validateCol disabled column2"></td>
+                                            <td class="validateCol disabled column3"></td>
+                                        }
                                     </tr>
                                 </tbody>
                             </table>
@@ -403,36 +446,36 @@
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
-            .then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: $("#form-delete").attr('action'), // Utiliza la ruta del formulario
-                        method: $("#form-delete").attr('method'), // Utiliza el método del formulario
-                        data: $("#form-delete").serialize(), // Utiliza los datos del formulario
-                        success: function (response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: response.message,
-                                confirmButtonColor: '#1e88e5',
-                                allowOutsideClick: false,
-                            })
-                                .then((result) => {
-                                    if (result.isConfirmed) {
-                                        window.location.href = window.location.origin + "/Sales";
-                                    }
-                                });
-                        },
-                        error: function (errorThrown) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: errorThrown.responseJSON.title,
-                                text: errorThrown.responseJSON.message,
-                                confirmButtonColor: '#1e88e5',
+        .then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: $("#form-delete").attr('action'), // Utiliza la ruta del formulario
+                    method: $("#form-delete").attr('method'), // Utiliza el método del formulario
+                    data: $("#form-delete").serialize(), // Utiliza los datos del formulario
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: response.message,
+                            confirmButtonColor: '#1e88e5',
+                            allowOutsideClick: false,
+                        })
+                            .then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = window.location.origin + "/Sales";
+                                }
                             });
-                        }
-                    });
-                }
-            })
+                    },
+                    error: function (errorThrown) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: errorThrown.responseJSON.title,
+                            text: errorThrown.responseJSON.message,
+                            confirmButtonColor: '#1e88e5',
+                        });
+                    }
+                });
+            }
+        })
     }
 
     function sendFormSale() {
@@ -501,7 +544,7 @@
     let formatsData;
     function validateFormats() {
         let formats = [];
-        let valid = true;
+        //let valid = true;
         // Obtener los valores de las columnas 3, 4 y 5 de todas las filas
         $('#formatsTable tbody tr').each(function (index) {
             let $row = $(this);
@@ -511,15 +554,15 @@
             let axis = $row.find('td.column3').text().trim();
 
             // Validar que ninguna de las tres columnas esté vacía en una fila
-            if ((esferic != '' && (cilindric == '' || axis == '')) ||
+            /*if ((esferic != '' && (cilindric == '' || axis == '')) ||
                 (cilindric != '' && (esferic == '' || axis == '')) ||
                 (axis != '' && (esferic == '' || cilindric == ''))) {
                 valid = false;
                 return false;
-            }
+            }*/
 
             // Agregar los valores al arreglo
-            if (esferic != '' && cilindric != '' && axis != '' && esferic != null && cilindric != null && axis != null) {
+            if (esferic != '' || cilindric != '' || axis != '') {
                 formats.push({
                     Distance: rowNumber > 2 ? 1 : 2, // 1=Cerca 2=Lejos
                     Eye: (index % 2 === 0) ? 1 : 2, // 1=Derecho 2=Izquierdo
@@ -530,7 +573,7 @@
             }
         });
 
-        if (valid === false) return fireAlert("Alguna de las filas del formato no está completa");
+        //if (valid === false) return fireAlert("Alguna de las filas del formato no está completa");
 
 
         formatsData = {

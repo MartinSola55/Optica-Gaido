@@ -84,6 +84,7 @@ namespace Optica_Gaido.Controllers
                     Frames = _workContainer.Frame.GetAll(includeProperties: "Brand, Material", hasDeletedAt: true),
                     SalePaymentMethods = methods,
                     GlassTypes = _workContainer.GlassType.GetAll(),
+                    GlassFocusTypes = _workContainer.GlassFocusType.GetDropDownList(),
                     GlassColors = _workContainer.GlassColor.GetDropDownList(),
                     Client = client
                 };
@@ -113,6 +114,7 @@ namespace Optica_Gaido.Controllers
                     Doctors = _workContainer.Doctor.GetDropDownList(),
                     Sellers = _workContainer.Seller.GetDropDownList(),
                     GlassTypes = _workContainer.GlassType.GetAll(),
+                    GlassFocusTypes = _workContainer.GlassFocusType.GetDropDownList(),
                     GlassColors = _workContainer.GlassColor.GetDropDownList(),
                 };
 
@@ -158,6 +160,13 @@ namespace Optica_Gaido.Controllers
 
                     newSale.DeliveryDate = DateTime.ParseExact(sale.CreateViewModel.DeliveryDateString, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     _workContainer.Sale.Add(newSale);
+
+                    Client client = _workContainer.Client.GetOne(newSale.ClientID);
+
+                    // Asignar deuda al cliente
+                    client.Debt += newSale.Price;
+                    if (newSale.Deposit != null) client.Debt -= newSale.Deposit.Value;
+
                     _workContainer.Save();
 
                     foreach (var format in newSale.GlassFormats)
@@ -210,6 +219,17 @@ namespace Optica_Gaido.Controllers
                     //if (newSale.FrameID != 0) // Agregar este if si pongo que el marco puede ser nulo al editar la venta
                     //if (_workContainer.Frame.GetOne(newSale.FrameID) == null) return CustomBadRequest(title: "Error al editar la venta", message: "El marco ingresado no existe");
                     newSale.DeliveryDate = DateTime.ParseExact(editedSale.Sale.DeliveryDateString, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                    // Recalcular deuda del cliente
+                    Sale oldSale = _workContainer.Sale.GetOne(editedSale.Sale.ID);
+                    Client client = _workContainer.Client.GetOne(oldSale.ClientID);
+
+                    client.Debt -= oldSale.Price;
+                    if (oldSale.Deposit != null) client.Debt += oldSale.Deposit.Value;
+
+                    client.Debt += newSale.Price;
+                    if (newSale.Deposit != null) client.Debt -= newSale.Deposit.Value;
+
                     _workContainer.Sale.Update(newSale);
 
                     _workContainer.Commit();
@@ -287,6 +307,11 @@ namespace Optica_Gaido.Controllers
                 if (sale != null)
                 {
                     _workContainer.Sale.SoftDelete(id);
+
+                    Client client = _workContainer.Client.GetOne(sale.ClientID);
+                    client.Debt -= sale.Price;
+                    if (sale.Deposit != null) client.Debt += sale.Deposit.Value;
+
                     _workContainer.Save();
                     return Json(new
                     {

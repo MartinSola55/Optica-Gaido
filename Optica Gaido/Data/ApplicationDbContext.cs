@@ -32,6 +32,7 @@ namespace Optica_Gaido.Data
         public DbSet<GlassColor> GlassColors { get; set; }
         public DbSet<GlassFormat> GlassFormats { get; set; }
         public DbSet<GlassType> GlassTypes { get; set; }
+        public DbSet<GlassFocusType> GlassFocusTypes { get; set; }
         public DbSet<HealthInsurance> HealthInsurances { get; set; }
         public DbSet<Material> Materials { get; set; }
         public DbSet<PaymentMethod> PaymentMethods { get; set; }

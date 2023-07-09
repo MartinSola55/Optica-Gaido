@@ -36,6 +36,7 @@ namespace Optica_Gaido.Data.Repository
                 dbObject.IsAr = sale.IsAr;
                 dbObject.GlassTypeID = sale.GlassTypeID;
                 dbObject.GlassColorID = sale.GlassColorID;
+                dbObject.GlassFocusTypeID = sale.GlassFocusTypeID;
                 dbObject.DoctorID = sale.DoctorID;
                 dbObject.SellerID = sale.SellerID;
                 //dbObject.FrameID = sale.FrameID;
@@ -66,7 +67,7 @@ namespace Optica_Gaido.Data.Repository
                     _db.Database.CommitTransaction();
                 } else
                 {
-                    throw new Exception("No se encontró la venta");
+                    throw new Exception("No se encontrï¿½ la venta");
                 }
             }
             catch (Exception)

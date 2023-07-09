@@ -26,7 +26,7 @@ public partial class Client
     [Required(ErrorMessage = "Debes ingresar una dirección")]
     [Display(Name = "Dirección")]
     [StringLength(100, MinimumLength = 1, ErrorMessage = "Debes ingresar una dirección de menos de 100 caracteres")]
-    [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s0-9.]+$", ErrorMessage = "Ingrese una dirección válida")]
+    [RegularExpression(@"^[a-zA-Z\u00C0-\u017F\s0-9.-]+$", ErrorMessage = "Ingrese una dirección válida")]
     public string Adress { get; set; } = null!;
 
     [Required(ErrorMessage = "Debes ingresar un teléfono")]
