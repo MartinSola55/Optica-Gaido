@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Optica_Gaido.Models;
 
@@ -44,6 +45,11 @@ public partial class Client
 
     [Display(Name = "Obra social")]
     public short? HealthInsuranceID { get; set; }
+
+    [Display(Name = "Observación")]
+    [StringLength(500, MinimumLength = 1, ErrorMessage = "Debes ingresar una observación de menos de 500 caracteres")]
+    [AllowNull]
+    public string Observation { get; set; }
 
     [Required(ErrorMessage = "Debes seleccionar si está o no habilitado")]
     [Display(Name = "Habilitado")]

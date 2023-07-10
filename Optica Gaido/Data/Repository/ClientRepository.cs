@@ -31,6 +31,7 @@ namespace Optica_Gaido.Data.Repository
                 dbObject.Phone = client.Phone;
                 dbObject.Debt = client.Debt;
                 dbObject.HealthInsuranceID = client.HealthInsuranceID;
+                dbObject.Observation = client.Observation;
                 _db.SaveChanges();
             }
         }

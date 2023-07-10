@@ -80,6 +80,11 @@
                                         @Html.DropDownListFor(x => x.CreateViewModel.HealthInsuranceID, Model.HealthInsurances, null, new { @class = "form-control" })
                                         <span asp-validation-for="CreateViewModel.HealthInsuranceID" class="text-danger"></span>
                                     </div>
+                                    <div class="col-12 mb-3">
+                                        <label asp-for="CreateViewModel.Observation" class="mb-0"></label>
+                                        <textarea asp-for="CreateViewModel.Observation" class="form-control" type="text" required></textarea>
+                                        <span asp-validation-for="CreateViewModel.Observation" class="text-danger"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -107,10 +112,11 @@
                             <thead>
                                 <tr>
                                     <th class="col-2">Nombre</th>
-                                    <th class="col-2">Teléfono</th>
-                                    <th class="col-3">Dirección</th>
+                                    <th class="col-1">Teléfono</th>
+                                    <th class="col-2">Dirección</th>
                                     <th class="col-1">Deuda</th>
                                     <th class="col-2">Obra Social</th>
+                                    <th class="col-2">Observación</th>
                                     <th class="col-1">Habilitado</th>
                                     <th class="col-1">Acción</th>
                                 </tr>
@@ -124,6 +130,7 @@
                                         <td>@Html.DisplayFor(c => item.Adress)</td>
                                         <td>$@Html.DisplayFor(c => item.Debt)</td>
                                         <td>@(item.HealthInsuranceID != null ? Html.DisplayFor(c => item.HealthInsurance.Name) : "-")</td>
+                                        <td>@(item.Observation != null ? Html.DisplayFor(c => item.Observation) : "-")</td>
                                         <td class="text-center">
                                             @{
                                                 if (item.IsActive)
@@ -160,6 +167,7 @@
         let active = "";
         let btn = "";
         let HI = "-";
+        let observation = "-";
         if (item.isActive) {
             active = `<i class="bi bi-check2" style="font-size: 1.5rem"></i>`;
             btn = `<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-on'></i></button>`;
@@ -169,6 +177,8 @@
         }
         if (item.healthInsuranceID != null)
             HI = item.healthInsurance.name;
+        if (item.observation != null)
+            observation = item.observation;
         let content = `
                 <tr data-id='${item.id}'>
                     <td>${item.surname}, ${item.name}</td>
@@ -176,6 +186,7 @@
                     <td>${item.adress}</td>
                     <td>$${item.debt}</td>
                     <td>${HI}</td>
+                    <td>${observation}</td>
                     <td class='text-center'>${active}</td>
                     <td class='d-flex flex-row justify-content-center'>
                         <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
@@ -289,6 +300,7 @@
         $("input[name='CreateViewModel.Adress']").val(entity.adress);
         $("input[name='CreateViewModel.Debt']").val(entity.debt);
         $("select[name='CreateViewModel.HealthInsuranceID']").val(entity.healthInsurance !== null ? entity.healthInsurance.id : "");
+        $("input[name='CreateViewModel.Observation']").val(entity.observation);
     }
 
     $('#DataTable').DataTable({

@@ -110,7 +110,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="control-label text-md-right col-5">@(Model.Client.Debt >= 0 ? "Deuda" : "Saldo a favor:")</label>
+                                                    <label class="control-label text-md-right col-5">@(Model.Client.Debt >= 0 ? "Deuda:" : "Saldo a favor:")</label>
                                                     <div class="col-7 pr-0">
                                                         <p class="form-control-static">$@(Model.Client.Debt >= 0 ? Model.Client.Debt.ToString("F0") : (-Model.Client.Debt).ToString("F0"))</p>
                                                     </div>
@@ -122,6 +122,19 @@
                                                     <label class="control-label text-md-right col-5">Obra social:</label>
                                                     <div class="col-7 pr-0">
                                                         <p class="form-control-static">@Html.DisplayFor(x => x.Client.HealthInsurance.Name)</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                        <!--/row-->
+                                        <!--/row-->
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group row">
+                                                    <label class="control-label text-md-right col-3">Observación: </label>
+                                                    <div class="col-9 pr-0">
+                                                        <p class="form-control-static">@Html.DisplayFor(x => x.Client.Observation)</p>
                                                     </div>
                                                 </div>
                                             </div>
