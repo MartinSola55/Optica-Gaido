@@ -40,7 +40,6 @@ public partial class Sale
 
     [Display(Name = "Observaciones")]
     [StringLength(500, MinimumLength = 1, ErrorMessage = "Debes ingresar una observación de menos de 500 caracteres")]
-    [RegularExpression(@"^[a-zA-Z0-9\u00C0-\u017F\s']+$", ErrorMessage = "Ingrese una observación válida")]
     [AllowNull]
     public string Observation { get; set; }
 
