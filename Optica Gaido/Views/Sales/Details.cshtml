@@ -342,6 +342,58 @@
                         <!--/span-->
                     </div>
                     <!--/row-->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group row">
+                                <label class="control-label text-md-left col-5"><b>Observaciones:</b></label>
+                                <div class="col-7 pr-0">
+                                    <p class="form-control-static">@Html.DisplayFor(x => x.Sale.Client.Observation)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                    </div>
+                    <!--/row-->
+                </div>
+            </div>
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-row justify-content-center">
+                        <h2 class="card-title mb-0 ml-auto">Métodos de pago</h2>
+                        <button id="btnEditMethods" class="btn btn-outline-secondary waves-effect waves-light ml-auto" type="button"><i class="fa fa-pencil"></i></button>
+                    </div>
+                    <hr />
+                    <form id="formMethods" asp-area="" asp-controller="Sales" asp-action="UpdatePaymentMethods" method="POST" class="row">
+                        @Html.AntiForgeryToken()
+                        <input name="ID" value="@Model.Sale.ID" type="hidden" />
+                        <div class="row col-12">
+                            @foreach (var item in Model.PaymentMethods)
+                            {
+                                <div class="col-12 col-sm-6 col-lg-12 mb-3">
+                                    <label>@(item.Name)</label>
+                                    <div class="d-flex flex-row align-items-center">
+                                        @{
+                                            string value = null;
+                                            foreach (var sale_pm in Model.Sale.SalePaymentMethods)
+                                            {
+                                                if (sale_pm.PaymentMethodID == item.ID) value = sale_pm.Amount.ToString("F0");
+                                            }
+                                        }
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">$</span>
+                                            </div>
+                                            <input data-id="@item.ID" value="@value" class="form-control payment_method" disabled min="0" type="number" data-val-number="Debes ingresar un número" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <div class="col-12 d-flex">
+                                <button type="button" id="btnUpdateMethods" onclick="sendFormMethods()" class="btn btn-success waves-effect waves-light ml-auto" style="display: none">Guardar</button>
+                            </div>
+                        </div>
+                        <!--/row-->
+                    </form>
                 </div>
             </div>
         </div>
@@ -393,6 +445,75 @@
     };
 </script>
 
+<!-- Metodos de pago -->
+<script>
+    $("#btnEditMethods").on("click", function () {
+        // Inputs
+        $('#formMethods input:not(:hidden)').each(function () {
+            $(this).prop('disabled', function (_, val) {
+                return !val;
+            });
+        });
+
+        // Btn edit
+        $(this).find('i').toggleClass('fa bi');
+        $(this).find('i').toggleClass('fa-pencil bi-x-lg');
+        $(this).toggleClass('btn-outline-secondary btn-danger');
+
+        // Btns
+        $("#btnUpdateMethods").toggle();
+    });
+
+    function sendFormMethods() {
+        let paymentMethods = [];
+        $("#formMethods .payment_method").each(function () {
+            let payment_method_id = $(this).data('id');
+            let amount = $(this).val();
+            if (amount !== "" && amount != null) {
+                let paymentMethod = {
+                    PaymentMethodID: payment_method_id,
+                    Amount: amount
+                };
+                paymentMethods.push(paymentMethod);
+            }
+        });
+
+        // Crear un objeto que contenga los métodos de pago y sus cantidades
+        let paymentMethodsData = {
+            SalePaymentMethods: paymentMethods
+        };
+        if (paymentMethods.length <= 0) return fireAlert("Debes ingresar al menos un método de pago");
+
+        let form = document.getElementById("formMethods");
+
+        let errors = $(".input-validation-error");
+        if (errors.length === 0) {
+            // Enviar solicitud AJAX
+            $.ajax({
+                url: $(form).attr('action'), // Utiliza la ruta del formulario
+                method: $(form).attr('method'), // Utiliza el método del formulario
+                data: $(form).serialize() + "&" + $.param(paymentMethodsData), // Utiliza los datos del formulario
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: response.message,
+                        confirmButtonColor: '#1e88e5',
+                    });
+                    $("#btnEditMethods").click();
+                },
+                error: function (errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: errorThrown.responseJSON.title,
+                        text: errorThrown.responseJSON.message,
+                        confirmButtonColor: '#1e88e5',
+                    });
+                }
+            });
+        }
+    }
+</script>
+
 <!-- Lente -->
 <script>
     $("#btnEditGlass").on("click", function () {
@@ -406,11 +527,11 @@
         //// Switch
         let elem = document.querySelector('.js-switch');
         $("span.switchery").remove()
-        $('.js-switch').prop('disabled', !$('.js-switch').prop('disabled'));
-        $('.js-switch').data('switchery', !$('.js-switch').data('switchery'));
+        $('#formEdit .js-switch').prop('disabled', !$('#formEdit .js-switch').prop('disabled'));
+        $('#formEdit .js-switch').data('switchery', !$('#formEdit .js-switch').data('switchery'));
         let switchery = new Switchery(elem, { color: "#009efb" });
 
-        if ($('.js-switch').data('switchery')) {
+        if ($('#formEdit .js-switch').data('switchery')) {
             switchery.disable();
         } else {
             switchery.enable();

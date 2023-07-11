@@ -116,6 +116,7 @@ namespace Optica_Gaido.Controllers
                     GlassTypes = _workContainer.GlassType.GetAll(),
                     GlassFocusTypes = _workContainer.GlassFocusType.GetDropDownList(),
                     GlassColors = _workContainer.GlassColor.GetDropDownList(),
+                    PaymentMethods = _workContainer.PaymentMethod.GetAll(hasIsActive: true)
                 };
 
                 return View(viewModel);
@@ -295,6 +296,58 @@ namespace Optica_Gaido.Controllers
                 }
             }
             return CustomBadRequest(title: "Error al editar los formatos", message: "Alguno de los campos ingresados no es válido");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdatePaymentMethods(Sale request)
+        {
+            ModelState.Remove("Dip");
+            ModelState.Remove("DeliveryDateString");
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _workContainer.BeginTransaction();
+
+                    Expression<Func<Sale, bool>> filter = sale => sale.ID == request.ID;
+                    Sale sale = _workContainer.Sale.GetFirstOrDefault(filter, includeProperties: "SalePaymentMethods");
+
+                    if (sale == null) return CustomBadRequest(title: "Error al editar los métodos de pago", message: "No se encontró la venta solicitada");
+
+                    List<SalePaymentMethod> paymentMethods = sale.SalePaymentMethods.ToList();
+                    foreach (var pm in paymentMethods)
+                    {
+                        _workContainer.SalePaymentMethod.Remove(pm);
+                    }
+
+                    foreach (var pm in request.SalePaymentMethods)
+                    {
+                        SalePaymentMethod new_pm = new()
+                        {
+                            Amount = pm.Amount,
+                            PaymentMethodID = pm.PaymentMethodID,
+                            SaleID = sale.ID
+                        };
+                        _workContainer.SalePaymentMethod.Add(new_pm);
+                    }
+                        
+                    _workContainer.Save();
+
+                    _workContainer.Commit();
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Los métodos de pago se editaron correctamente",
+                    });
+                }
+                catch (Exception e)
+                    {
+                    _workContainer.Rollback();
+                    return CustomBadRequest(title: "Error al editar los métodos de pago", message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
+                }
+            }
+            return CustomBadRequest(title: "Error al editar los métodos de pago", message: "Alguno de los campos ingresados no es válido");
         }
 
         [HttpPost]

@@ -26,5 +26,10 @@ namespace Optica_Gaido.Data.Repository
                 _db.SaveChanges();
             }
         }
+
+        public SalePaymentMethod GetOne(long sale_id, long pm_id)
+        {
+            return _db.SalePaymentMethods.Where(x => x.SaleID == sale_id && x.PaymentMethodID == pm_id).First();
+        }
     }
 }

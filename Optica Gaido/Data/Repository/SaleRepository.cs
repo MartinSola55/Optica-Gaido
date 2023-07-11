@@ -55,10 +55,6 @@ namespace Optica_Gaido.Data.Repository
                 {
 
                     dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
-                    foreach (var pm in dbObject.SalePaymentMethods)
-                    {
-                        pm.DeletedAt = DateTime.UtcNow.AddHours(-3);
-                    }
                     foreach (var format in dbObject.GlassFormats)
                     {
                         format.DeletedAt = DateTime.UtcNow.AddHours(-3);

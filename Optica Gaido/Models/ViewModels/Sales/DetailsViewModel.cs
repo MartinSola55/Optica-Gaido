@@ -10,6 +10,6 @@ namespace Optica_Gaido.Models.ViewModels.Sales
         public IEnumerable<GlassType> GlassTypes { get; set; } = new List<GlassType>();
         public IEnumerable<SelectListItem> Doctors { get; set; } = new List<SelectListItem>();
         public IEnumerable<SelectListItem> Sellers { get; set; } = new List<SelectListItem>();
-        public IEnumerable<SalePaymentMethod> SalePaymentMethods { get; set; } = new List<SalePaymentMethod>();
+        public IEnumerable<PaymentMethod> PaymentMethods { get; set; } = new List<PaymentMethod>();
     }
 }
