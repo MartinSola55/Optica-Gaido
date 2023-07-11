@@ -9,5 +9,6 @@ namespace Optica_Gaido.Models.ViewModels.Home
         public decimal MonthlyExpenses { get; set; }
         public decimal ProvidersDebts { get; set; }
         public int TotalSales { get; set; }
+        public string AmountToPay { get; set; }
     }
 }
