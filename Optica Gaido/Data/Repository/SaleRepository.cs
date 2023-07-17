@@ -75,7 +75,7 @@ namespace Optica_Gaido.Data.Repository
 
         public IEnumerable<SelectListItem> GetYears()
         {
-            var years = this.GetAll(hasDeletedAt: true)
+            var years = this.GetAll()
             .Select(sale => sale.CreatedAt.Year)
             .Distinct()
             .OrderByDescending(year => year)

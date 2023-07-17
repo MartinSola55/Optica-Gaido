@@ -49,7 +49,7 @@ namespace Optica_Gaido.Controllers
                 Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year == DateTime.UtcNow.AddHours(-3).Year;
                 IndexViewModel viewModel = new()
                 {
-                    Sales = _workContainer.Sale.GetAll(filter, includeProperties: "Client, SalePaymentMethods, SalePaymentMethods.PaymentMethod", hasDeletedAt: true),
+                    Sales = _workContainer.Sale.GetAll(filter, includeProperties: "Client, SalePaymentMethods, SalePaymentMethods.PaymentMethod"),
                     Years = _workContainer.Sale.GetYears()
                 };
                 return View(viewModel);
@@ -81,7 +81,7 @@ namespace Optica_Gaido.Controllers
                 {
                     Doctors = _workContainer.Doctor.GetDropDownList(),
                     Sellers = _workContainer.Seller.GetDropDownList(),
-                    Frames = _workContainer.Frame.GetAll(includeProperties: "Brand, Material", hasDeletedAt: true),
+                    Frames = _workContainer.Frame.GetAll(includeProperties: "Brand, Material"),
                     SalePaymentMethods = methods,
                     GlassTypes = _workContainer.GlassType.GetAll(),
                     GlassFocusTypes = _workContainer.GlassFocusType.GetDropDownList(),
@@ -166,7 +166,10 @@ namespace Optica_Gaido.Controllers
 
                     // Asignar deuda al cliente
                     client.Debt += newSale.Price;
-                    if (newSale.Deposit != null) client.Debt -= newSale.Deposit.Value;
+                    foreach (SalePaymentMethod item in newSale.SalePaymentMethods)
+                    {
+                        client.Debt -= item.Amount;
+                    }
 
                     _workContainer.Save();
 
@@ -226,10 +229,8 @@ namespace Optica_Gaido.Controllers
                     Client client = _workContainer.Client.GetOne(oldSale.ClientID);
 
                     client.Debt -= oldSale.Price;
-                    if (oldSale.Deposit != null) client.Debt += oldSale.Deposit.Value;
 
                     client.Debt += newSale.Price;
-                    if (newSale.Deposit != null) client.Debt -= newSale.Deposit.Value;
 
                     _workContainer.Sale.Update(newSale);
 
@@ -311,13 +312,14 @@ namespace Optica_Gaido.Controllers
                     _workContainer.BeginTransaction();
 
                     Expression<Func<Sale, bool>> filter = sale => sale.ID == request.ID;
-                    Sale sale = _workContainer.Sale.GetFirstOrDefault(filter, includeProperties: "SalePaymentMethods");
+                    Sale sale = _workContainer.Sale.GetFirstOrDefault(filter, includeProperties: "SalePaymentMethods, Client");
 
                     if (sale == null) return CustomBadRequest(title: "Error al editar los métodos de pago", message: "No se encontró la venta solicitada");
 
                     List<SalePaymentMethod> paymentMethods = sale.SalePaymentMethods.ToList();
                     foreach (var pm in paymentMethods)
                     {
+                        sale.Client.Debt += pm.Amount;
                         _workContainer.SalePaymentMethod.Remove(pm);
                     }
 
@@ -329,6 +331,7 @@ namespace Optica_Gaido.Controllers
                             PaymentMethodID = pm.PaymentMethodID,
                             SaleID = sale.ID
                         };
+                        sale.Client.Debt -= pm.Amount;
                         _workContainer.SalePaymentMethod.Add(new_pm);
                     }
                         
@@ -394,7 +397,7 @@ namespace Optica_Gaido.Controllers
             try
             {
                 Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year.ToString() == year;
-                var sales = _workContainer.Sale.GetAll(filter, includeProperties: "Client, SalePaymentMethods, SalePaymentMethods.PaymentMethod", hasDeletedAt: true)
+                var sales = _workContainer.Sale.GetAll(filter, includeProperties: "Client, SalePaymentMethods, SalePaymentMethods.PaymentMethod")
                     .Select(x => new
                     {
                         id = x.ID,

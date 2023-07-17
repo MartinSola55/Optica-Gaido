@@ -46,7 +46,7 @@ namespace Optica_Gaido.Controllers
         public IActionResult GetAnnualSales(string yearString)
         {
             Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year.ToString() == yearString;
-            IEnumerable<Sale> allSales = _workContainer.Sale.GetAll(filter, hasDeletedAt: true);
+            IEnumerable<Sale> allSales = _workContainer.Sale.GetAll(filter);
 
             // Agrupar las ventas por mes y calcular la suma de Amount
             var salesByMonth = allSales
@@ -83,7 +83,7 @@ namespace Optica_Gaido.Controllers
         public IActionResult GetMonthlySales(string yearString, string monthString)
         {
             Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year.ToString() == yearString && sale.CreatedAt.Month.ToString() == monthString;
-            IEnumerable<Sale> allSales = _workContainer.Sale.GetAll(filter, hasDeletedAt: true);
+            IEnumerable<Sale> allSales = _workContainer.Sale.GetAll(filter);
 
             // Convertir los parámetros de cadena a valores numéricos
             int year = int.Parse(yearString);
@@ -127,7 +127,7 @@ namespace Optica_Gaido.Controllers
         public IActionResult GetMaterialsSales(string yearString)
         {
             Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year.ToString() == yearString;
-            IEnumerable<Sale> allSales = _workContainer.Sale.GetAll(filter, includeProperties: "Frame, Frame.Material", hasDeletedAt: true);
+            IEnumerable<Sale> allSales = _workContainer.Sale.GetAll(filter, includeProperties: "Frame, Frame.Material");
 
             var materialSales = allSales
                 .GroupBy(sale => sale.Frame.Material.ID)
@@ -159,7 +159,7 @@ namespace Optica_Gaido.Controllers
         public IActionResult GetBrandsSales(string yearString)
         {
             Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year.ToString() == yearString;
-            IEnumerable<Sale> allSales = _workContainer.Sale.GetAll(filter, includeProperties: "Frame, Frame.Brand", hasDeletedAt: true);
+            IEnumerable<Sale> allSales = _workContainer.Sale.GetAll(filter, includeProperties: "Frame, Frame.Brand");
 
             var brandSales = allSales
                 .GroupBy(sale => sale.Frame.Brand.ID)

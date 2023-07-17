@@ -22,6 +22,18 @@ namespace Optica_Gaido.Data
 
             modelBuilder.Entity<SalePaymentMethod>()
                 .HasKey(sp => new { sp.SaleID, sp.PaymentMethodID });
+            modelBuilder.Entity<Sale>()
+                .HasQueryFilter(x => x.DeletedAt == null);
+            modelBuilder.Entity<Expense>()
+                .HasQueryFilter(x => x.DeletedAt == null);
+            modelBuilder.Entity<Debt>()
+                .HasQueryFilter(x => x.DeletedAt == null);
+            modelBuilder.Entity<DebtPayment>()
+                .HasQueryFilter(x => x.DeletedAt == null);
+            modelBuilder.Entity<Frame>()
+                .HasQueryFilter(x => x.DeletedAt == null);
+            modelBuilder.Entity<Provider>()
+                .HasQueryFilter(x => x.DeletedAt == null);
         }
 
         public DbSet<Brand> Brands { get; set; }

@@ -24,7 +24,7 @@ namespace Optica_Gaido.Controllers
             {
                 IndexViewModel viewModel = new()
                 {
-                    Expenses = _workContainer.Expense.GetAll(hasDeletedAt: true),
+                    Expenses = _workContainer.Expense.GetAll(),
                     CreateViewModel = new Expense()
                 };
 

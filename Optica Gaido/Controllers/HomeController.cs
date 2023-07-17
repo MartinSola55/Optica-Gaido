@@ -29,11 +29,11 @@ namespace Optica_Gaido.Controllers
             {
                 Expression<Func<Sale, bool>> filterSale = sale => sale.CreatedAt.Year == DateTime.UtcNow.AddHours(-3).Year && sale.CreatedAt.Month == DateTime.UtcNow.AddHours(-3).Month;
                 Expression<Func<Expense, bool>> filterExpense = expense => expense.CreatedAt.Year == DateTime.UtcNow.AddHours(-3).Year && expense.CreatedAt.Month == DateTime.UtcNow.AddHours(-3).Month;
-                var sales = _workContainer.Sale.GetAll(filterSale, hasDeletedAt: true);
+                var sales = _workContainer.Sale.GetAll(filterSale);
                 int totalSales = sales.Count();
                 decimal monthlyEarnings = sales.Sum(x => x.Price);
-                decimal monthlyExpenses = _workContainer.Expense.GetAll(filterExpense, hasDeletedAt: true).Sum(x => x.Amount);
-                decimal providerDebts = _workContainer.Debt.GetAll(hasDeletedAt: true).Sum(x => x.Price) - _workContainer.DebtPayment.GetAll(hasDeletedAt: true).Sum(x => x.Amount);
+                decimal monthlyExpenses = _workContainer.Expense.GetAll(filterExpense).Sum(x => x.Amount);
+                decimal providerDebts = _workContainer.Debt.GetAll().Sum(x => x.Price) - _workContainer.DebtPayment.GetAll().Sum(x => x.Amount);
 
                 string payment = null;
                 if (DateTime.UtcNow.AddHours(-3).Day == 9)

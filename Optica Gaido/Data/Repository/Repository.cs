@@ -24,16 +24,9 @@ namespace Optica_Gaido.Data.Repository
         }
 
         public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-            string includeProperties = null, bool hasIsActive = false, bool hasDeletedAt = false)
+            string includeProperties = null, bool hasIsActive = false)
         {
             IQueryable<T> query = dbSet;
-            if (hasDeletedAt)
-            {
-                var parameter = Expression.Parameter(typeof(T));
-                var body = Expression.Equal(Expression.Property(parameter, "DeletedAt"), Expression.Constant(null));
-                var lambda = Expression.Lambda<Func<T, bool>>(body, parameter);
-                query = query.Where(lambda);
-            }
             if (hasIsActive)
             {
                 var parameter = Expression.Parameter(typeof(T));

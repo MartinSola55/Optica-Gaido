@@ -28,7 +28,7 @@ namespace Optica_Gaido.Controllers
             {
                 IndexViewModel viewModel = new()
                 {
-                    Frames = _workContainer.Frame.GetAll(includeProperties: "Brand, Material", hasDeletedAt: true),
+                    Frames = _workContainer.Frame.GetAll(includeProperties: "Brand, Material"),
                     Brands = _workContainer.Brand.GetDropDownList(),
                     Materials = _workContainer.Material.GetDropDownList(),
                     CreateViewModel = new Frame()
