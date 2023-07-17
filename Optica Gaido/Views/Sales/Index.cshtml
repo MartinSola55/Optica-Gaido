@@ -77,25 +77,34 @@
 </div>
 
 <script>
-    $('#DataTable').DataTable({
-        "order": [[1, "desc"]],
-        "language": {
-            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ ventas",
-            "sInfoEmpty": "Mostrando 0 a 0 de 0 ventas",
-            "sInfoFiltered": "(filtrado de _MAX_ ventas en total)",
-            "emptyTable": 'No hay ventas que coincidan con la búsqueda',
-            "sLengthMenu": "Mostrar _MENU_ ventas",
-            "sSearch": "Buscar:",
-            "oPaginate": {
-                "sFirst": "Primero",
-                "sLast": "Último",
-                "sNext": "Siguiente",
-                "sPrevious": "Anterior",
+    $(document).ready(function () {
+        let dataTable = $('#DataTable').DataTable({
+            "order": [[1, "desc"]],
+            "language": {
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ ventas",
+                "sInfoEmpty": "Mostrando 0 a 0 de 0 ventas",
+                "sInfoFiltered": "(filtrado de _MAX_ ventas en total)",
+                "emptyTable": 'No hay ventas que coincidan con la búsqueda',
+                "sLengthMenu": "Mostrar _MENU_ ventas",
+                "sSearch": "Buscar:",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior",
+                },
             },
-        },
-    });
-    $("#DataTable tbody tr").on("click", function () {
-        window.location.href = window.location.origin + "/Sales/Details/" + $(this).data("id");
+        });
+
+        $("#DataTable tbody tr").on("click", function () {
+            window.location.href = window.location.origin + "/Sales/Details/" + $(this).data("id");
+        });
+
+        dataTable.on('draw.dt', function () {
+            $("#DataTable tbody tr").on("click", function () {
+                window.location.href = window.location.origin + "/Sales/Details/" + $(this).data("id");
+            });
+        });
     });
 </script>
 
