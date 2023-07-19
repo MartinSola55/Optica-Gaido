@@ -29,9 +29,30 @@ namespace Optica_Gaido.Controllers
             {
                 Expression<Func<Sale, bool>> filterSale = sale => sale.CreatedAt.Year == DateTime.UtcNow.AddHours(-3).Year && sale.CreatedAt.Month == DateTime.UtcNow.AddHours(-3).Month;
                 Expression<Func<Expense, bool>> filterExpense = expense => expense.CreatedAt.Year == DateTime.UtcNow.AddHours(-3).Year && expense.CreatedAt.Month == DateTime.UtcNow.AddHours(-3).Month;
-                var sales = _workContainer.Sale.GetAll(filterSale);
-                int totalSales = sales.Count();
-                decimal monthlyEarnings = sales.Sum(x => x.Price);
+                List<Sale> sales = _workContainer.Sale.GetAll(filterSale, includeProperties: "SalePaymentMethods").ToList();
+                int totalSales = sales.Count;
+                decimal monthlyEarnings = 0;
+                List<SalePaymentMethod> paymentMethods = new();
+                foreach (Sale sale in sales)
+                {
+                    foreach (SalePaymentMethod pm in sale.SalePaymentMethods)
+                    {
+                        monthlyEarnings += pm.Amount;
+                        // Verificar si el metodo de pago ya existe y sumar el total de cada metodo de pago
+                        if (paymentMethods.Any(x => x.PaymentMethodID == pm.PaymentMethodID))
+                        {
+                            paymentMethods.Find(x => x.PaymentMethodID == pm.PaymentMethodID).Amount += pm.Amount;
+                        }
+                        else
+                        {
+                            paymentMethods.Add(new SalePaymentMethod { Amount = pm.Amount, PaymentMethodID = pm.PaymentMethodID });
+                        }
+                    }
+                }
+                foreach (SalePaymentMethod pm in paymentMethods)
+                {
+                    pm.PaymentMethod = _workContainer.PaymentMethod.GetOne(pm.PaymentMethodID);
+                }
                 decimal monthlyExpenses = _workContainer.Expense.GetAll(filterExpense).Sum(x => x.Amount);
                 decimal providerDebts = _workContainer.Debt.GetAll().Sum(x => x.Price) - _workContainer.DebtPayment.GetAll().Sum(x => x.Amount);
 
@@ -41,7 +62,7 @@ namespace Optica_Gaido.Controllers
                     API_Obj currency = await Import(_config["USD_API_KEY"]);
                     if (currency.Result == "success")
                     {
-                        payment = ((currency.Conversion_rates.ARS * 15) * 2).ToString("N0", new System.Globalization.CultureInfo("is-IS"));
+                        payment = ((currency.Conversion_rates.ARS * 35) * 2).ToString("N0", new System.Globalization.CultureInfo("is-IS"));
                     }
                 }
 
@@ -52,7 +73,8 @@ namespace Optica_Gaido.Controllers
                     MonthlyExpenses = monthlyExpenses,
                     TotalSales = totalSales,
                     ProvidersDebts = providerDebts,
-                    AmountToPay = payment
+                    AmountToPay = payment,
+                    PaymentMethods = paymentMethods
                 };
                 return View(viewModel);
             }

@@ -22,9 +22,16 @@ namespace Optica_Gaido.Controllers
         {
             try
             {
+                List<Client> clients = _workContainer.Client.GetAll(includeProperties: "HealthInsurance").ToList();
+
+                foreach (Client client in clients)
+                {
+                    client.LastSaleDate = _workContainer.Sale.GetLastSale(client.ID);
+                }
+
                 IndexViewModel viewModel = new()
                 {
-                    Clients = _workContainer.Client.GetAll(includeProperties: "HealthInsurance"),
+                    Clients = clients,
                     HealthInsurances = _workContainer.HealthInsurance.GetDropDownList(),
                     CreateViewModel = new Client()
                 };

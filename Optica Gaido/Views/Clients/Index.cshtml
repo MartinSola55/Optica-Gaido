@@ -111,12 +111,13 @@
                         <table id="DataTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th class="col-2">Nombre</th>
+                                    <th class="col-1">Nombre</th>
                                     <th class="col-1">Teléfono</th>
                                     <th class="col-2">Dirección</th>
                                     <th class="col-1">Deuda</th>
                                     <th class="col-2">Obra Social</th>
                                     <th class="col-2">Observación</th>
+                                    <th class="col-1">Última venta</th>
                                     <th class="col-1">Habilitado</th>
                                     <th class="col-1">Acción</th>
                                 </tr>
@@ -131,6 +132,7 @@
                                         <td>$@Html.DisplayFor(c => item.Debt)</td>
                                         <td>@(item.HealthInsuranceID != null ? Html.DisplayFor(c => item.HealthInsurance.Name) : "-")</td>
                                         <td>@(item.Observation != null ? Html.DisplayFor(c => item.Observation) : "-")</td>
+                                        <td>@(item.LastSaleDate != null ? Html.DisplayFor(c => item.LastSaleDate) : "-")</td>
                                         <td class="text-center">
                                             @{
                                                 if (item.IsActive)
@@ -277,6 +279,7 @@
         $("#formContainer form").attr("action", "/Clients/Create");
         $("#formContainer form").attr("id", "form-create");
         $("#formContainer form input:not([type='hidden']").val("");
+        $("#formContainer form textarea").val("");
         $("input[name='CreateViewModel.ID']").prop("disabled", true);
         $('#formContainer form select').each(function () {
             $(this).val($(this).find('option:first').val());
@@ -300,7 +303,7 @@
         $("input[name='CreateViewModel.Adress']").val(entity.adress);
         $("input[name='CreateViewModel.Debt']").val(entity.debt);
         $("select[name='CreateViewModel.HealthInsuranceID']").val(entity.healthInsurance !== null ? entity.healthInsurance.id : "");
-        $("input[name='CreateViewModel.Observation']").val(entity.observation);
+        $("textarea[name='CreateViewModel.Observation']").val(entity.observation);
     }
 
     $('#DataTable').DataTable({

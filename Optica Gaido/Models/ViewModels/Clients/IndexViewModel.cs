@@ -10,5 +10,6 @@ namespace Optica_Gaido.Models.ViewModels.Home
         public decimal ProvidersDebts { get; set; }
         public int TotalSales { get; set; }
         public string AmountToPay { get; set; }
+        public List<SalePaymentMethod> PaymentMethods { get; set; } = new List<SalePaymentMethod>();
     }
 }
