@@ -1,7 +1,7 @@
-﻿@model Optica_Gaido.Models.ViewModels.Sales.IndexViewModel
+﻿@model Optica_Gaido.Models.ViewModels.SimpleSales.IndexViewModel
 
 @{
-    ViewData["Title"] = "Recetas";
+    ViewData["Title"] = "Ventas";
 }
 
 <!-- Data table -->
@@ -16,10 +16,10 @@
     <!-- ============================================================== -->
     <div class="row page-titles">
         <div class="col-md-5 col-8 align-self-center">
-            <h3 class="text-themecolor m-b-0 m-t-0">Recetas</h3>
+            <h3 class="text-themecolor m-b-0 m-t-0">Ventas</h3>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
-                <li class="breadcrumb-item active">Recetas</li>
+                <li class="breadcrumb-item active">Ventas</li>
             </ol>
         </div>
     </div>
@@ -35,7 +35,7 @@
             <div class="card shadow">
                 <div class="card-body">
                     <div class="d-flex flex-column flex-sm-row justify-content-start">
-                        <h2 class="card-title mr-2">Recetas del año</h2>
+                        <h2 class="card-title mr-2">Ventas del año</h2>
                         @Html.DropDownList("yearSelected", Model.Years, new { @class = "form-control", @style = "max-width: fit-content" })
                     </div>
                     <div class="table-responsive m-t-10">
@@ -43,27 +43,36 @@
                             <thead>
                                 <tr>
                                     <th class="col-3">Cliente</th>
-                                    <th class="col-2">Vendido</th>
-                                    <th class="col-2">Entrega</th>
+                                    <th class="col-2">Fecha</th>
                                     <th class="col-1">Precio</th>
-                                    <th class="col-1">Seña</th>
-                                    <th class="col-3">Pagos</th>
+                                    <th class="col-3">Productos</th>
+                                    <th class="col-2">Pagos</th>
+                                    <th class="col-1">Eliminar</th>
                                 </tr>
                             </thead>
                             <tbody id="table_body">
                                 @foreach (var item in Model.Sales)
                                 {
-                                    <tr data-id="@item.ID" style="cursor: pointer">
-                                        <td>@Html.DisplayFor(x => item.Client.Surname), @Html.DisplayFor(x => item.Client.Name)</td>
+                                    <tr data-id="@item.ID">
+                                        <td>@(item.ClientID != null ? item.Client.Surname + ", " + item.Client.Name : "-")</td>
                                         <td>@item.CreatedAt.ToString("dd/MM/yyyy - HH:mm")</td>
-                                        <td>@item.DeliveryDate.ToString("dd/MM/yyyy")</td>
-                                        <td>$@(item.Price.ToString("0"))</td>
-                                        <td>$@(item.Deposit != null ? item.Deposit.Value.ToString("0") : "0")</td>
+                                        <td>$@item.Products.Sum(x => x.Quantity * x.SettedPrice).ToString("F0")</td>
                                         <td>
-                                            @foreach (var pm in item.SalePaymentMethods)
+                                            @foreach (var product in item.Products)
+                                            {
+                                                <span>@product.Product.Name: @product.Quantity u. - $@product.SettedPrice.ToString("F0")</span><br />
+                                            }
+                                        </td>
+                                        <td>
+                                            @foreach (var pm in item.PaymentMethods)
                                             {
                                                 <span>@pm.PaymentMethod.Name: $@pm.Amount.ToString("0")</span><br />
                                             }
+                                        </td>
+                                        <td>
+                                            <div class='d-flex flex-row justify-content-center'>
+                                                <button name="btnDelete" type='button' class='btn btn-danger mr-2' onclick="deleteObj(@item.ID)"><i class="bi bi-trash"></i></button>
+                                            </div>
                                         </td>
                                     </tr>
                                 }
@@ -74,18 +83,70 @@
             </div>
         </div>
     </div>
+    <form id="form-delete" method="POST" asp-area="" asp-controller="SimpleSales" asp-action="SoftDelete">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="">
+    </form>
 </div>
 
 <script>
+    function deleteObj(id) {
+        Swal.fire({
+            title: "¿Seguro deseas eliminar esta venta?",
+            text: "Esta acción no se puede deshacer",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Eliminar',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
+                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+            }
+        })
+        .then((result) => {
+            if (result.isConfirmed) {
+                $("#form-delete input[name='id']").val(id);
+                sendForm();
+            }
+        });
+    }
+
+    function sendForm() {
+        let form = document.getElementById('form-delete');
+
+        // Enviar solicitud AJAX
+        $.ajax({
+            url: $(form).attr('action'), // Utiliza la ruta del formulario
+            method: $(form).attr('method'), // Utiliza el método del formulario
+            data: $(form).serialize(), // Utiliza los datos del formulario
+            success: function (response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: response.message,
+                    confirmButtonColor: '#1e88e5',
+                });
+                removeFromTable(response.data);
+            },
+            error: function (errorThrown) {
+                Swal.fire({
+                    icon: 'error',
+                    title: errorThrown.responseJSON.title,
+                    text: errorThrown.responseJSON.message,
+                    confirmButtonColor: '#1e88e5',
+                });
+            }
+        });
+    }
+
     $(document).ready(function () {
         let dataTable = $('#DataTable').DataTable({
             "order": [[1, "desc"]],
             "language": {
-                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ recetas",
-                "sInfoEmpty": "Mostrando 0 a 0 de 0 recetas",
-                "sInfoFiltered": "(filtrado de _MAX_ recetas en total)",
-                "emptyTable": 'No hay recetas que coincidan con la búsqueda',
-                "sLengthMenu": "Mostrar _MENU_ recetas",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ ventas",
+                "sInfoEmpty": "Mostrando 0 a 0 de 0 ventas",
+                "sInfoFiltered": "(filtrado de _MAX_ ventas en total)",
+                "emptyTable": 'No hay ventas que coincidan con la búsqueda',
+                "sLengthMenu": "Mostrar _MENU_ ventas",
                 "sSearch": "Buscar:",
                 "oPaginate": {
                     "sFirst": "Primero",
@@ -94,16 +155,6 @@
                     "sPrevious": "Anterior",
                 },
             },
-        });
-
-        $("#DataTable tbody tr").on("click", function () {
-            window.location.href = window.location.origin + "/Sales/Details/" + $(this).data("id");
-        });
-
-        dataTable.on('draw.dt', function () {
-            $("#DataTable tbody tr").on("click", function () {
-                window.location.href = window.location.origin + "/Sales/Details/" + $(this).data("id");
-            });
         });
     });
 </script>
@@ -119,50 +170,52 @@
         return day + "/" + month + "/" + year + " - " + hours + ":" + minutes;
     }
 
-    function createDate(date) {
-        return new Date(date).toLocaleString("es-AR", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-        });
-    }
-
     function fillTable(data) {
         data.forEach(function (sale) {
             let methods = "";
             sale.paymentMethods.forEach(function (pm) {
                 methods += `<span>${pm.paymentMethod.name}: $${pm.amount}</span><br />`;
-            })
+            });
+            let products = "";
+            sale.products.forEach(function (p) {
+                products += `<span>${p.product.name}: ${p.quantity} u. - $${p.settedPrice}</span><br />`;
+            });
+
             let deposit = sale.deposit ?? "0";
+            let fullName = sale.name != null ? `${sale.surname}, ${sale.name}` : "-";
+            let button = `
+            <div class='d-flex flex-row justify-content-center'>
+                <button name="btnDelete" type='button' class='btn btn-danger mr-2' onclick="deleteObj(${sale.id})"><i class="bi bi-trash"></i></button>
+            </div>`;
             let row = [
-                `${sale.surname}, ${sale.name}`,
+                fullName,
                 createDateWithTime(sale.createdAt),
-                createDate(sale.deliveryDate),
                 `$${sale.price}`,
-                `$${deposit}`,
-                methods
+                products,
+                methods,
+                button
             ];
             let addedRow = $('#DataTable').DataTable().row.add(row).draw().node();
-            addedRow.style.cursor = 'pointer';
             // Establecer el atributo data-id en la fila
             addedRow.setAttribute('data-id', sale.id);
         });
-        $("#DataTable tbody tr").on("click", function () {
-            window.location.href = window.location.origin + "/Sales/Details/" + $(this).data("id");
-        });
     }
 
-    function removeFromTable() {
+    function removeFromTable(id) {
+        $('#DataTable').DataTable().row(`[data-id="${id}"]`).remove().draw();
+    }
+
+    function clearTable() {
         $('#DataTable').DataTable().clear().draw();
     }
 
     $("#yearSelected").on("change", function () {
         $.ajax({
-            url: "/Sales/GetSalesByYear", // Utiliza la ruta del formulario
+            url: "/SimpleSales/GetSalesByYear", // Utiliza la ruta del formulario
             method: "GET", // Utiliza el método del formulario
             data: { year: $(this).val() }, // Utiliza los datos del formulario
             success: function (response) {
-                removeFromTable();
+                clearTable();
                 fillTable(response.data);
             },
             error: function (errorThrown) {

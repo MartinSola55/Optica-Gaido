@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,25 @@ namespace Optica_Gaido.Controllers
                 message,
                 error,
             });
+        }
+
+        [HttpGet]
+        public IActionResult Index()
+        {
+            try
+            {
+                Expression<Func<SimpleSale, bool>> filter = sale => sale.CreatedAt.Year == DateTime.UtcNow.AddHours(-3).Year;
+                IndexViewModel viewModel = new()
+                {
+                    Sales = _workContainer.SimpleSale.GetAll(filter, includeProperties: "Client, Products, Products.Product, PaymentMethods, PaymentMethods.PaymentMethod"),
+                    Years = _workContainer.SimpleSale.GetYears()
+                };
+                return View(viewModel);
+            }
+            catch (Exception)
+            {
+                return View("~/Views/Error.cshtml", new ErrorViewModel { Message = "Ha ocurrido un error inesperado con el servidor\nSi sigue obteniendo este error contacte a soporte", ErrorCode = 500 });
+            }
         }
 
         [HttpGet]
@@ -123,5 +143,73 @@ namespace Optica_Gaido.Controllers
                 message = "Alguno de los campos ingresados no es válido",
             });
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SoftDelete(long id)
+        {
+            try
+            {
+                if (_workContainer.SimpleSale.GetOne(id) != null)
+                {
+                    _workContainer.SimpleSale.SoftDelete(id);
+                    _workContainer.Save();
+                    return Json(new
+                    {
+                        success = true,
+                        data = id,
+                        message = "La venta se eliminó correctamente",
+                    });
+                }
+                return BadRequest(new
+                {
+                    success = false,
+                    title = "Error al eliminar",
+                    message = "No se encontró la venta solicitada",
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    title = "Error al eliminar",
+                    message = "Intente nuevamente o comuníquese para soporte",
+                    error = e.Message,
+                });
+            }
+        }
+
+        #region Llamadas a la API
+
+        [HttpGet]
+        public IActionResult GetSalesByYear(string year)
+        {
+            try
+            {
+                Expression<Func<SimpleSale, bool>> filter = sale => sale.CreatedAt.Year.ToString() == year;
+                var sales = _workContainer.SimpleSale.GetAll(filter, includeProperties: "Client, Products, Products.Product, PaymentMethods, PaymentMethods.PaymentMethod")
+                    .Select(x => new
+                    {
+                        id = x.ID,
+                        name = x.Client?.Name,
+                        surname = x.Client?.Surname,
+                        createdAt = x.CreatedAt,
+                        price = x.Products.Sum(x => x.Quantity * x.SettedPrice),
+                        products = x.Products,
+                        paymentMethods = x.PaymentMethods
+                    });
+                return Json(new
+                {
+                    success = true,
+                    data = sales
+                });
+            }
+            catch (Exception e)
+            {
+                return CustomBadRequest(title: "Error al recuperar las ventas del " + year, message: "Intente nuevamente o comuníquese para soporte", error: e.Message);
+            }
+        }
+        #endregion
     }
 }
