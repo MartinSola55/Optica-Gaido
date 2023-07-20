@@ -189,6 +189,7 @@
                     <td>$${item.debt}</td>
                     <td>${HI}</td>
                     <td>${observation}</td>
+                    <td>-</td>
                     <td class='text-center'>${active}</td>
                     <td class='d-flex flex-row justify-content-center'>
                         <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
@@ -247,6 +248,7 @@
                         confirmButtonColor: '#1e88e5',
                     });
                     if (action === 'create') {
+                        console.log(response.data);
                         fillTable(response.data);
                     } else {
                         removeFromTable(response.data.id);

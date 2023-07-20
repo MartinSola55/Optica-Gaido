@@ -28,9 +28,21 @@
   <ItemGroup>
     <None Remove="Views\Brand\" />
     <None Remove="Views\HealthInsurances\" />
+    <None Remove="Models\ViewModels\Products\" />
+    <None Remove="Views\Products\" />
+    <None Remove="Models\ViewModels\SimpleSales\" />
+    <None Remove="Views\SimpleSales\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Brands\" />
     <Folder Include="Views\HealthInsurances\" />
+    <Folder Include="Models\ViewModels\Products\" />
+    <Folder Include="Views\Products\" />
+    <Folder Include="Models\ViewModels\SimpleSales\" />
+    <Folder Include="Views\SimpleSales\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20230719162605_Sale &amp; Products.Designer.cs" />
+    <Compile Remove="Data\Migrations\20230720162005_Sale &amp; Products.Designer.cs" />
   </ItemGroup>
 </Project>

@@ -68,7 +68,7 @@
                                                         @foreach (var item in Model.PaymentMethods)
                                                         {
                                                         <tr>
-                                                            <td><h6 class="text-white text-left">@item.PaymentMethod.Name: $@item.Amount.ToString("F0")</h6></td>
+                                                            <td><h6 class="text-white text-left">@item.PaymentMethod.Name: $@item.Amount.ToString("N0", new CultureInfo("es-ES"))</h6></td>
                                                         </tr>
                                                         }                                                    
                                                         </tbody>
@@ -122,7 +122,7 @@
                         <div class="round round-lg align-self-center round-success"><i class="mdi mdi-shopping"></i></div>
                         <div class="m-l-10 align-self-center">
                             <h3 class="m-b-0 font-lgiht">@Model.TotalSales</h3>
-                            <h5 class="text-muted m-b-0">Cantidad de ventas</h5>
+                            <h5 class="text-muted m-b-0">Cantidad de recetas</h5>
                         </div>
                     </div>
                 </div>
@@ -135,8 +135,13 @@
         <div class="col-lg-12">
             <div class="card shadow">
                 <div class="card-body">
-                    <h4 class="card-title">Nueva venta</h4>
-                    <h5 class="card-subtitle">@DateTime.UtcNow.AddHours(-3).ToString("dd/MM/yyyy")</h5>
+                    <div class="d-flex flex-sm-row flex-column justify-content-between">
+                        <div>
+                            <h4 class="card-title">Nueva venta</h4>
+                            <h5 class="card-subtitle">@DateTime.UtcNow.AddHours(-3).ToString("dd/MM/yyyy")</h5>
+                        </div>
+                        <a type="button" class="btn btn-info btn-rounded my-auto mx-auto mx-sm-0 waves-effect waves-light float-right" asp-action="New" asp-controller="SimpleSales" asp-area="" >Venta de productos</a>
+                    </div>
                     <div class="table-responsive m-t-20">
                         <table class="table stylish-table" id="dataTable">
                             <thead>
@@ -178,7 +183,7 @@
                                         }
                                         <td>
                                             <div class='d-flex flex-row justify-content-center'>
-                                                <a type='button' class='btn btn-outline-info mr-2' asp-area="" asp-controller="Sales" asp-action="New" asp-route-id="@item.ID"><i class="bi bi-arrow-return-right"></i></a>
+                                                <button name="btnSale" type='button' class='btn btn-outline-info mr-2' data-id="@item.ID"><i class="bi bi-arrow-return-right"></i></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -192,7 +197,8 @@
     </div>
 </div>
 
-<script>$('#dataTable').DataTable({
+<script>
+    $('#dataTable').DataTable({
         "language": {
             "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ clientes",
             "sInfoEmpty": "Mostrando 0 a 0 de 0 clientes",
@@ -207,4 +213,27 @@
                 "sPrevious": "Anterior",
             },
         },
-    });</script>
+    });
+
+    $("button[name='btnSale']").on("click", function () {
+        Swal.fire({
+            title: '¿Qué tipo de venta desea realizar?',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Aumento',
+            denyButtonText: 'Productos',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-info waves-effect waves-light px-3 py-2 mr-2',
+                denyButton: 'btn btn-success waves-effect waves-light px-3 py-2 mr-2',
+                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2',
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "/Sales/New/" + $(this).data("id");
+            } else if (result.isDenied) {
+                window.location.href = "/SimpleSales/New/" + $(this).data("id");
+            }
+        })
+    });
+</script>

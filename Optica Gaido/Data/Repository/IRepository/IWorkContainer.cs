@@ -26,6 +26,8 @@ namespace Optica_Gaido.Data.Repository.IRepository
         ISaleRepository Sale { get; }
         IDebtRepository Debt { get; }
         IDebtPaymentRepository DebtPayment { get; }
+        IProductRepository Product { get; }
+        ISimpleSaleRepository SimpleSale { get; }
 
         void BeginTransaction();
         void Commit();
