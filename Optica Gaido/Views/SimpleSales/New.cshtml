@@ -1,5 +1,5 @@
 ﻿@model Optica_Gaido.Models.ViewModels.SimpleSales.NewViewModel
-
+@using System.Globalization
 @{
     ViewData["Title"] = "Nueva venta";
 }
@@ -53,7 +53,7 @@
                                 {
                                     <tr data-id="@item.ID">
                                         <td>@item.Name</td>
-                                        <td>$@item.Price.ToString("F0")</td>
+                                        <td>$@item.Price.ToString("N0", new CultureInfo("es-ES"))</td>
                                         <td>@item.Stock</td>
                                         <td>
                                             <div class='d-flex flex-row justify-content-center'>
@@ -272,7 +272,7 @@
         let content = `
             <tr data-id="${entity.id}" data-quantity="${cantidad}">
                 <td>${entity.name}</td>
-                <td>$${entity.price}</td>
+                <td>$${entity.price.toLocaleString("de-DE")}</td>
                 <td>${entity.stock}</td>
                 <td>${cantidad}</td>
                 <td>
@@ -292,7 +292,7 @@
         let content = `
             <tr data-id="${entity.id}">
                 <td>${entity.name}</td>
-                <td>$${entity.price}</td>
+                <td>$${entity.price.toLocaleString("de-DE")}</td>
                 <td>${entity.stock}</td>
                 <td>
                     <div class='d-flex flex-row justify-content-center'>
@@ -306,8 +306,7 @@
     }
 </script>
 
-<script>
-    $('#DataTable').DataTable({
+<script>$('#DataTable').DataTable({
         "language": {
             "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ productos",
             "sInfoEmpty": "Mostrando 0 a 0 de 0 productos",
@@ -343,7 +342,6 @@
         searching: false,
         ordering: false,
         info: false
-    });
-</script>
+    });</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

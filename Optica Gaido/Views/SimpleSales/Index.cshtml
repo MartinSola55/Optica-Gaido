@@ -1,5 +1,5 @@
 ﻿@model Optica_Gaido.Models.ViewModels.SimpleSales.IndexViewModel
-
+@using System.Globalization
 @{
     ViewData["Title"] = "Ventas";
 }
@@ -56,17 +56,17 @@
                                     <tr data-id="@item.ID">
                                         <td>@(item.ClientID != null ? item.Client.Surname + ", " + item.Client.Name : "-")</td>
                                         <td>@item.CreatedAt.ToString("dd/MM/yyyy - HH:mm")</td>
-                                        <td>$@item.Products.Sum(x => x.Quantity * x.SettedPrice).ToString("F0")</td>
+                                        <td>$@item.Products.Sum(x => x.Quantity * x.SettedPrice).ToString("N0", new CultureInfo("es-ES"))</td>
                                         <td>
                                             @foreach (var product in item.Products)
                                             {
-                                                <span>@product.Product.Name: @product.Quantity u. - $@product.SettedPrice.ToString("F0")</span><br />
+                                                <span>@product.Product.Name: @product.Quantity u. - $@product.SettedPrice.ToString("N0", new CultureInfo("es-ES"))</span><br />
                                             }
                                         </td>
                                         <td>
                                             @foreach (var pm in item.PaymentMethods)
                                             {
-                                                <span>@pm.PaymentMethod.Name: $@pm.Amount.ToString("0")</span><br />
+                                                <span>@pm.PaymentMethod.Name: $@pm.Amount.ToString("N0", new CultureInfo("es-ES"))</span><br />
                                             }
                                         </td>
                                         <td>
@@ -89,8 +89,7 @@
     </form>
 </div>
 
-<script>
-    function deleteObj(id) {
+<script>function deleteObj(id) {
         Swal.fire({
             title: "¿Seguro deseas eliminar esta venta?",
             text: "Esta acción no se puede deshacer",
@@ -103,12 +102,12 @@
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
-        .then((result) => {
-            if (result.isConfirmed) {
-                $("#form-delete input[name='id']").val(id);
-                sendForm();
-            }
-        });
+            .then((result) => {
+                if (result.isConfirmed) {
+                    $("#form-delete input[name='id']").val(id);
+                    sendForm();
+                }
+            });
     }
 
     function sendForm() {
@@ -156,11 +155,9 @@
                 },
             },
         });
-    });
-</script>
+    });</script>
 
-<script>
-    function createDateWithTime(dateString) {
+<script>function createDateWithTime(dateString) {
         let date = new Date(dateString);
         let day = ("0" + date.getDate()).slice(-2);
         let month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -174,14 +171,12 @@
         data.forEach(function (sale) {
             let methods = "";
             sale.paymentMethods.forEach(function (pm) {
-                methods += `<span>${pm.paymentMethod.name}: $${pm.amount}</span><br />`;
+                methods += `<span>${pm.paymentMethod.name}: $${pm.amount.toLocaleString("de-DE")}</span><br />`;
             });
             let products = "";
             sale.products.forEach(function (p) {
-                products += `<span>${p.product.name}: ${p.quantity} u. - $${p.settedPrice}</span><br />`;
+                products += `<span>${p.product.name}: ${p.quantity} u. - $${p.settedPrice.toLocaleString("de-DE")}</span><br />`;
             });
-
-            let deposit = sale.deposit ?? "0";
             let fullName = sale.name != null ? `${sale.surname}, ${sale.name}` : "-";
             let button = `
             <div class='d-flex flex-row justify-content-center'>
@@ -190,7 +185,7 @@
             let row = [
                 fullName,
                 createDateWithTime(sale.createdAt),
-                `$${sale.price}`,
+                `$${sale.price.toLocaleString("de-DE")}`,
                 products,
                 methods,
                 button
@@ -227,7 +222,6 @@
                 });
             }
         });
-    });
-</script>
+    });</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

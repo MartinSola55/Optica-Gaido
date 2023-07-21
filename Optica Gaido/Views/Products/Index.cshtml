@@ -1,5 +1,5 @@
 ﻿@model Optica_Gaido.Models.ViewModels.Products.IndexViewModel
-
+@using System.Globalization
 @{
     ViewData["Title"] = "Productos";
 }
@@ -102,7 +102,7 @@
                                 {
                                     <tr data-id="@item.ID">
                                         <td>@Html.DisplayFor(c => item.Name)</td>
-                                        <td>$@(item.Price.ToString("F0"))</td>
+                                        <td>$@(item.Price.ToString("N0", new CultureInfo("es-ES")))</td>
                                         <td>@Html.DisplayFor(c => item.Stock)</td>
                                         <td class='d-flex flex-row justify-content-center'>
                                             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
@@ -123,12 +123,11 @@
     </div>
 </div>
 
-<script>
-    function fillTable(item) {
+<script>function fillTable(item) {
         let content = `
             <tr data-id='${item.id}'>
                 <td>${item.name}</td>
-                <td>$${item.price}</td>
+                <td>$${item.price.toLocaleString("de-DE")}</td>
                 <td>${item.stock}</td>
                 <td class='d-flex flex-row justify-content-center'>
                     <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
@@ -155,12 +154,12 @@
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
-        .then((result) => {
-            if (result.isConfirmed) {
-                $("#form-delete input[name='id']").val(id);
-                sendForm("delete");
-            }
-        });
+            .then((result) => {
+                if (result.isConfirmed) {
+                    $("#form-delete input[name='id']").val(id);
+                    sendForm("delete");
+                }
+            });
     }
 
     function sendForm(action) {
@@ -200,11 +199,9 @@
                 }
             });
         }
-    }
-</script>
+    }</script>
 
-<script>
-    $("#btnSendModal").on("click", function () {
+<script>$("#btnSendModal").on("click", function () {
         if ($("#formContainer form").attr('id') === 'form-create') {
             sendForm("create");
         } else if ($("#formContainer form").attr('id') === 'form-edit') {
@@ -250,7 +247,6 @@
                 "sPrevious": "Anterior",
             },
         },
-    });
-</script>
+    });</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

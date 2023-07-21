@@ -1,5 +1,5 @@
 ﻿@model Optica_Gaido.Models.ViewModels.Sales.NewViewModel
-
+@using System.Globalization
 @{
     ViewData["Title"] = "Nueva receta";
 }
@@ -56,7 +56,7 @@
                     <h4 class="card-title">Nueva receta</h4>
                     <h6 class="card-subtitle mb-0">@DateTime.UtcNow.AddHours(-3).ToString("dd/MM/yyyy")</h6>
                     <form asp-area="" asp-controller="Sales" asp-action="Create" class="tab-wizard wizard-circle" id="form_data">
-                        <input asp-for="CreateViewModel.ClientID" value="@Model.Client.ID" type="hidden"/>
+                        <input asp-for="CreateViewModel.ClientID" value="@Model.Client.ID" type="hidden" />
                         <!-- Step 1 -->
                         <h6>Cliente</h6>
                         <section>
@@ -112,7 +112,7 @@
                                                 <div class="form-group row">
                                                     <label class="control-label text-md-right col-5">@(Model.Client.Debt >= 0 ? "Deuda:" : "Saldo a favor:")</label>
                                                     <div class="col-7 pr-0">
-                                                        <p class="form-control-static">$@(Model.Client.Debt >= 0 ? Model.Client.Debt.ToString("F0") : (-Model.Client.Debt).ToString("F0"))</p>
+                                                        <p class="form-control-static">$@(Model.Client.Debt >= 0 ? Model.Client.Debt.ToString("N0", new CultureInfo("es-ES")) : (-Model.Client.Debt).ToString("N0", new CultureInfo("es-ES")))</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -276,7 +276,7 @@
                                                 <th class="col-2">Eje</th>
                                             </tr>
                                         </thead>
-                                        <tbody>            
+                                        <tbody>
                                             <tr>
                                                 <td rowspan="2" style="cursor: default">Lejos</td>
                                                 <td style="cursor: default">Derecho</td>
@@ -380,8 +380,7 @@
 </style>
 
 
-<script>
-    $(document).ready(function () {
+<script>$(document).ready(function () {
         $('#formatsTable').editableTableWidget().numericInputExample();
 
         $("#formatsTable tbody tr td").on("click", function () {
@@ -444,18 +443,16 @@
             weekStart: 1,
             lang: 'es',
         });
-    });
-</script>
+    });</script>
 
-<script>
-    $('form select').each(function () {
+<script>$('form select').each(function () {
         $(this).val($(this).find('option:first').val());
     });
 
     $('form .payment_method').each(function () {
         $(this).val("");
     });
-    
+
     $('form .payment_method_checkbox').on("change", function () {
         let checkbox = $(this);
         let input = checkbox.closest(".d-flex").find(".payment_method");
@@ -616,11 +613,11 @@
                     confirmButtonText: 'OK',
                     allowOutsideClick: false,
                 })
-                .then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = window.location.origin;
-                    }
-                });
+                    .then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = window.location.origin;
+                        }
+                    });
             },
             error: function (errorThrown) {
                 Swal.fire({
@@ -631,7 +628,6 @@
                 });
             }
         });
-    }
-</script>
+    }</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

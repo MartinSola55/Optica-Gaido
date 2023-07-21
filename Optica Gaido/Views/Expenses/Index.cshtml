@@ -1,5 +1,5 @@
 ﻿@model Optica_Gaido.Models.ViewModels.Expenses.IndexViewModel
-
+@using System.Globalization
 @{
     ViewData["Title"] = "Gastos";
 }
@@ -96,7 +96,7 @@
                                 {
                                     <tr data-id="@item.ID">
                                         <td>@Html.DisplayFor(c => item.Description)</td>
-                                        <td>$@(item.Amount.ToString("F0"))</td>
+                                        <td>$@(item.Amount.ToString("N0", new CultureInfo("es-ES")))</td>
                                         <td class='d-flex flex-row justify-content-center'>
                                             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                                             <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(@item.ID)'><i class='bi bi-trash3'></i></button>
@@ -116,12 +116,11 @@
     </div>
 </div>
 
-<script>
-    function fillTable(item) {
+<script>function fillTable(item) {
         let content = `
             <tr data-id='${item.id}'>
                 <td>${item.description}</td>
-                <td>$${item.amount}</td>
+                <td>$${item.amount.toLocaleString("de-DE")}</td>
                 <td class='d-flex flex-row justify-content-center'>
                     <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                     <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(${item.id})'><i class='bi bi-trash3'></i></button>
@@ -192,11 +191,9 @@
                 }
             });
         }
-    }
-</script>
+    }</script>
 
-<script>
-    $("#btnSendModal").on("click", function () {
+<script>$("#btnSendModal").on("click", function () {
         if ($("#formContainer form").attr('id') === 'form-create') {
             sendForm("create");
         } else if ($("#formContainer form").attr('id') === 'form-edit') {
@@ -241,7 +238,6 @@
                 "sPrevious": "Anterior",
             },
         },
-    });
-</script>
+    });</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

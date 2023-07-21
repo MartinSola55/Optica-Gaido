@@ -1,5 +1,5 @@
 ﻿@model Optica_Gaido.Models.ViewModels.Providers.IndexViewModel
-
+@using System.Globalization
 @{
     ViewData["Title"] = "Proveedores";
 }
@@ -85,8 +85,8 @@
                                 @foreach (var item in Model.Providers)
                                 {
                                     <tr data-id="@item.Item1.ID">
-                                        <td><a asp-area="" asp-controller="Providers" asp-action="Debts" asp-route-id="@item.Item1.ID" >@Html.DisplayFor(x => item.Item1.Name)</a></td>
-                                        <td>$@(item.Item2.ToString("F0"))</td>
+                                        <td><a asp-area="" asp-controller="Providers" asp-action="Debts" asp-route-id="@item.Item1.ID">@Html.DisplayFor(x => item.Item1.Name)</a></td>
+                                        <td>$@(item.Item2.ToString("N0", new CultureInfo("es-ES")))</td>
                                         <td class='d-flex flex-row justify-content-center'>
                                             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item.Item1))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                                             <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(@item.Item1.ID)'><i class='bi bi-trash3'></i></button>
@@ -106,8 +106,7 @@
     </div>
 </div>
 
-<script>
-    function fillTable(item) {
+<script>function fillTable(item) {
         let content = `
             <tr data-id='${item.id}'>
                 <td><a href="/Providers/Debts/${item.id}">${item.name}</a></td>
@@ -182,11 +181,9 @@
                 }
             });
         }
-    }
-</script>
+    }</script>
 
-<script>
-    $("#btnSendModal").on("click", function () {
+<script>$("#btnSendModal").on("click", function () {
         if ($("#formContainer form").attr('id') === 'form-create') {
             sendForm("create");
         } else if ($("#formContainer form").attr('id') === 'form-edit') {
@@ -231,7 +228,6 @@
                 "sPrevious": "Anterior",
             },
         },
-    });
-</script>
+    });</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
