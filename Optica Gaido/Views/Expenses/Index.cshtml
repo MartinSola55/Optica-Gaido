@@ -146,12 +146,12 @@
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
-            .then((result) => {
-                if (result.isConfirmed) {
-                    $("#form-delete input[name='id']").val(id);
-                    sendForm("delete");
-                }
-            });
+        .then((result) => {
+            if (result.isConfirmed) {
+                $("#form-delete input[name='id']").val(id);
+                sendForm("delete");
+            }
+        });
     }
 
     function sendForm(action) {

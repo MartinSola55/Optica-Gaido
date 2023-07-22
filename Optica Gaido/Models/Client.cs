@@ -58,6 +58,8 @@ public partial class Client
 
     public DateTime CreatedAt { get; set; }
 
+    public DateTime? DeletedAt { get; set; }
+
     public virtual HealthInsurance HealthInsurance { get; set; }
 
     //public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();

@@ -148,7 +148,7 @@
         let total = 0;
         $("#productsSelected").DataTable().rows().every(function () {
             let row = $(this.node());
-            let price = row.find("td:nth-child(2)").text().replace("$", "");
+            let price = row.find("td:nth-child(2)").text().replace("$", "").replace(".", "");
             let quantity = row.find("td:nth-child(4)").text();
             total += price * quantity;
         });

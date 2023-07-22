@@ -27,6 +27,8 @@ namespace Optica_Gaido.Data
 
             modelBuilder.Entity<Sale>()
                 .HasQueryFilter(x => x.DeletedAt == null);
+            modelBuilder.Entity<Client>()
+                .HasQueryFilter(x => x.DeletedAt == null);
             modelBuilder.Entity<Expense>()
                 .HasQueryFilter(x => x.DeletedAt == null);
             modelBuilder.Entity<Debt>()

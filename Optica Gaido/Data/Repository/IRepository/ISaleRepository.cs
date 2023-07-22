@@ -12,6 +12,5 @@ namespace Optica_Gaido.Data.Repository.IRepository
         IEnumerable<SelectListItem> GetYears();
         void Update(Sale sale);
         void SoftDelete(long id);
-        string GetLastSale(long clientID);
     }
 }
