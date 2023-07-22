@@ -22,6 +22,9 @@ namespace Optica_Gaido.Data
 
             modelBuilder.Entity<SalePaymentMethod>()
                 .HasKey(sp => new { sp.SaleID, sp.PaymentMethodID });
+            modelBuilder.Entity<SimpleSalePaymentMethod>()
+                .HasKey(sp => new { sp.SimpleSaleID, sp.PaymentMethodID });
+
             modelBuilder.Entity<Sale>()
                 .HasQueryFilter(x => x.DeletedAt == null);
             modelBuilder.Entity<Expense>()
@@ -33,6 +36,12 @@ namespace Optica_Gaido.Data
             modelBuilder.Entity<Frame>()
                 .HasQueryFilter(x => x.DeletedAt == null);
             modelBuilder.Entity<Provider>()
+                .HasQueryFilter(x => x.DeletedAt == null);
+            modelBuilder.Entity<Product>()
+                .HasQueryFilter(x => x.DeletedAt == null);
+            modelBuilder.Entity<SimpleSale>()
+                .HasQueryFilter(x => x.DeletedAt == null);
+            modelBuilder.Entity<SimpleSaleProduct>()
                 .HasQueryFilter(x => x.DeletedAt == null);
         }
 
@@ -54,5 +63,8 @@ namespace Optica_Gaido.Data
         public DbSet<Seller> Sellers { get; set; }
         public DbSet<Debt> Debts { get; set; }
         public DbSet<DebtPayment> DebtPayments { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<SimpleSale> SimpleSales { get; set; }
+        public DbSet<SimpleSaleProduct> SimpleSaleProducts { get; set; }
     }
 }

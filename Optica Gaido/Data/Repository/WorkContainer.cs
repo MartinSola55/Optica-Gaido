@@ -31,6 +31,8 @@ namespace Optica_Gaido.Data.Repository
             Sale = new SaleRepository(_db);
             Debt = new DebtRepository(_db);
             DebtPayment = new DebtPaymentRepository(_db);
+            Product = new ProductRepository(_db);
+            SimpleSale = new SimpleSaleRepository(_db);
         }
 
         public IBrandRepository Brand { get; private set; }
@@ -52,6 +54,8 @@ namespace Optica_Gaido.Data.Repository
         public ISaleRepository Sale { get; private set; }
         public IDebtRepository Debt { get; private set; }
         public IDebtPaymentRepository DebtPayment { get; private set; }
+        public IProductRepository Product { get; private set; }
+        public ISimpleSaleRepository SimpleSale { get; private set; }
 
         public void BeginTransaction()
         {

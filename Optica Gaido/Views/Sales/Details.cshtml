@@ -1,7 +1,7 @@
 ﻿@model Optica_Gaido.Models.ViewModels.Sales.DetailsViewModel
-
+@using System.Globalization
 @{
-    ViewData["Title"] = "Ventas";
+    ViewData["Title"] = "Recetas";
     GlassFormat row1 = Model.Sale.GlassFormats.Where(x => x.Distance == Distance.Lejos && x.Eye == Eye.Derecho).FirstOrDefault() ?? null;
     GlassFormat row2 = Model.Sale.GlassFormats.Where(x => x.Distance == Distance.Lejos && x.Eye == Eye.Izquierdo).FirstOrDefault() ?? null;
     GlassFormat row3 = Model.Sale.GlassFormats.Where(x => x.Distance == Distance.Cerca && x.Eye == Eye.Derecho).FirstOrDefault() ?? null;
@@ -37,10 +37,10 @@
     <!-- ============================================================== -->
     <div class="row page-titles">
         <div class="col-md-5 col-8 align-self-center">
-            <h3 class="text-themecolor m-b-0 m-t-0">Ventas</h3>
+            <h3 class="text-themecolor m-b-0 m-t-0">Recetas</h3>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
-                <li class="breadcrumb-item"><a asp-area="" asp-controller="Sales" asp-action="Index">Ventas</a></li>
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Sales" asp-action="Index">Recetas</a></li>
                 <li class="breadcrumb-item active">Detalles</li>
             </ol>
         </div>
@@ -326,7 +326,7 @@
                             <div class="form-group row">
                                 <label class="control-label text-md-left col-5"><b>@(Model.Sale.Client.Debt >= 0 ? "Deuda" : "Saldo a favor:")</b></label>
                                 <div class="col-7 pr-0">
-                                    <p class="form-control-static">$@(Model.Sale.Client.Debt >= 0 ? Model.Sale.Client.Debt.ToString("0") : (-Model.Sale.Client.Debt).ToString("0"))</p>
+                                    <p class="form-control-static">$@(Model.Sale.Client.Debt >= 0 ? Model.Sale.Client.Debt.ToString("N0", new CultureInfo("es-ES")) : (-Model.Sale.Client.Debt).ToString("N0", new CultureInfo("es-ES")))</p>
                                 </div>
                             </div>
                         </div>
@@ -406,8 +406,7 @@
     }
 </style>
 
-<script>
-    $(document).ready(function () {
+<script>$(document).ready(function () {
         // Establecer el idioma de Moment.js en español
         moment.locale('es');
         $('#Sale_DeliveryDateString').bootstrapMaterialDatePicker({
@@ -442,12 +441,10 @@
             allowOutsideClick: false,
         });
         return false;
-    };
-</script>
+    };</script>
 
 <!-- Metodos de pago -->
-<script>
-    $("#btnEditMethods").on("click", function () {
+<script>$("#btnEditMethods").on("click", function () {
         // Inputs
         $('#formMethods input:not(:hidden)').each(function () {
             $(this).prop('disabled', function (_, val) {
@@ -511,12 +508,10 @@
                 }
             });
         }
-    }
-</script>
+    }</script>
 
 <!-- Lente -->
-<script>
-    $("#btnEditGlass").on("click", function () {
+<script>$("#btnEditGlass").on("click", function () {
         // Inputs
         $('#formEdit input:not(:hidden), textarea, select').each(function () {
             $(this).prop('disabled', function (_, val) {
@@ -567,36 +562,36 @@
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
-        .then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: $("#form-delete").attr('action'), // Utiliza la ruta del formulario
-                    method: $("#form-delete").attr('method'), // Utiliza el método del formulario
-                    data: $("#form-delete").serialize(), // Utiliza los datos del formulario
-                    success: function (response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: response.message,
-                            confirmButtonColor: '#1e88e5',
-                            allowOutsideClick: false,
-                        })
-                            .then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href = window.location.origin + "/Sales";
-                                }
+            .then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: $("#form-delete").attr('action'), // Utiliza la ruta del formulario
+                        method: $("#form-delete").attr('method'), // Utiliza el método del formulario
+                        data: $("#form-delete").serialize(), // Utiliza los datos del formulario
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: response.message,
+                                confirmButtonColor: '#1e88e5',
+                                allowOutsideClick: false,
+                            })
+                                .then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.href = window.location.origin + "/Sales";
+                                    }
+                                });
+                        },
+                        error: function (errorThrown) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: errorThrown.responseJSON.title,
+                                text: errorThrown.responseJSON.message,
+                                confirmButtonColor: '#1e88e5',
                             });
-                    },
-                    error: function (errorThrown) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: errorThrown.responseJSON.title,
-                            text: errorThrown.responseJSON.message,
-                            confirmButtonColor: '#1e88e5',
-                        });
-                    }
-                });
-            }
-        })
+                        }
+                    });
+                }
+            })
     }
 
     function sendFormSale() {
@@ -630,12 +625,10 @@
                 }
             });
         }
-    }
-</script>
+    }</script>
 
 <!-- Formatos -->
-<script>
-    $("#btnEditFormats").on("click", function () {
+<script>$("#btnEditFormats").on("click", function () {
         // Tabla
         let table = $("#formatsTable");
 
@@ -736,7 +729,6 @@
                 }
             });
         }
-    }
-</script>
+    }</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

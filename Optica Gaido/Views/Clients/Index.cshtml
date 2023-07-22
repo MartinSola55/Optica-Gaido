@@ -1,5 +1,5 @@
 ﻿@model Optica_Gaido.Models.ViewModels.Clients.IndexViewModel
-
+@using System.Globalization
 @{
     ViewData["Title"] = "Clientes";
 }
@@ -129,7 +129,7 @@
                                         <td>@Html.DisplayFor(c => item.Surname), @Html.DisplayFor(c => item.Name)</td>
                                         <td>@Html.DisplayFor(c => item.Phone)</td>
                                         <td>@Html.DisplayFor(c => item.Adress)</td>
-                                        <td>$@Html.DisplayFor(c => item.Debt)</td>
+                                        <td>$@item.Debt.ToString("N0", new CultureInfo("es-ES"))</td>
                                         <td>@(item.HealthInsuranceID != null ? Html.DisplayFor(c => item.HealthInsurance.Name) : "-")</td>
                                         <td>@(item.Observation != null ? Html.DisplayFor(c => item.Observation) : "-")</td>
                                         <td>@(item.LastSaleDate != null ? Html.DisplayFor(c => item.LastSaleDate) : "-")</td>
@@ -164,8 +164,7 @@
     </div>
 </div>
 
-<script>
-    function fillTable(item) {
+<script>function fillTable(item) {
         let active = "";
         let btn = "";
         let HI = "-";
@@ -186,9 +185,10 @@
                     <td>${item.surname}, ${item.name}</td>
                     <td>${item.phone}</td>
                     <td>${item.adress}</td>
-                    <td>$${item.debt}</td>
+                    <td>$${item.debt.toLocaleString("de-DE")}</td>
                     <td>${HI}</td>
                     <td>${observation}</td>
+                    <td>-</td>
                     <td class='text-center'>${active}</td>
                     <td class='d-flex flex-row justify-content-center'>
                         <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
@@ -220,12 +220,12 @@
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
-        .then((result) => {
-            if (result.isConfirmed) {
-                $("#form-state input[name='id']").val(id);
-                sendForm("state");
-            }
-        });
+            .then((result) => {
+                if (result.isConfirmed) {
+                    $("#form-state input[name='id']").val(id);
+                    sendForm("state");
+                }
+            });
     }
 
     function sendForm(action) {
@@ -247,6 +247,7 @@
                         confirmButtonColor: '#1e88e5',
                     });
                     if (action === 'create') {
+                        console.log(response.data);
                         fillTable(response.data);
                     } else {
                         removeFromTable(response.data.id);
@@ -263,11 +264,9 @@
                 }
             });
         }
-    }
-</script>
+    }</script>
 
-<script>
-    $("#btnSendModal").on("click", function () {
+<script>$("#btnSendModal").on("click", function () {
         if ($("#formContainer form").attr('id') === 'form-create') {
             sendForm("create");
         } else if ($("#formContainer form").attr('id') === 'form-edit') {
@@ -321,7 +320,6 @@
                 "sPrevious": "Anterior",
             },
         },
-    });
-</script>
+    });</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

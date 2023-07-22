@@ -1,5 +1,5 @@
 @model Optica_Gaido.Models.ViewModels.Providers.DebtsViewModel
-
+@using System.Globalization
 @{
     ViewData["Title"] = "Proveedores";
 }
@@ -75,7 +75,6 @@
         </div>
     </div>
     <!-- End Modal -->
-
     <!-- Modal pay -->
     <div id="modalPay" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
@@ -142,8 +141,8 @@
                                 {
                                     <tr data-id="@item.ID">
                                         <td>@Html.DisplayFor(x => item.Description)</td>
-                                        <td>$@Html.DisplayFor(x => item.Price)</td>
-                                        <td>$@(item.DebtPayment.Sum(x => x.Amount).ToString("F0"))</td>
+                                        <td>$@item.Price.ToString("N0", new CultureInfo("es-ES"))</td>
+                                        <td>$@(item.DebtPayment.Sum(x => x.Amount).ToString("N0", new CultureInfo("es-ES")))</td>
                                         <td>@item.CreatedAt.ToString("dd/MM/yyyy")</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
@@ -166,8 +165,7 @@
     </div>
 </div>
 
-<script>
-    function createDate(date) {
+<script>function createDate(date) {
         return new Date(date).toLocaleString("es-AR", {
             day: "2-digit",
             month: "2-digit",
@@ -197,8 +195,8 @@
         let content = `
             <tr data-id='${item.id}'>
                 <td>${item.description}</td>
-                <td>$${item.price}</td>
-                <td>$${total}</td>
+                <td>$${item.price.toLocaleString("de-DE") }</td>
+                <td>$${total.toLocaleString("de-DE") }</td>
                 <td>${createDate(item.createdAt)}</td>
                 <td>
                     <div class="d-flex justify-content-center">
@@ -227,12 +225,12 @@
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
-        .then((result) => {
-            if (result.isConfirmed) {
-                $("#form-delete input[name='id']").val(id);
-                sendForm("delete");
-            }
-        });
+            .then((result) => {
+                if (result.isConfirmed) {
+                    $("#form-delete input[name='id']").val(id);
+                    sendForm("delete");
+                }
+            });
     }
 
     function sendForm(action) {
@@ -273,14 +271,12 @@
                 }
             });
         }
-    }
-</script>
+    }</script>
 
-<script>
-    $("#btnSendDebt").on("click", function (e) {
+<script>$("#btnSendDebt").on("click", function (e) {
         sendForm("create");
     });
-    
+
     $("#btnSendPay").on("click", function (e) {
         let totalAmount = $("#modalSubtitle").text().split("$")[1];
         let inputValue = $("#form-pay input[name='DebtPayment.Amount']").val();

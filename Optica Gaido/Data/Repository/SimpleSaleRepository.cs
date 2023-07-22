@@ -14,35 +14,13 @@ using Optica_Gaido.Models;
 
 namespace Optica_Gaido.Data.Repository
 {
-    public class SaleRepository : Repository<Sale>, ISaleRepository
+    public class SimpleSaleRepository : Repository<SimpleSale>, ISimpleSaleRepository
     {
         private readonly ApplicationDbContext _db;
 
-        public SaleRepository (ApplicationDbContext db) : base (db)
+        public SimpleSaleRepository(ApplicationDbContext db) : base (db)
         {
             _db = db;
-        }
-
-        public void Update(Sale sale)
-        {
-            var dbObject = _db.Sales.FirstOrDefault(x => x.ID == sale.ID);
-            if (dbObject != null)
-            {
-                dbObject.Price = sale.Price;
-                dbObject.Deposit = sale.Deposit;
-                dbObject.MovieHeight = sale.MovieHeight;
-                dbObject.Dip = sale.Dip;
-                dbObject.Observation = sale.Observation;
-                dbObject.IsAr = sale.IsAr;
-                dbObject.GlassTypeID = sale.GlassTypeID;
-                dbObject.GlassColorID = sale.GlassColorID;
-                dbObject.GlassFocusTypeID = sale.GlassFocusTypeID;
-                dbObject.DoctorID = sale.DoctorID;
-                dbObject.SellerID = sale.SellerID;
-                //dbObject.FrameID = sale.FrameID;
-                dbObject.DeliveryDate = sale.DeliveryDate;
-                _db.SaveChanges();
-            }
         }
 
         public void SoftDelete(long id)
@@ -50,21 +28,21 @@ namespace Optica_Gaido.Data.Repository
             _db.Database.BeginTransaction();
             try
             {
-                Sale dbObject = _db.Sales.Include(x => x.SalePaymentMethods).Include(x => x.GlassFormats).Where(x => x.ID == id).FirstOrDefault();
+                SimpleSale dbObject = _db.SimpleSales.Include(x => x.PaymentMethods).Include(x => x.Products).Where(x => x.ID == id).FirstOrDefault();
                 if (dbObject != null)
                 {
 
                     dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
-                    foreach (var format in dbObject.GlassFormats)
+                    foreach (var product in dbObject.Products)
                     {
-                        format.DeletedAt = DateTime.UtcNow.AddHours(-3);
+                        product.DeletedAt = DateTime.UtcNow.AddHours(-3);
                     }
                     _db.SaveChanges();
                     _db.Database.CommitTransaction();
                 } else
                 {
                     _db.Database.RollbackTransaction();
-                    throw new Exception("No se encontr� la venta");
+                    throw new Exception("No se encontró la venta");
                 }
             }
             catch (Exception)
@@ -88,12 +66,6 @@ namespace Optica_Gaido.Data.Repository
                 Value = year.ToString(),
                 Selected = (year == DateTime.UtcNow.AddHours(-3).Year)
             });
-        }
-
-        public string GetLastSale(long clientID)
-        {
-            List<Sale> sales = _db.Sales.Where(x => x.ClientID == clientID).OrderByDescending(x => x.CreatedAt).ToList();
-            return sales.Count > 0 ? sales.First().CreatedAt.ToString("dd/MM/yyyy") : null;
         }
     }
 }

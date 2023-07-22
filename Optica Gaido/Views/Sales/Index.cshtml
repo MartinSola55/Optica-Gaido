@@ -1,7 +1,7 @@
 ﻿@model Optica_Gaido.Models.ViewModels.Sales.IndexViewModel
-
+@using System.Globalization
 @{
-    ViewData["Title"] = "Ventas";
+    ViewData["Title"] = "Recetas";
 }
 
 <!-- Data table -->
@@ -16,10 +16,10 @@
     <!-- ============================================================== -->
     <div class="row page-titles">
         <div class="col-md-5 col-8 align-self-center">
-            <h3 class="text-themecolor m-b-0 m-t-0">Ventas</h3>
+            <h3 class="text-themecolor m-b-0 m-t-0">Recetas</h3>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
-                <li class="breadcrumb-item active">Ventas</li>
+                <li class="breadcrumb-item active">Recetas</li>
             </ol>
         </div>
     </div>
@@ -35,7 +35,7 @@
             <div class="card shadow">
                 <div class="card-body">
                     <div class="d-flex flex-column flex-sm-row justify-content-start">
-                        <h2 class="card-title mr-2">Ventas del año</h2>
+                        <h2 class="card-title mr-2">Recetas del año</h2>
                         @Html.DropDownList("yearSelected", Model.Years, new { @class = "form-control", @style = "max-width: fit-content" })
                     </div>
                     <div class="table-responsive m-t-10">
@@ -57,12 +57,12 @@
                                         <td>@Html.DisplayFor(x => item.Client.Surname), @Html.DisplayFor(x => item.Client.Name)</td>
                                         <td>@item.CreatedAt.ToString("dd/MM/yyyy - HH:mm")</td>
                                         <td>@item.DeliveryDate.ToString("dd/MM/yyyy")</td>
-                                        <td>$@(item.Price.ToString("0"))</td>
-                                        <td>$@(item.Deposit != null ? item.Deposit.Value.ToString("0") : "0")</td>
+                                        <td>$@(item.Price.ToString("N0", new CultureInfo("es-ES")))</td>
+                                        <td>$@(item.Deposit != null ? item.Deposit.Value.ToString("N0", new CultureInfo("es-ES")) : "0")</td>
                                         <td>
                                             @foreach (var pm in item.SalePaymentMethods)
                                             {
-                                                <span>@pm.PaymentMethod.Name: $@pm.Amount.ToString("0")</span><br />
+                                                <span>@pm.PaymentMethod.Name: $@pm.Amount.ToString("N0", new CultureInfo("es-ES"))</span><br />
                                             }
                                         </td>
                                     </tr>
@@ -76,16 +76,15 @@
     </div>
 </div>
 
-<script>
-    $(document).ready(function () {
+<script>$(document).ready(function () {
         let dataTable = $('#DataTable').DataTable({
             "order": [[1, "desc"]],
             "language": {
-                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ ventas",
-                "sInfoEmpty": "Mostrando 0 a 0 de 0 ventas",
-                "sInfoFiltered": "(filtrado de _MAX_ ventas en total)",
-                "emptyTable": 'No hay ventas que coincidan con la búsqueda',
-                "sLengthMenu": "Mostrar _MENU_ ventas",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ recetas",
+                "sInfoEmpty": "Mostrando 0 a 0 de 0 recetas",
+                "sInfoFiltered": "(filtrado de _MAX_ recetas en total)",
+                "emptyTable": 'No hay recetas que coincidan con la búsqueda',
+                "sLengthMenu": "Mostrar _MENU_ recetas",
                 "sSearch": "Buscar:",
                 "oPaginate": {
                     "sFirst": "Primero",
@@ -105,11 +104,9 @@
                 window.location.href = window.location.origin + "/Sales/Details/" + $(this).data("id");
             });
         });
-    });
-</script>
+    });</script>
 
-<script>
-    function createDateWithTime(dateString) {
+<script>function createDateWithTime(dateString) {
         let date = new Date(dateString);
         let day = ("0" + date.getDate()).slice(-2);
         let month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -131,15 +128,15 @@
         data.forEach(function (sale) {
             let methods = "";
             sale.paymentMethods.forEach(function (pm) {
-                methods += `<span>${pm.paymentMethod.name}: $${pm.amount}</span><br />`;
+                methods += `<span>${pm.paymentMethod.name}: $${pm.amount.toLocaleString("de-DE")}</span><br />`;
             })
             let deposit = sale.deposit ?? "0";
             let row = [
                 `${sale.surname}, ${sale.name}`,
                 createDateWithTime(sale.createdAt),
                 createDate(sale.deliveryDate),
-                `$${sale.price}`,
-                `$${deposit}`,
+                `$${sale.price.toLocaleString("de-DE")}`,
+                `$${deposit.toLocaleString("de-DE")}`,
                 methods
             ];
             let addedRow = $('#DataTable').DataTable().row.add(row).draw().node();
@@ -174,7 +171,6 @@
                 });
             }
         });
-    });
-</script>
+    });</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
