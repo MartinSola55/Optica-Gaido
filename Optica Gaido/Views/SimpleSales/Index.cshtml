@@ -45,7 +45,7 @@
                                     <th class="col-3">Cliente</th>
                                     <th class="col-2">Fecha</th>
                                     <th class="col-1">Precio</th>
-                                    <th class="col-3">Productos</th>
+                                    <th class="col-3">Productos/Servicios</th>
                                     <th class="col-2">Pagos</th>
                                     <th class="col-1">Eliminar</th>
                                 </tr>
@@ -58,9 +58,16 @@
                                         <td>@item.CreatedAt.ToString("dd/MM/yyyy - HH:mm")</td>
                                         <td>$@item.Products.Sum(x => x.Quantity * x.SettedPrice).ToString("N0", new CultureInfo("es-ES"))</td>
                                         <td>
-                                            @foreach (var product in item.Products)
+                                            @foreach (var prodServ in item.Products)
                                             {
-                                                <span>@product.Product.Name: @product.Quantity u. - $@product.SettedPrice.ToString("N0", new CultureInfo("es-ES"))</span><br />
+                                                if (prodServ.Product.Stock == null)
+                                                {
+                                                    <span>@prodServ.Product.Name: $@prodServ.SettedPrice.ToString("N0", new CultureInfo("es-ES"))</span><br />
+                                                }
+                                                else
+                                                {
+                                                    <span>@prodServ.Product.Name: @prodServ.Quantity u. - $@prodServ.SettedPrice.ToString("N0", new CultureInfo("es-ES"))</span><br />
+                                                }
                                             }
                                         </td>
                                         <td>

@@ -1,7 +1,7 @@
 ﻿@model Optica_Gaido.Models.ViewModels.Products.IndexViewModel
 @using System.Globalization
 @{
-    ViewData["Title"] = "Productos";
+    ViewData["Title"] = "Productos/Servicios";
 }
 
 <!-- Data table -->
@@ -16,10 +16,10 @@
     <!-- ============================================================== -->
     <div class="row page-titles">
         <div class="col-md-5 col-8 align-self-center">
-            <h3 class="text-themecolor m-b-0 m-t-0">Productos</h3>
+            <h3 class="text-themecolor m-b-0 m-t-0">Productos/Servicios</h3>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
-                <li class="breadcrumb-item active">Productos</li>
+                <li class="breadcrumb-item active">Productos/Servicios</li>
             </ol>
         </div>
     </div>
@@ -60,7 +60,7 @@
                                         </div>
                                         <span asp-validation-for="CreateViewModel.Price" class="text-danger"></span>
                                     </div>
-                                    <div class="col-12 mb-3">
+                                    <div class="col-12 mb-3" id="productStock">
                                         <label asp-for="CreateViewModel.Stock" class="mb-0"></label>
                                         <input asp-for="CreateViewModel.Stock" type="number" class="form-control" required data-val-number="Debes ingresar un número" />
                                         <span asp-validation-for="CreateViewModel.Stock" class="text-danger"></span>
@@ -83,9 +83,12 @@
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-body">
-                    <div class="d-flex flex-row justify-content-between">
-                        <h2 class="card-title">Listado de productos</h2>
-                        <button id="btnAdd" type="button" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal" data-target="#modalCreate">Agregar producto</button>
+                    <div class="d-flex flex-md-row flex-column justify-content-between">
+                        <h2 class="card-title">Listado de productos/servicios</h2>
+                        <div>
+                            <button id="btnAddProduct" type="button" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right ml-2" data-toggle="modal" data-target="#modalCreate">Agregar producto</button>
+                            <button id="btnAddService" type="button" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal" data-target="#modalCreate">Agregar servicio</button>
+                        </div>
                     </div>
                     <div class="table-responsive m-t-10">
                         <table id="DataTable" class="table table-bordered table-striped">
@@ -103,7 +106,7 @@
                                     <tr data-id="@item.ID">
                                         <td>@Html.DisplayFor(c => item.Name)</td>
                                         <td>$@(item.Price.ToString("N0", new CultureInfo("es-ES")))</td>
-                                        <td>@Html.DisplayFor(c => item.Stock)</td>
+                                        <td>@(item.Stock != null ? item.Stock.Value : "-")</td>
                                         <td class='d-flex flex-row justify-content-center'>
                                             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                                             <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(@item.ID)'><i class='bi bi-trash3'></i></button>
@@ -123,12 +126,13 @@
     </div>
 </div>
 
-<script>function fillTable(item) {
+<script>
+    function fillTable(item) {
         let content = `
             <tr data-id='${item.id}'>
                 <td>${item.name}</td>
                 <td>$${item.price.toLocaleString("de-DE")}</td>
-                <td>${item.stock}</td>
+                <td>${item.stock != null ? item.stock : "-"}</td>
                 <td class='d-flex flex-row justify-content-center'>
                     <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                     <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(${item.id})'><i class='bi bi-trash3'></i></button>
@@ -143,7 +147,7 @@
 
     function deleteObj(id) {
         Swal.fire({
-            title: "¿Seguro deseas eliminar este producto?",
+            title: "¿Seguro deseas eliminar este producto/servicio?",
             text: "Esta acción no se puede deshacer",
             icon: 'warning',
             showCancelButton: true,
@@ -154,12 +158,12 @@
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
-            .then((result) => {
-                if (result.isConfirmed) {
-                    $("#form-delete input[name='id']").val(id);
-                    sendForm("delete");
-                }
-            });
+        .then((result) => {
+            if (result.isConfirmed) {
+                $("#form-delete input[name='id']").val(id);
+                sendForm("delete");
+            }
+        });
     }
 
     function sendForm(action) {
@@ -199,17 +203,31 @@
                 }
             });
         }
-    }</script>
+    }
+</script>
 
-<script>$("#btnSendModal").on("click", function () {
+<script>
+    $("#btnSendModal").on("click", function () {
         if ($("#formContainer form").attr('id') === 'form-create') {
             sendForm("create");
         } else if ($("#formContainer form").attr('id') === 'form-edit') {
             sendForm("edit");
         }
     });
-    $("#btnAdd").on("click", function () {
+
+    $("#btnAddProduct").on("click", function () {
         $("#modalTitle").text("Agregar producto");
+        $("#productStock").show();
+        $("#formContainer form").attr("action", "/Products/Create");
+        $("#formContainer form").attr("id", "form-create");
+        $("#formContainer form input:not([type='hidden']").val("");
+        $("input[name='CreateViewModel.ID']").prop("disabled", true);
+        $("#btnSendModal").text("Agregar");
+    });
+    
+    $("#btnAddService").on("click", function () {
+        $("#modalTitle").text("Agregar servicio");
+        $("#productStock").hide();
         $("#formContainer form").attr("action", "/Products/Create");
         $("#formContainer form").attr("id", "form-create");
         $("#formContainer form input:not([type='hidden']").val("");
@@ -222,23 +240,33 @@
         $("input[name='CreateViewModel.ID']").val(entity.id);
         $("input[name='CreateViewModel.ID']").prop("disabled", false);
 
-        $("#modalTitle").text("Editar producto");
+        if (entity.stock != null) {
+            $("#productStock").show();
+            $("#modalTitle").text("Editar producto");
+            $("input[name='CreateViewModel.Stock']").prop("disabled", false);
+            $("input[name='CreateViewModel.Stock']").val(entity.stock);
+        } else {
+            $("#productStock").hide();
+            $("#modalTitle").text("Editar servicio");
+            $("input[name='CreateViewModel.Stock']").prop("disabled", true);
+            $("input[name='CreateViewModel.Stock']").val("");
+        }
+
         $("#formContainer form").attr("action", "/Products/Edit");
         $("#formContainer form").attr("id", "form-edit");
         $("#btnSendModal").text("Confirmar");
 
         $("input[name='CreateViewModel.Name']").val(entity.name);
         $("input[name='CreateViewModel.Price']").val(entity.price);
-        $("input[name='CreateViewModel.Stock']").val(entity.stock);
     }
 
     $('#DataTable').DataTable({
         "language": {
-            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ productos",
-            "sInfoEmpty": "Mostrando 0 a 0 de 0 productos",
-            "sInfoFiltered": "(filtrado de _MAX_ productos en total)",
-            "emptyTable": 'No hay productos que coincidan con la búsqueda',
-            "sLengthMenu": "Mostrar _MENU_ productos",
+            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ productos/servicios",
+            "sInfoEmpty": "Mostrando 0 a 0 de 0 productos/servicios",
+            "sInfoFiltered": "(filtrado de _MAX_ productos/servicios en total)",
+            "emptyTable": 'No hay productos/servicios que coincidan con la búsqueda',
+            "sLengthMenu": "Mostrar _MENU_ productos/servicios",
             "sSearch": "Buscar:",
             "oPaginate": {
                 "sFirst": "Primero",
@@ -247,6 +275,7 @@
                 "sPrevious": "Anterior",
             },
         },
-    });</script>
+    });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

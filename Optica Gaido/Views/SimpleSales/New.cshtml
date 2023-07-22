@@ -37,7 +37,7 @@
         <div class="col-12 col-xl-6">
             <div class="card shadow">
                 <div class="card-body">
-                    <h2 class="card-title mr-2">Seleccione los productos</h2>
+                    <h2 class="card-title mr-2">Seleccione los productos/servicios</h2>
                     <div class="table-responsive m-t-10">
                         <table id="DataTable" class="table table-bordered table-striped">
                             <thead>
@@ -54,7 +54,7 @@
                                     <tr data-id="@item.ID">
                                         <td>@item.Name</td>
                                         <td>$@item.Price.ToString("N0", new CultureInfo("es-ES"))</td>
-                                        <td>@item.Stock</td>
+                                        <td>@(item.Stock != null ? item.Stock.Value : "-")</td>
                                         <td>
                                             <div class='d-flex flex-row justify-content-center'>
                                                 <button name="btnSale" type='button' class='btn btn-outline-info mr-2' data-entity='@Json.Serialize(item)'><i class="bi bi-plus-lg"></i></button>
@@ -72,7 +72,7 @@
         <div class="col-12 col-xl-6">
             <div class="card shadow">
                 <div class="card-body">
-                    <h2 class="card-title mr-2">Productos seleccionados</h2>
+                    <h2 class="card-title mr-2">Productos/Servicios seleccionados</h2>
                     <div class="table-responsive m-t-10">
                         <table id="productsSelected" class="table table-bordered table-striped">
                             <thead>
@@ -105,34 +105,39 @@
 <script>
     $(document).on("click", "button[name='btnSale']", function () {
         let entity = $(this).data("entity");
-        Swal.fire({
-            title: 'Ingrese la cantidad:',
-            text: `Stock: ${entity.stock} u.`,
-            input: 'number',
-            inputAttributes: {
-                min: 1,
-                max: entity.stock,
-                step: 1
-            },
-            showCancelButton: true,
-            confirmButtonText: 'Agregar',
-            cancelButtonText: 'Cancelar',
-            buttonsStyling: false,
-            customClass: {
-                confirmButton: 'btn btn-success waves-effect waves-light px-3 py-2',
-                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
-            },
-            showLoaderOnConfirm: true,
-            inputValidator: (value) => {
-                if (!value || value < 1 || value > entity.stock) {
-                    return 'Por favor, ingrese una cantidad válida';
-                }
-            },
-            preConfirm: (cantidad) => {
-                addToSelectedTable(entity, cantidad);
-                removeFromTable("#DataTable", entity.id);
-            },
-        });
+        if (entity.stock != null) {
+            Swal.fire({
+                title: 'Ingrese la cantidad:',
+                text: `Stock: ${entity.stock} u.`,
+                input: 'number',
+                inputAttributes: {
+                    min: 1,
+                    max: entity.stock,
+                    step: 1
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Agregar',
+                cancelButtonText: 'Cancelar',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-success waves-effect waves-light px-3 py-2',
+                    cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+                },
+                showLoaderOnConfirm: true,
+                inputValidator: (value) => {
+                    if (!value || value < 1 || value > entity.stock) {
+                        return 'Por favor, ingrese una cantidad válida';
+                    }
+                },
+                preConfirm: (cantidad) => {
+                    addToSelectedTable(entity, cantidad);
+                    removeFromTable("#DataTable", entity.id);
+                },
+            });
+        } else {
+            addToSelectedTable(entity, 1);
+            removeFromTable("#DataTable", entity.id);
+        }
     });
 
     $(document).on("click", "button[name='btnDelete']", function () {
@@ -273,7 +278,7 @@
             <tr data-id="${entity.id}" data-quantity="${cantidad}">
                 <td>${entity.name}</td>
                 <td>$${entity.price.toLocaleString("de-DE")}</td>
-                <td>${entity.stock}</td>
+                <td>${entity.stock != null ? entity.stock : "-"}</td>
                 <td>${cantidad}</td>
                 <td>
                     <div class='d-flex flex-row justify-content-center'>
@@ -293,7 +298,7 @@
             <tr data-id="${entity.id}">
                 <td>${entity.name}</td>
                 <td>$${entity.price.toLocaleString("de-DE")}</td>
-                <td>${entity.stock}</td>
+                <td>${entity.stock != null ? entity.stock : "-"}</td>
                 <td>
                     <div class='d-flex flex-row justify-content-center'>
                         <button name="btnSale" type='button' class='btn btn-outline-info mr-2' data-entity='${JSON.stringify(entity)}'><i class="bi bi-plus-lg"></i></button>

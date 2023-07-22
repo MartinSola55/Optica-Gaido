@@ -222,5 +222,43 @@ namespace Optica_Gaido.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult PayDebt(long clientID, decimal amount)
+        {
+            try
+            {
+                Client client = _workContainer.Client.GetOne(clientID);
+                if (client != null)
+                {
+                    client.Debt -= amount;
+                    _workContainer.Client.Update(client);
+                    _workContainer.Save();
+                    return Json(new
+                    {
+                        success = true,
+                        data = client,
+                        message = "La deuda se pagó correctamente",
+                    });
+                }
+                return BadRequest(new
+                {
+                    success = false,
+                    title = "Error al pagar la deuda",
+                    message = "No se encontró el cliente solicitado",
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    title = "Error al pagar la deuda",
+                    message = "Intente nuevamente o comuníquese para soporte",
+                    error = e.Message,
+                });
+            }
+        }
     }
 }

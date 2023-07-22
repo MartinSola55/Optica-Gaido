@@ -21,10 +21,9 @@ public partial class Product
     [Range(1, 1000000, ErrorMessage = "Debes ingresar un precio entre $1 y $1.000.000")]
     public decimal Price { get; set; }
 
-    [Required(ErrorMessage = "Debes ingresar un stock")]
     [Display(Name = "Stock")]
     [Range(0, 10000, ErrorMessage = "Debes ingresar un stock entre 0 y 10.000")]
-    public int Stock { get; set; }
+    public int? Stock { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
