@@ -215,7 +215,7 @@
         },
     });
 
-    $("button[name='btnSale']").on("click", function () {
+    $(document).on("click", "button[name='btnSale']", function () {
         Swal.fire({
             title: '¿Qué tipo de venta desea realizar?',
             showDenyButton: true,
