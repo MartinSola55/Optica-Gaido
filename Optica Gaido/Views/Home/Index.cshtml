@@ -140,7 +140,7 @@
                             <h4 class="card-title">Nueva venta</h4>
                             <h5 class="card-subtitle">@DateTime.UtcNow.AddHours(-3).ToString("dd/MM/yyyy")</h5>
                         </div>
-                        <a type="button" class="btn btn-info btn-rounded my-auto mx-auto mx-sm-0 waves-effect waves-light float-right" asp-action="New" asp-controller="SimpleSales" asp-area="" >Venta de productos</a>
+                        <a type="button" class="btn btn-info btn-rounded my-auto mx-auto mx-sm-0 waves-effect waves-light float-right" asp-action="New" asp-controller="SimpleSales" asp-area="" >Venta de productos/servicios</a>
                     </div>
                     <div class="table-responsive m-t-20">
                         <table class="table stylish-table" id="dataTable">
@@ -221,7 +221,7 @@
             showDenyButton: true,
             showCancelButton: true,
             confirmButtonText: 'Receta',
-            denyButtonText: 'Productos',
+            denyButtonText: 'Productos/Servicios',
             buttonsStyling: false,
             customClass: {
                 confirmButton: 'btn btn-info waves-effect waves-light px-3 py-2 mr-2',

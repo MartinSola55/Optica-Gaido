@@ -68,5 +68,40 @@ namespace Optica_Gaido.Data.Repository
             }
             return query.Where(x => x.ID == id).FirstOrDefault();
         }
+
+        public void SoftDelete(long id)
+        {
+            var dbObject = _db.Clients.FirstOrDefault(x => x.ID == id);
+            if (dbObject != null)
+            {
+                dbObject.DeletedAt = DateTime.UtcNow.AddHours(-3);
+                _db.SaveChanges();
+            }
+        }
+
+        public string GetLastSale(long clientID)
+        {
+            // Obetener la ultima fecha tanto de Sale como de SimpleSale
+            Sale lastSale = _db.Sales.Where(x => x.ClientID == clientID).OrderByDescending(x => x.CreatedAt).FirstOrDefault();
+            SimpleSale lastSimpleSale = _db.SimpleSales.Where(x => x.ClientID == clientID).OrderByDescending(x => x.CreatedAt).FirstOrDefault();
+            // Comparar las fechas y devolver la mas reciente
+            if (lastSale != null && lastSimpleSale != null)
+            {
+                if (lastSale.CreatedAt > lastSimpleSale.CreatedAt) return lastSale.CreatedAt.ToString("dd/MM/yyyy");
+                else return lastSimpleSale.CreatedAt.ToString("dd/MM/yyyy");
+            }
+            else if (lastSale != null)
+            {
+                return lastSale.CreatedAt.ToString("dd/MM/yyyy");
+            }
+            else if (lastSimpleSale != null)
+            {
+                return lastSimpleSale.CreatedAt.ToString("dd/MM/yyyy");
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

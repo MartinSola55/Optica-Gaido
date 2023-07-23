@@ -13,5 +13,7 @@ namespace Optica_Gaido.Data.Repository.IRepository
         Client GetOneWithProperties(long id, string properties);
         bool IsDuplicated(Client client);
         void ChangeState(long id);
+        void SoftDelete(long id);
+        string GetLastSale(long clientID);
     }
 }

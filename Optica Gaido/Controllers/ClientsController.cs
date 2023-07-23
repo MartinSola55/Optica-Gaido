@@ -26,7 +26,7 @@ namespace Optica_Gaido.Controllers
 
                 foreach (Client client in clients)
                 {
-                    client.LastSaleDate = _workContainer.Sale.GetLastSale(client.ID);
+                    client.LastSaleDate = _workContainer.Client.GetLastSale(client.ID);
                 }
 
                 IndexViewModel viewModel = new()
@@ -181,6 +181,80 @@ namespace Optica_Gaido.Controllers
                 {
                     success = false,
                     title = "Error al cambiar el estado",
+                    message = "Intente nuevamente o comuníquese para soporte",
+                    error = e.Message,
+                });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SoftDelete(long id)
+        {
+            try
+            {
+                if (_workContainer.Client.GetOne(id) != null)
+                {
+                    _workContainer.Client.SoftDelete(id);
+                    _workContainer.Save();
+                    return Json(new
+                    {
+                        success = true,
+                        data = id,
+                        message = "El cliente se eliminó correctamente",
+                    });
+                }
+                return BadRequest(new
+                {
+                    success = false,
+                    title = "Error al eliminar",
+                    message = "No se encontró el cliente solicitado",
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    title = "Error al eliminar",
+                    message = "Intente nuevamente o comuníquese para soporte",
+                    error = e.Message,
+                });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult PayDebt(long clientID, decimal amount)
+        {
+            try
+            {
+                Client client = _workContainer.Client.GetOne(clientID);
+                if (client != null)
+                {
+                    client.Debt -= amount;
+                    _workContainer.Client.Update(client);
+                    _workContainer.Save();
+                    return Json(new
+                    {
+                        success = true,
+                        data = client,
+                        message = "La deuda se pagó correctamente",
+                    });
+                }
+                return BadRequest(new
+                {
+                    success = false,
+                    title = "Error al pagar la deuda",
+                    message = "No se encontró el cliente solicitado",
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    title = "Error al pagar la deuda",
                     message = "Intente nuevamente o comuníquese para soporte",
                     error = e.Message,
                 });

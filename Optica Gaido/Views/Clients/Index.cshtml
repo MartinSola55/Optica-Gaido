@@ -146,15 +146,29 @@
                                             }
                                         </td>
                                         <td class='d-flex flex-row justify-content-center'>
-                                            <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                                            @if (item.Debt > 0)
+                                            {
+                                            <button type='button' class='btn btn-outline-success btn-rounded btn-sm mr-2' onclick='payDebt(@Json.Serialize(item))'><i class="bi bi-cash"></i></button>
+                                            }
+                                            <button type='button' class='btn btn-outline-info btn-rounded btn-sm' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                                             <button type='button' class='btn @(item.IsActive ? "btn-danger" : "btn-info") btn-rounded btn-sm ml-2' onclick='changeState(@item.ID, "@item.IsActive")'><i class='bi @(item.IsActive ? "bi-toggle-on" : "bi-toggle-off")'></i></button>
+                                            <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(@item.ID)'><i class='bi bi-trash3'></i></button>
                                         </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
+                    <form id="form-paydebt" method="POST" asp-area="" asp-controller="Clients" asp-action="PayDebt">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="clientID" value="">
+                        <input type="hidden" name="amount" value="">
+                    </form>
                     <form id="form-state" method="POST" asp-area="" asp-controller="Clients" asp-action="ChangeState">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="">
+                    </form>
+                    <form id="form-delete" method="POST" asp-area="" asp-controller="Clients" asp-action="SoftDelete">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="">
                     </form>
@@ -164,18 +178,21 @@
     </div>
 </div>
 
-<script>function fillTable(item) {
+<script>
+    function fillTable(item) {
         let active = "";
-        let btn = "";
+        let btnActive = "";
+        let btnPay = "";
         let HI = "-";
         let observation = "-";
         if (item.isActive) {
             active = `<i class="bi bi-check2" style="font-size: 1.5rem"></i>`;
-            btn = `<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-on'></i></button>`;
+            btnActive = `<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-on'></i></button>`;
         } else {
             active = `<i class="bi bi-x-lg" style="font-size: 1.3rem"></i>`;
-            btn = `<button type='button' class='btn btn-info btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-off'></i></button>`;
+            btnActive = `<button type='button' class='btn btn-info btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-off'></i></button>`;
         }
+        if (item.debt > 0) btnPay = `<button type='button' class='btn btn-outline-success btn-rounded btn-sm mr-2' onclick='payDebt(${JSON.stringify(item)})'><i class="bi bi-cash"></i></button>`;
         if (item.healthInsuranceID != null)
             HI = item.healthInsurance.name;
         if (item.observation != null)
@@ -191,8 +208,10 @@
                     <td>-</td>
                     <td class='text-center'>${active}</td>
                     <td class='d-flex flex-row justify-content-center'>
-                        <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
-                        ${btn}
+                        ${btnPay}
+                        <button type='button' class='btn btn-outline-info btn-rounded btn-sm' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                        ${btnActive}
+                        <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(${item.id})'><i class='bi bi-trash3'></i></button>
                     </td>
                 </tr>`;
         $('#DataTable').DataTable().row.add($(content)).draw();
@@ -220,12 +239,65 @@
                 cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
             }
         })
-            .then((result) => {
-                if (result.isConfirmed) {
-                    $("#form-state input[name='id']").val(id);
-                    sendForm("state");
+        .then((result) => {
+            if (result.isConfirmed) {
+                $("#form-state input[name='id']").val(id);
+                sendForm("state");
+            }
+        });
+    }
+
+    function deleteObj(id) {
+        Swal.fire({
+            title: "¿Seguro deseas eliminar este cliente?",
+            text: "Esta acción no se puede deshacer",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Eliminar',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
+                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+            }
+        })
+        .then((result) => {
+            if (result.isConfirmed) {
+                $("#form-delete input[name='id']").val(id);
+                sendForm("delete");
+            }
+        });
+    }
+
+    function payDebt(entity) {
+        Swal.fire({
+            title: 'Ingrese un monto:',
+            text: `Deuda: $${entity.debt.toLocaleString("de-DE")}`,
+            input: 'number',
+            inputAttributes: {
+                min: 1,
+                max: entity.debt,
+                step: 1
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Pagar',
+            cancelButtonText: 'Cancelar',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success waves-effect waves-light px-3 py-2',
+                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+            },
+            showLoaderOnConfirm: true,
+            inputValidator: (value) => {
+                if (!value || value < 1 || value > entity.debt) {
+                    return 'Por favor, ingrese un monto válido';
                 }
-            });
+            },
+            preConfirm: (cantidad) => {
+                $("#form-paydebt input[name='clientID']").val(entity.id);
+                $("#form-paydebt input[name='amount']").val(cantidad);
+                sendForm("paydebt");
+            },
+        });
     }
 
     function sendForm(action) {
@@ -247,8 +319,9 @@
                         confirmButtonColor: '#1e88e5',
                     });
                     if (action === 'create') {
-                        console.log(response.data);
                         fillTable(response.data);
+                    } else if (action === 'delete') {
+                        removeFromTable(response.data);
                     } else {
                         removeFromTable(response.data.id);
                         fillTable(response.data);
@@ -264,7 +337,8 @@
                 }
             });
         }
-    }</script>
+    }
+</script>
 
 <script>$("#btnSendModal").on("click", function () {
         if ($("#formContainer form").attr('id') === 'form-create') {

@@ -89,11 +89,5 @@ namespace Optica_Gaido.Data.Repository
                 Selected = (year == DateTime.UtcNow.AddHours(-3).Year)
             });
         }
-
-        public string GetLastSale(long clientID)
-        {
-            List<Sale> sales = _db.Sales.Where(x => x.ClientID == clientID).OrderByDescending(x => x.CreatedAt).ToList();
-            return sales.Count > 0 ? sales.First().CreatedAt.ToString("dd/MM/yyyy") : null;
-        }
     }
 }
