@@ -178,18 +178,21 @@
     </div>
 </div>
 
-<script>function fillTable(item) {
+<script>
+    function fillTable(item) {
         let active = "";
-        let btn = "";
+        let btnActive = "";
+        let btnPay = "";
         let HI = "-";
         let observation = "-";
         if (item.isActive) {
             active = `<i class="bi bi-check2" style="font-size: 1.5rem"></i>`;
-            btn = `<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-on'></i></button>`;
+            btnActive = `<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-on'></i></button>`;
         } else {
             active = `<i class="bi bi-x-lg" style="font-size: 1.3rem"></i>`;
-            btn = `<button type='button' class='btn btn-info btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-off'></i></button>`;
+            btnActive = `<button type='button' class='btn btn-info btn-rounded btn-sm ml-2' onclick='changeState(${item.id}, "${item.isActive}")'><i class='bi bi-toggle-off'></i></button>`;
         }
+        if (item.debt > 0) btnPay = `<button type='button' class='btn btn-outline-success btn-rounded btn-sm mr-2' onclick='payDebt(${JSON.stringify(item)})'><i class="bi bi-cash"></i></button>`;
         if (item.healthInsuranceID != null)
             HI = item.healthInsurance.name;
         if (item.observation != null)
@@ -205,8 +208,10 @@
                     <td>-</td>
                     <td class='text-center'>${active}</td>
                     <td class='d-flex flex-row justify-content-center'>
-                        <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
-                        ${btn}
+                        ${btnPay}
+                        <button type='button' class='btn btn-outline-info btn-rounded btn-sm' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                        ${btnActive}
+                        <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(${item.id})'><i class='bi bi-trash3'></i></button>
                     </td>
                 </tr>`;
         $('#DataTable').DataTable().row.add($(content)).draw();
@@ -332,7 +337,8 @@
                 }
             });
         }
-    }</script>
+    }
+</script>
 
 <script>$("#btnSendModal").on("click", function () {
         if ($("#formContainer form").attr('id') === 'form-create') {
