@@ -50,16 +50,6 @@
                                         <input asp-for="CreateViewModel.Name" class="form-control" required />
                                         <span asp-validation-for="CreateViewModel.Name" class="text-danger"></span>
                                     </div>
-                                    <div class="col-12 mb-3">
-                                        <label asp-for="CreateViewModel.Price" class="mb-0"></label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">$</span>
-                                            </div>
-                                            <input asp-for="CreateViewModel.Price" class="form-control" required type="number" data-val-number="Debes ingresar un número" />
-                                        </div>
-                                        <span asp-validation-for="CreateViewModel.Price" class="text-danger"></span>
-                                    </div>
                                     <div class="col-12 mb-3" id="productStock">
                                         <label asp-for="CreateViewModel.Stock" class="mb-0"></label>
                                         <input asp-for="CreateViewModel.Stock" type="number" class="form-control" required data-val-number="Debes ingresar un número" />
@@ -105,7 +95,6 @@
                                 {
                                     <tr data-id="@item.ID">
                                         <td>@Html.DisplayFor(c => item.Name)</td>
-                                        <td>$@(item.Price.ToString("N0", new CultureInfo("es-ES")))</td>
                                         <td>@(item.Stock != null ? item.Stock.Value : "-")</td>
                                         <td class='d-flex flex-row justify-content-center'>
                                             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
@@ -131,7 +120,6 @@
         let content = `
             <tr data-id='${item.id}'>
                 <td>${item.name}</td>
-                <td>$${item.price.toLocaleString("de-DE")}</td>
                 <td>${item.stock != null ? item.stock : "-"}</td>
                 <td class='d-flex flex-row justify-content-center'>
                     <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
@@ -257,7 +245,6 @@
         $("#btnSendModal").text("Confirmar");
 
         $("input[name='CreateViewModel.Name']").val(entity.name);
-        $("input[name='CreateViewModel.Price']").val(entity.price);
     }
 
     $('#DataTable').DataTable({

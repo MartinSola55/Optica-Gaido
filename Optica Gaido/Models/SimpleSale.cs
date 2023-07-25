@@ -18,6 +18,13 @@ public partial class SimpleSale
     [AllowNull]
     public long? ClientID { get; set; }
 
+    [Required(ErrorMessage = "Debes ingresar un total")]
+    [Column(TypeName = "money")]
+    [Display(Name = "Precio")]
+    [DisplayFormat(DataFormatString = "{0:F0}", ApplyFormatInEditMode = true)]
+    [Range(0, 1000000, ErrorMessage = "Debes ingresar un precio entre $0 y $1.000.000")]
+    public decimal TotalPrice { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime? DeletedAt { get; set; }

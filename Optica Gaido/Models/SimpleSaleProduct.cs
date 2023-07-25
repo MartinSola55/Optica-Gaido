@@ -21,11 +21,6 @@ public partial class SimpleSaleProduct
     [Range(1, 1000, ErrorMessage = "Debes ingresar una cantidad entre 1 y 1000")]
     public int Quantity { get; set; }
 
-    [Column(TypeName = "money")]
-    [Display(Name = "Precio")]
-    [DisplayFormat(DataFormatString = "{0:F0}", ApplyFormatInEditMode = true)]
-    public decimal SettedPrice { get; set; }
-
     public DateTime CreatedAt { get; set; }
 
     public DateTime? DeletedAt { get; set; }

@@ -97,7 +97,6 @@ namespace Optica_Gaido.Controllers
                         if (prod == null) return CustomBadRequest(title: "Error al crear la venta", message: "El producto ingresado no existe en los registros"); ;
                         if (product.Quantity > prod.Stock) return CustomBadRequest(title: "Error al crear la venta", message: "La cantidad ingresada es mayor al stock"); ;
 
-                        product.SettedPrice = prod.Price;
                         product.CreatedAt = DateTime.UtcNow.AddHours(-3);
                         prod.Stock -= product.Quantity;
                     }
@@ -112,7 +111,7 @@ namespace Optica_Gaido.Controllers
                         {
                             totalPaid += pm.Amount;
                         }
-                        client.Debt += sale.Products.Sum(x => x.Quantity * x.SettedPrice) - totalPaid;
+                        client.Debt += sale.TotalPrice - totalPaid;
                         
                     }
 
@@ -195,7 +194,7 @@ namespace Optica_Gaido.Controllers
                         name = x.Client?.Name,
                         surname = x.Client?.Surname,
                         createdAt = x.CreatedAt,
-                        price = x.Products.Sum(x => x.Quantity * x.SettedPrice),
+                        price = x.TotalPrice,
                         products = x.Products,
                         paymentMethods = x.PaymentMethods
                     });
