@@ -42,9 +42,8 @@
                         <table id="DataTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th class="col-5">Nombre</th>
-                                    <th class="col-3">Precio</th>
-                                    <th class="col-2">Stock</th>
+                                    <th class="col-7">Nombre</th>
+                                    <th class="col-3">Stock</th>
                                     <th class="col-2 text-center">Seleccionar</th>
                                 </tr>
                             </thead>
@@ -53,7 +52,6 @@
                                 {
                                     <tr data-id="@item.ID">
                                         <td>@item.Name</td>
-                                        <td>$@item.Price.ToString("N0", new CultureInfo("es-ES"))</td>
                                         <td>@(item.Stock != null ? item.Stock.Value : "-")</td>
                                         <td>
                                             <div class='d-flex flex-row justify-content-center'>
@@ -77,8 +75,7 @@
                         <table id="productsSelected" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th class="col-4">Nombre</th>
-                                    <th class="col-3">Precio</th>
+                                    <th class="col-7">Nombre</th>
                                     <th class="col-2">Stock</th>
                                     <th class="col-2">Cantidad</th>
                                     <th class="col-1">Eliminar</th>
@@ -97,7 +94,8 @@
 
         <form id="form-create" method="POST" asp-area="" asp-controller="SimpleSales" asp-action="Create">
             @Html.AntiForgeryToken()
-            <input type="hidden" name="CreateViewModel.ClientID" value='@(Model.Client != null ? Model.Client.ID : null)'>
+            <input type="hidden" name="CreateViewModel.ClientID" value='@(Model.Client != null ? Model.Client.ID : null)' />
+            <input type="hidden" name="CreateViewModel.TotalPrice" value="" />
         </form>
     </div>
 </div>
@@ -150,18 +148,44 @@
     let productsData;
 
     $("#btnSend").on("click", function () {
-        let total = 0;
         $("#productsSelected").DataTable().rows().every(function () {
             let row = $(this.node());
             let price = row.find("td:nth-child(2)").text().replace("$", "").replace(".", "");
             let quantity = row.find("td:nth-child(4)").text();
-            total += price * quantity;
         });
         Swal.fire({
+            title: 'Ingresa el total de la venta',
+            input: 'number',
+            inputAttributes: {
+                min: 0,
+                max: 1000000,
+                step: 1,
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success waves-effect waves-light px-3 py-2',
+                cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+            },
+            inputValidator: (value) => {
+                if (!value || value < 0 || value > 1000000) {
+                    return 'Por favor, ingrese un monto válido';
+                }
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $("#form-create input[name='CreateViewModel.TotalPrice']").val($("#swal2-input").val());
+                askForMethod();
+            }
+        });
+    });
+
+    function askForMethod() {
+        Swal.fire({
             title: 'Selecciona un método de pago e ingresa un monto',
-            html: `
-                <p>Total: $${total}</p>
-                @Html.DropDownList("PaymentMethods", Model.PaymentMethods, null, new { @class = "form-control" })`,
+            html: `@Html.DropDownList("PaymentMethods", Model.PaymentMethods, null, new { @class = "form-control" })`,
             input: 'number',
             inputAttributes: {
                 min: 0,
@@ -185,7 +209,7 @@
                 sendForm($("#swal2-input").val());
             }
         });
-    });
+    }
 
     function sendForm(amount) {
         createPaymentMethodsData(amount);
@@ -277,7 +301,6 @@
         let content = `
             <tr data-id="${entity.id}" data-quantity="${cantidad}">
                 <td>${entity.name}</td>
-                <td>$${entity.price.toLocaleString("de-DE")}</td>
                 <td>${entity.stock != null ? entity.stock : "-"}</td>
                 <td>${cantidad}</td>
                 <td>
@@ -297,7 +320,6 @@
         let content = `
             <tr data-id="${entity.id}">
                 <td>${entity.name}</td>
-                <td>$${entity.price.toLocaleString("de-DE")}</td>
                 <td>${entity.stock != null ? entity.stock : "-"}</td>
                 <td>
                     <div class='d-flex flex-row justify-content-center'>

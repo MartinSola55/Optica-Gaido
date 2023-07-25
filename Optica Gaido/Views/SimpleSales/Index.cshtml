@@ -56,17 +56,17 @@
                                     <tr data-id="@item.ID">
                                         <td>@(item.ClientID != null ? item.Client.Surname + ", " + item.Client.Name : "-")</td>
                                         <td>@item.CreatedAt.ToString("dd/MM/yyyy - HH:mm")</td>
-                                        <td>$@item.Products.Sum(x => x.Quantity * x.SettedPrice).ToString("N0", new CultureInfo("es-ES"))</td>
+                                        <td>$@item.TotalPrice.ToString("N0", new CultureInfo("es-ES"))</td>
                                         <td>
                                             @foreach (var prodServ in item.Products)
                                             {
                                                 if (prodServ.Product.Stock == null)
                                                 {
-                                                    <span>@prodServ.Product.Name: $@prodServ.SettedPrice.ToString("N0", new CultureInfo("es-ES"))</span><br />
+                                                    <span>@prodServ.Product.Name</span><br />
                                                 }
                                                 else
                                                 {
-                                                    <span>@prodServ.Product.Name: @prodServ.Quantity u. - $@prodServ.SettedPrice.ToString("N0", new CultureInfo("es-ES"))</span><br />
+                                                    <span>@prodServ.Product.Name: @prodServ.Quantity u.</span><br />
                                                 }
                                             }
                                         </td>
@@ -182,7 +182,7 @@
             });
             let products = "";
             sale.products.forEach(function (p) {
-                products += `<span>${p.product.name}: ${p.quantity} u. - $${p.settedPrice.toLocaleString("de-DE")}</span><br />`;
+                products += `<span>${p.product.name}: ${p.quantity} u.</span><br />`;
             });
             let fullName = sale.name != null ? `${sale.surname}, ${sale.name}` : "-";
             let button = `
@@ -192,7 +192,7 @@
             let row = [
                 fullName,
                 createDateWithTime(sale.createdAt),
-                `$${sale.price.toLocaleString("de-DE")}`,
+                `$${sale.totalprice.toLocaleString("de-DE")}`,
                 products,
                 methods,
                 button

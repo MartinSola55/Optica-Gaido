@@ -24,7 +24,6 @@ namespace Optica_Gaido.Data.Repository
             if (dbObject != null)
             {
                 dbObject.Name = product.Name;
-                dbObject.Price = product.Price;
                 dbObject.Stock = product.Stock;
                 dbObject.CreatedAt = DateTime.UtcNow.AddHours(-3);
                 _db.SaveChanges();
