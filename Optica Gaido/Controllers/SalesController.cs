@@ -49,7 +49,7 @@ namespace Optica_Gaido.Controllers
                 Expression<Func<Sale, bool>> filter = sale => sale.CreatedAt.Year == DateTime.UtcNow.AddHours(-3).Year;
                 IndexViewModel viewModel = new()
                 {
-                    Sales = _workContainer.Sale.GetAll(filter, includeProperties: "Client, SalePaymentMethods, SalePaymentMethods.PaymentMethod"),
+                    Sales = _workContainer.Sale.GetAll(filter, includeProperties: "Client, SalePaymentMethods, SalePaymentMethods.PaymentMethod").OrderByDescending(x => x.CreatedAt),
                     Years = _workContainer.Sale.GetYears()
                 };
                 return View(viewModel);
