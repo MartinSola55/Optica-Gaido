@@ -51,7 +51,7 @@
                                 </tr>
                             </thead>
                             <tbody id="table_body">
-                                @foreach (var item in Model.Sales.OrderByDescending(x => x.CreatedAt))
+                                @foreach (var item in Model.Sales)
                                 {
                                     <tr data-id="@item.ID" style="cursor: pointer">
                                         <td>@Html.DisplayFor(x => item.Client.Surname), @Html.DisplayFor(x => item.Client.Name)</td>
@@ -79,7 +79,7 @@
 <script>
     $(document).ready(function () {
         let dataTable = $('#DataTable').DataTable({
-            "orderable": false,
+            "ordering": false,
             "language": {
                 "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ recetas",
                 "sInfoEmpty": "Mostrando 0 a 0 de 0 recetas",
