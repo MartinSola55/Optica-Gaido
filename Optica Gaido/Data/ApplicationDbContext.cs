@@ -21,7 +21,7 @@ namespace Optica_Gaido.Data
             new DbInitializer(modelBuilder).Seed();
 
             modelBuilder.Entity<SalePaymentMethod>()
-                .HasKey(sp => new { sp.SaleID, sp.PaymentMethodID });
+                .HasKey(sp => new { sp.SaleID, sp.PaymentMethodID, sp.CreatedAt});
             modelBuilder.Entity<SimpleSalePaymentMethod>()
                 .HasKey(sp => new { sp.SimpleSaleID, sp.PaymentMethodID });
 

@@ -40,7 +40,7 @@ namespace Optica_Gaido.Controllers
 
                 // Recorrer las ventas con aumento
                 List <SalePaymentMethod> monthMethods = _workContainer.SalePaymentMethod.GetAll().ToList();
-                foreach (SalePaymentMethod pm in monthMethods.Where(x => x.UpdatedAt.Month == today.Month && x.UpdatedAt.Year == today.Year))
+                foreach (SalePaymentMethod pm in monthMethods.Where(x => x.CreatedAt.Month == today.Month && x.CreatedAt.Year == today.Year))
                 {
                     monthlyEarnings += pm.Amount;
                     // Verificar si el metodo de pago ya existe y sumar el total de cada metodo de pago

@@ -20,7 +20,7 @@ public partial class SalePaymentMethod
     [DisplayFormat(DataFormatString = "{0:F0}", ApplyFormatInEditMode = true)]
     public decimal Amount { get; set; }
 
-    public DateTime UpdatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public virtual PaymentMethod PaymentMethod { get; set; } = null!;
 

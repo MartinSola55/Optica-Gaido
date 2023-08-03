@@ -376,7 +376,7 @@
                                             string value = null;
                                             foreach (var sale_pm in Model.Sale.SalePaymentMethods)
                                             {
-                                                if (sale_pm.PaymentMethodID == item.ID) value = sale_pm.Amount.ToString("F0");
+                                                if (sale_pm.PaymentMethodID == item.ID) value = Model.Sale.SalePaymentMethods.Where(x => x.PaymentMethodID == sale_pm.PaymentMethodID).Sum(x => x.Amount).ToString("F0");
                                             }
                                         }
                                         <div class="input-group">

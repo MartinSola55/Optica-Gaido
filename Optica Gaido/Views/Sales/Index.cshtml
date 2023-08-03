@@ -62,7 +62,7 @@
                                         <td>
                                             @foreach (var pm in item.SalePaymentMethods)
                                             {
-                                                <span>@pm.PaymentMethod.Name: $@pm.Amount.ToString("N0", new CultureInfo("es-ES"))</span><br />
+                                                <span>@pm.PaymentMethod.Name: $@pm.Amount.ToString("N0", new CultureInfo("es-ES")) - @pm.CreatedAt.ToString("dd/MM/yyyy")</span><br />
                                             }
                                         </td>
                                     </tr>

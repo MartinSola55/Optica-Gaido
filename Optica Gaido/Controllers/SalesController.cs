@@ -169,7 +169,7 @@ namespace Optica_Gaido.Controllers
                     foreach (SalePaymentMethod item in newSale.SalePaymentMethods)
                     {
                         client.Debt -= item.Amount;
-                        item.UpdatedAt = DateTime.UtcNow.AddHours(-3);
+                        item.CreatedAt = DateTime.UtcNow.AddHours(-3);
                     }
 
                     _workContainer.Save();
@@ -326,30 +326,22 @@ namespace Optica_Gaido.Controllers
                     }
                     foreach (var pm in request.SalePaymentMethods)
                     {
-                        int cont = 0;
-                        foreach (var oldPM in paymentMethods)
+                        SalePaymentMethod new_pm = new()
                         {
-                            cont++;
-                            if (pm.PaymentMethodID == oldPM.PaymentMethodID)
-                            {
-                                if (pm.Amount != oldPM.Amount)
-                                {
-                                    oldPM.Amount = pm.Amount;
-                                    oldPM.UpdatedAt = DateTime.UtcNow.AddHours(-3);
-                                }
-                                break;
-                            } else if (cont == paymentMethods.Count)
-                            {
-                                SalePaymentMethod new_pm = new()
-                                {
-                                    Amount = pm.Amount,
-                                    PaymentMethodID = pm.PaymentMethodID,
-                                    SaleID = sale.ID,
-                                    UpdatedAt = DateTime.UtcNow.AddHours(-3),
-                                };
-                                _workContainer.SalePaymentMethod.Add(new_pm);
-                            }
+                            PaymentMethodID = pm.PaymentMethodID,
+                            SaleID = sale.ID,
+                            CreatedAt = DateTime.UtcNow.AddHours(-3),
+                        };
+
+                        // Si existe se asigna la diferencia, sino el total
+                        if (paymentMethods.Any(x => x.PaymentMethodID == pm.PaymentMethodID))
+                        {
+                            new_pm.Amount = pm.Amount - paymentMethods.Where(x => x.PaymentMethodID == pm.PaymentMethodID).Sum(x => x.Amount);
+                        } else
+                        {
+                            new_pm.Amount = pm.Amount;
                         }
+                        if (new_pm.Amount != 0) _workContainer.SalePaymentMethod.Add(new_pm);
                         sale.Client.Debt -= pm.Amount;
                     }
 
