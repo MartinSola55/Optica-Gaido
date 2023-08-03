@@ -169,6 +169,7 @@ namespace Optica_Gaido.Controllers
                     foreach (SalePaymentMethod item in newSale.SalePaymentMethods)
                     {
                         client.Debt -= item.Amount;
+                        item.UpdatedAt = DateTime.UtcNow.AddHours(-3);
                     }
 
                     _workContainer.Save();
@@ -319,24 +320,40 @@ namespace Optica_Gaido.Controllers
                     List<SalePaymentMethod> paymentMethods = sale.SalePaymentMethods.ToList();
                     foreach (var pm in paymentMethods)
                     {
+                        bool removePM = !request.SalePaymentMethods.Any(x => x.PaymentMethodID == pm.PaymentMethodID);
                         sale.Client.Debt += pm.Amount;
-                        _workContainer.SalePaymentMethod.Remove(pm);
+                        if (removePM) _workContainer.SalePaymentMethod.Remove(pm);
                     }
-
                     foreach (var pm in request.SalePaymentMethods)
                     {
-                        SalePaymentMethod new_pm = new()
+                        int cont = 0;
+                        foreach (var oldPM in paymentMethods)
                         {
-                            Amount = pm.Amount,
-                            PaymentMethodID = pm.PaymentMethodID,
-                            SaleID = sale.ID
-                        };
+                            cont++;
+                            if (pm.PaymentMethodID == oldPM.PaymentMethodID)
+                            {
+                                if (pm.Amount != oldPM.Amount)
+                                {
+                                    oldPM.Amount = pm.Amount;
+                                    oldPM.UpdatedAt = DateTime.UtcNow.AddHours(-3);
+                                }
+                                break;
+                            } else if (cont == paymentMethods.Count)
+                            {
+                                SalePaymentMethod new_pm = new()
+                                {
+                                    Amount = pm.Amount,
+                                    PaymentMethodID = pm.PaymentMethodID,
+                                    SaleID = sale.ID,
+                                    UpdatedAt = DateTime.UtcNow.AddHours(-3),
+                                };
+                                _workContainer.SalePaymentMethod.Add(new_pm);
+                            }
+                        }
                         sale.Client.Debt -= pm.Amount;
-                        _workContainer.SalePaymentMethod.Add(new_pm);
                     }
-                        
-                    _workContainer.Save();
 
+                    _workContainer.Save();
                     _workContainer.Commit();
                     return Json(new
                     {

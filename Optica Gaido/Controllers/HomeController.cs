@@ -27,32 +27,30 @@ namespace Optica_Gaido.Controllers
         {
             try
             {
-                Expression<Func<Sale, bool>> filterSale = sale => sale.CreatedAt.Year == DateTime.UtcNow.AddHours(-3).Year && sale.CreatedAt.Month == DateTime.UtcNow.AddHours(-3).Month;
-                Expression<Func<SimpleSale, bool>> filterSimpleSale = sale => sale.CreatedAt.Year == DateTime.UtcNow.AddHours(-3).Year && sale.CreatedAt.Month == DateTime.UtcNow.AddHours(-3).Month;
-                Expression<Func<Expense, bool>> filterExpense = expense => expense.CreatedAt.Year == DateTime.UtcNow.AddHours(-3).Year && expense.CreatedAt.Month == DateTime.UtcNow.AddHours(-3).Month;
+                DateTime today = DateTime.UtcNow.AddHours(-3);
+                Expression<Func<Sale, bool>> filterSale = sale => sale.CreatedAt.Year == today.Year && sale.CreatedAt.Month == today.Month;
+                Expression<Func<SimpleSale, bool>> filterSimpleSale = sale => sale.CreatedAt.Year == today.Year && sale.CreatedAt.Month == today.Month;
+                Expression<Func<Expense, bool>> filterExpense = expense => expense.CreatedAt.Year == today.Year && expense.CreatedAt.Month == today.Month;
 
-                List<Sale> sales = _workContainer.Sale.GetAll(filterSale, includeProperties: "SalePaymentMethods").ToList();
+                int totalSales = _workContainer.Sale.GetAll(filterSale, includeProperties: "SalePaymentMethods").ToList().Count;
                 List<SimpleSale> simpleSales = _workContainer.SimpleSale.GetAll(filterSimpleSale, includeProperties: "PaymentMethods").ToList();
 
-                int totalSales = sales.Count;
                 decimal monthlyEarnings = 0;
                 List<SalePaymentMethod> paymentMethods = new();
 
                 // Recorrer las ventas con aumento
-                foreach (Sale sale in sales)
+                List <SalePaymentMethod> monthMethods = _workContainer.SalePaymentMethod.GetAll().ToList();
+                foreach (SalePaymentMethod pm in monthMethods.Where(x => x.UpdatedAt.Month == today.Month && x.UpdatedAt.Year == today.Year))
                 {
-                    foreach (SalePaymentMethod pm in sale.SalePaymentMethods)
+                    monthlyEarnings += pm.Amount;
+                    // Verificar si el metodo de pago ya existe y sumar el total de cada metodo de pago
+                    if (paymentMethods.Any(x => x.PaymentMethodID == pm.PaymentMethodID))
                     {
-                        monthlyEarnings += pm.Amount;
-                        // Verificar si el metodo de pago ya existe y sumar el total de cada metodo de pago
-                        if (paymentMethods.Any(x => x.PaymentMethodID == pm.PaymentMethodID))
-                        {
-                            paymentMethods.Find(x => x.PaymentMethodID == pm.PaymentMethodID).Amount += pm.Amount;
-                        }
-                        else
-                        {
-                            paymentMethods.Add(new SalePaymentMethod { Amount = pm.Amount, PaymentMethodID = pm.PaymentMethodID });
-                        }
+                        paymentMethods.Find(x => x.PaymentMethodID == pm.PaymentMethodID).Amount += pm.Amount;
+                    }
+                    else
+                    {
+                        paymentMethods.Add(new SalePaymentMethod { Amount = pm.Amount, PaymentMethodID = pm.PaymentMethodID });
                     }
                 }
 
