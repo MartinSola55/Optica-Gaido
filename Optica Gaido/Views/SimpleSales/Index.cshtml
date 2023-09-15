@@ -42,12 +42,12 @@
                         <table id="DataTable" class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th class="col-3">Cliente</th>
-                                    <th class="col-2">Fecha</th>
-                                    <th class="col-1">Precio</th>
-                                    <th class="col-3">Productos/Servicios</th>
-                                    <th class="col-2">Pagos</th>
-                                    <th class="col-1">Eliminar</th>
+                                    <th>Cliente</th>
+                                    <th>Fecha</th>
+                                    <th>Precio</th>
+                                    <th>Productos/Servicios</th>
+                                    <th>Pagos</th>
+                                    <th>Eliminar</th>
                                 </tr>
                             </thead>
                             <tbody id="table_body">
@@ -58,23 +58,27 @@
                                         <td>@item.CreatedAt.ToString("dd/MM/yyyy - HH:mm")</td>
                                         <td>$@item.TotalPrice.ToString("N0", new CultureInfo("es-ES"))</td>
                                         <td>
-                                            @foreach (var prodServ in item.Products)
-                                            {
-                                                if (prodServ.Product.Stock == null)
+                                            <ul class="mb-0">
+                                                @foreach (var prodServ in item.Products)
                                                 {
-                                                    <span>@prodServ.Product.Name</span><br />
+                                                    if (prodServ.Product.Stock == null)
+                                                    {
+                                                        <li>@prodServ.Product.Name</li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <li>@prodServ.Product.Name: @prodServ.Quantity u.</li>
+                                                    }
                                                 }
-                                                else
-                                                {
-                                                    <span>@prodServ.Product.Name: @prodServ.Quantity u.</span><br />
-                                                }
-                                            }
+                                            </ul>
                                         </td>
                                         <td>
-                                            @foreach (var pm in item.PaymentMethods)
-                                            {
-                                                <span>@pm.PaymentMethod.Name: $@pm.Amount.ToString("N0", new CultureInfo("es-ES"))</span><br />
-                                            }
+                                            <ul class="mb-0">
+                                                @foreach (var pm in item.PaymentMethods)
+                                                {
+                                                    <li>@pm.PaymentMethod.Name: $@pm.Amount.ToString("N0", new CultureInfo("es-ES"))</li>
+                                                }
+                                            </ul>
                                         </td>
                                         <td>
                                             <div class='d-flex flex-row justify-content-center'>
