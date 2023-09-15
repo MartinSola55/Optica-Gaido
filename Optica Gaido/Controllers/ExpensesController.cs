@@ -24,7 +24,7 @@ namespace Optica_Gaido.Controllers
             {
                 IndexViewModel viewModel = new()
                 {
-                    Expenses = _workContainer.Expense.GetAll(),
+                    Expenses = _workContainer.Expense.GetAll().OrderByDescending(x => x.CreatedAt),
                     CreateViewModel = new Expense()
                 };
 
@@ -85,10 +85,11 @@ namespace Optica_Gaido.Controllers
                 {
                     _workContainer.Expense.Update(expense.CreateViewModel);
                     _workContainer.Save();
+                    Expense expenseEdited = _workContainer.Expense.GetOne(expense.CreateViewModel.ID);
                     return Json(new
                     {
                         success = true,
-                        data = expense.CreateViewModel,
+                        data = expenseEdited,
                         message = "El gasto se editó correctamente",
                     });
                 }

@@ -25,7 +25,6 @@ namespace Optica_Gaido.Data.Repository
             {
                 dbObject.Amount = expense.Amount;
                 dbObject.Description = expense.Description;
-                dbObject.CreatedAt = DateTime.UtcNow.AddHours(-3);
                 _db.SaveChanges();
             }
         }

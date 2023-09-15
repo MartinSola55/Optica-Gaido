@@ -86,9 +86,10 @@
                         <table id="DataTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th class="col-6">Descripción</th>
-                                    <th class="col-4">Monto</th>
-                                    <th class="col-2">Acción</th>
+                                    <th>Descripción</th>
+                                    <th>Monto</th>
+                                    <th>Fecha</th>
+                                    <th>Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="table_body">
@@ -97,6 +98,7 @@
                                     <tr data-id="@item.ID">
                                         <td>@Html.DisplayFor(c => item.Description)</td>
                                         <td>$@(item.Amount.ToString("N0", new CultureInfo("es-ES")))</td>
+                                        <td>@(item.CreatedAt.ToString("dd/MM/yyyy"))</td>
                                         <td class='d-flex flex-row justify-content-center'>
                                             <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(@Json.Serialize(item))' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                                             <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(@item.ID)'><i class='bi bi-trash3'></i></button>
@@ -116,11 +118,21 @@
     </div>
 </div>
 
-<script>function fillTable(item) {
+<script>
+    function createDate(dateString) {
+        let date = new Date(dateString);
+        let day = ("0" + date.getDate()).slice(-2);
+        let month = ("0" + (date.getMonth() + 1)).slice(-2);
+        let year = date.getFullYear();
+        return day + "/" + month + "/" + year;
+    }
+
+    function fillTable(item) {
         let content = `
             <tr data-id='${item.id}'>
                 <td>${item.description}</td>
                 <td>$${item.amount.toLocaleString("de-DE")}</td>
+                <td>${createDate(item.createdAt)}</td>
                 <td class='d-flex flex-row justify-content-center'>
                     <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' onclick='edit(${JSON.stringify(item)})' data-toggle="modal" data-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                     <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' onclick='deleteObj(${item.id})'><i class='bi bi-trash3'></i></button>
@@ -191,9 +203,11 @@
                 }
             });
         }
-    }</script>
+    }
+</script>
 
-<script>$("#btnSendModal").on("click", function () {
+<script>
+    $("#btnSendModal").on("click", function () {
         if ($("#formContainer form").attr('id') === 'form-create') {
             sendForm("create");
         } else if ($("#formContainer form").attr('id') === 'form-edit') {
@@ -224,6 +238,7 @@
     }
 
     $('#DataTable').DataTable({
+        "order": false,
         "language": {
             "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ gastos",
             "sInfoEmpty": "Mostrando 0 a 0 de 0 gastos",
@@ -238,6 +253,7 @@
                 "sPrevious": "Anterior",
             },
         },
-    });</script>
+    });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
