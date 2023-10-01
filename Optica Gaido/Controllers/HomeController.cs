@@ -7,6 +7,7 @@ using Optica_Gaido.Models.ViewModels.Home;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Net;
+using static System.Net.WebRequestMethods;
 
 namespace Optica_Gaido.Controllers
 {
@@ -84,11 +85,8 @@ namespace Optica_Gaido.Controllers
                 string payment = null;
                 if (DateTime.UtcNow.AddHours(-3).Day == 9)
                 {
-                    API_Obj currency = await Import(_config["USD_API_KEY"]);
-                    if (currency.Result == "success")
-                    {
-                        payment = ((currency.Conversion_rates.ARS * 35) * 2).ToString("N0", new System.Globalization.CultureInfo("is-IS"));
-                    }
+                    API currency = await Get();
+                    payment = (currency.blue.value_sell * 35).ToString("N0", new System.Globalization.CultureInfo("is-IS"));
                 }
 
                 IndexViewModel viewModel = new()
@@ -109,54 +107,43 @@ namespace Optica_Gaido.Controllers
             }
         }
 
-        private static async Task<API_Obj> Import(string usd_api_key)
+        private static async Task<API> Get()
         {
             try
             {
-                string URLString = "https://v6.exchangerate-api.com/v6/" + usd_api_key + "/latest/USD";
+                string URLString = "https://api.bluelytics.com.ar/v2/latest";
 
                 using HttpClient client = new();
                 var response = await client.GetAsync(URLString);
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    API_Obj Test = JsonConvert.DeserializeObject<API_Obj>(json);
+                    API Test = JsonConvert.DeserializeObject<API>(json);
                     return Test;
                 }
                 else
                 {
                     // Si la solicitud no fue exitosa, puedes manejar el error aquí
-                    return new API_Obj();
+                    return new API();
                 }
             }
             catch (Exception)
             {
-                return new API_Obj();
+                return new API();
             }
         }
 
-        private class API_Obj
+        public class API
         {
-            public string Result { get; set; }
-            public string Documentation { get; set; }
-            public string Terms_of_use { get; set; }
-            public string Time_last_update_unix { get; set; }
-            public string Time_last_update_utc { get; set; }
-            public string Time_next_update_unix { get; set; }
-            public string Time_next_update_utc { get; set; }
-            public string Base_code { get; set; }
-            public ConversionRate Conversion_rates { get; set; }
+            public USDRates oficial { get; set; }
+            public USDRates blue { get; set; }
         }
 
-        private class ConversionRate
+        public class USDRates
         {
-            public double ARS { get; set; }
+            public double value_buy { get; set; }
+            public double value_avg { get; set; }
+            public double value_sell { get; set; }
         }
-
-        /*[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }*/
     }
 }
