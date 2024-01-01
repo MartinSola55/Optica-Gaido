@@ -80,7 +80,7 @@
             @if (SignInManager.IsSignedIn(User))
             {
                 <footer class="footer">
-                        &copy; 2023 - Óptica Gaido
+                        &copy; @DateTime.UtcNow.AddHours(-3).Year - Óptica Gaido
                 </footer>
             }
         </div>

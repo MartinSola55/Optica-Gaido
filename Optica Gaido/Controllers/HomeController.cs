@@ -86,7 +86,7 @@ namespace Optica_Gaido.Controllers
                 if (DateTime.UtcNow.AddHours(-3).Day == 9)
                 {
                     API currency = await Get();
-                    payment = (currency.blue.value_sell * 15).ToString("N0", new System.Globalization.CultureInfo("is-IS"));
+                    payment = (currency.oficial.value_sell * 1.6 * 15).ToString("N0", new System.Globalization.CultureInfo("is-IS"));
                 }
 
                 IndexViewModel viewModel = new()
