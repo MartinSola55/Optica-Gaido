@@ -16,7 +16,7 @@ public partial class SalePaymentMethod
     [Required(ErrorMessage = "Debes ingresar un monto")]
     [Column(TypeName = "money")]
     [Display(Name = "Monto")]
-    [Range(0, 100000, ErrorMessage = "Debes ingresar un monto entre $0 y $100.000")]
+    [Range(0, 1000000, ErrorMessage = "Debes ingresar un monto entre $0 y $1.000.000")]
     [DisplayFormat(DataFormatString = "{0:F0}", ApplyFormatInEditMode = true)]
     public decimal Amount { get; set; }
 
